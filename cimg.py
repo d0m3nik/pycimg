@@ -1,4 +1,5 @@
 import numpy as np
+import os.path
 from pycimg import CImg_int8, CImg_int16, CImg_int32, CImg_uint8, CImg_uint16, CImg_uint32, CImg_float32, CImg_float64 
 
 class CImg:
@@ -22,16 +23,22 @@ class CImg:
         elif dtype == np.float64:
             self._cimg = CImg_float64()
         else:
-            raise RuntimeError('Unknown data type ''%s''' % dtype)
+            raise RuntimeError("Unknown data type '{}'".format(dtype))
 
     def load(self, filename):
-        self._cimg.load(filename)
+        if os.path.isfile(filename): 
+            self._cimg.load(filename)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
 
-    def load_cimg(self, filename, axis='z', align=0):
-        self._cimg.load_cimg(filename, axis, align)
+#    def load_cimg(self, filename, axis='z', align=0):
+#        self._cimg.load_cimg(filename, axis, align)
 
     def load_cimg_float16(self, filename):
-        self._cimg.load_cimg_float16(filename)
+        if os.path.isfile(filename): 
+            self._cimg.load_cimg_float16(filename)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
 
     # Operators
     def __call__(self, x):

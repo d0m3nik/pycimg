@@ -12,16 +12,16 @@ cdef class CImg_{T}:
         cdef char* fn = byte_string
         self._cimg.load(fn)
 
-    def load_cimg(self, filename, axis='z', align=0):
-        byte_string = filename.encode('UTF-8')
-        cdef char* fn = byte_string
-        self._cimg.load_cimg(fn, axis, align)
+#    def load_cimg(self, filename, axis='z', align=0):
+#        byte_string = filename.encode('UTF-8')
+#        cdef char* fn = byte_string
+#        self._cimg.load_cimg(fn, axis, align)
 
 
     def load_cimg_float16(self, filename):
         byte_string = filename.encode('UTF-8')
         cdef char* fn = byte_string
-        self._cimg = from_float16[{T}](fn)
+        self._cimg = load_float16[{T}](fn)
 
 
 
