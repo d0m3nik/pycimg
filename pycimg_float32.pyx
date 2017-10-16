@@ -2,10 +2,22 @@ cdef class CImg_float32:
     cdef CImg[float32] _cimg;
 
     # Constructors
-    def __cinit__(self, filename):
+#    def __cinit__(self, filename):
+#        byte_string = filename.encode('UTF-8')
+#        cdef char* fn = byte_string
+#        self._cimg = CImg[float32](fn)
+
+    def load(self, filename):
         byte_string = filename.encode('UTF-8')
         cdef char* fn = byte_string
-        self._cimg = CImg[float32](fn)
+        self._cimg.load(fn)
+
+    def load_cimg_float16(self, filename):
+        byte_string = filename.encode('UTF-8')
+        cdef char* fn = byte_string
+        self._cimg = from_float16[float32](fn)
+
+
 
     # Operators
 #    def __call__(self, x):

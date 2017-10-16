@@ -1,29 +1,37 @@
-from pycimg import CImg_int8, CImg_int16, CImg_int32, CImg_uint8, CImg_uint16, CImg_uint32, CImg_float16, CImg_float32, CImg_float64
+import numpy as np
+from pycimg import CImg_int8, CImg_int16, CImg_int32, CImg_uint8, CImg_uint16, CImg_uint32, CImg_float32, CImg_float64 
 
 class CImg:
     """ CImg is a wrapper class for the CImg library: """
 
-    def __init__(self, filename, dtype):
-        if dtype == 'int8':
-            self._cimg = CImg_int8(filename)
-        elif dtype == 'int16':
-            self._cimg = CImg_int16(filename)
-        elif dtype == 'int32':
-            self._cimg = CImg_int32(filename)
-        elif dtype == 'uint8':
-            self._cimg = CImg_uint8(filename)
-        elif dtype == 'uint16':
-            self._cimg = CImg_uint16(filename)
-        elif dtype == 'uint32':
-            self._cimg = CImg_uint32(filename)
-        elif dtype == 'float16':
-            self._cimg = CImg_float16(filename)
-        elif dtype == 'float32':
-            self._cimg = CImg_float32(filename)
-        elif dtype == 'float64':
-            self._cimg = CImg_float64(filename)
+    def __init__(self, dtype=np.float32):
+        if dtype == np.int8:
+            self._cimg = CImg_int8()
+        elif dtype == np.int16:
+            self._cimg = CImg_int16()
+        elif dtype == np.int32:
+            self._cimg = CImg_int32()
+        elif dtype == np.uint8:
+            self._cimg = CImg_uint8()
+        elif dtype == np.uint16:
+            self._cimg = CImg_uint16()
+        elif dtype == np.uint32:
+            self._cimg = CImg_uint32()
+        elif dtype == np.float32:
+            self._cimg = CImg_float32()
+        elif dtype == np.float64:
+            self._cimg = CImg_float64()
         else:
             raise RuntimeError('Unknown data type ''%s''' % dtype)
+
+    def load(self, filename):
+        self._cimg.load(filename)
+
+    def load_cimg(self, filename, axis='z', align=0):
+        self._cimg.load_cimg(filename, axis, align)
+
+    def load_cimg_float16(self, filename):
+        self._cimg.load_cimg_float16(filename)
 
     # Operators
     def __call__(self, x):

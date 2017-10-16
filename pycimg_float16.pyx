@@ -1,6 +1,7 @@
 cdef class CImg_float16(CImg_float32):
 
     def __cinit__(self, filename):
+        print('Called CImg_float16._cinit_')
         byte_string = filename.encode('UTF-8')
         cdef char* fn = byte_string
         # Loads single precision image from half

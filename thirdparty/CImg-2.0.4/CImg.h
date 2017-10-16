@@ -57385,6 +57385,8 @@ namespace cimg_library_suffixed {
       _cimg_load_cimg_case("int64",int64T);
       _cimg_load_cimg_case("float",float);
       _cimg_load_cimg_case("double",double);
+      _cimg_load_cimg_case(pixel_type(), T);
+      _cimg_load_cimg_case(str_pixeltype, T);
 
       if (!loaded) {
         if (!file) cimg::fclose(nfile);
