@@ -1,3 +1,4 @@
+from libcpp cimport bool
 from libc.stdint cimport int8_t, int16_t, int32_t 
 from libc.stdint cimport uint8_t, uint16_t, uint32_t
 import numpy as np
@@ -68,6 +69,22 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         # ...
         CImg& noise(const double sigma, const unsigned int noise_type)
         CImg& normalize(const T& min_value, const T& max_value)
+        CImg& normalize()
+        CImg& norm(const int norm_type)
+        CImg& cut(const T& min_value, const T& max_value)
+        CImg& quantize(const unsigned int nb_levels, const bool keep_range)
+        CImg& threshold(const T& value, const bool soft_threshold, 
+                        const bool strict_threshold)
+        CImg& histogram(const unsigned int nb_levels, const T& min_value,
+                        const T& max_value)
+        CImg& equalize(const unsigned int nb_levels, const T& min_value,
+                       const T& max_value)
+        CImg& index(const CImg& colormap, const float dithering, 
+                    const bool map_indexes)
+        CImg& map(const CImg& colormap, 
+                  const unsigned int boundary_conditions)
+        CImg& label(const bool is_high_connectivity, const float tolerance)
+
 
     # Utility function for loading CImg[T] from a cimg
     # file with half precision floats

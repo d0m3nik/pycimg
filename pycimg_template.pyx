@@ -153,6 +153,40 @@ cdef class CImg_{T}:
         self._cimg.normalize(min_value, max_value)
         return self
 
+    def normalize_l2(self):
+        self._cimg.normalize()
+        return self
+
+    def norm(self, norm_type):
+        self._cimg.norm(norm_type)
+        return self
+
+    def cut(self, min_value, max_value):
+        self._cimg.cut(min_value, max_value)
+        return self
+
+    def quantize(self, nb_levels, keep_range):
+        self._cimg.quantize(nb_levels, keep_range)
+        return self
+
+    def threshold(self, value, soft_threshold, strict_threshold):
+        self._cimg.threshold(value, soft_threshold, strict_threshold)
+        return self
+
+    def histogram(self, nb_levels, min_value, max_value):
+        self._cimg.histogram(nb_levels, min_value, max_value)
+        return self
+
+    def equalize(self, nb_levels, min_value, max_value):
+        self._cimg.equalize(nb_levels, min_value, max_value)
+        return self
+    
+    # TODO: index, map
+
+    def label(self, is_high_connectivity, tolerance):
+        self._cimg.label(is_high_connectivity, tolerance)
+        return self
+
     cpdef display(self):
         self._cimg.display()
 

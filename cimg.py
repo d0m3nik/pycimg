@@ -254,6 +254,104 @@ class CImg:
         self._cimg.normalize(min_value, max_value)
         return self
 
+    def normalize_l2(self):
+        """ Normalize multi-valued pixels of the image instance, 
+            with respect to their L2-norm. 
+        """
+        self._cimg.normalize_l2()
+        return self
+
+    def norm(self, norm_type):
+        """ Compute Lp-norm of each multi-valued pixel of the 
+            image instance.
+
+            Args:
+                norm_type: Type of computed vector norm 
+                            (can be -1=Linf, or greater or equal than 0). 
+        """
+        self._cimg.norm(norm_type)
+        return self
+
+    def cut(self, min_value, max_value):
+        """ Cut pixel values in specified range. 
+
+            Args:
+                min_value: Minimum desired value of resulting image.
+                max_value: Maximum desired value of resulting image.
+        """
+        self._cimg.cut(min_value, max_value)
+        return self
+
+    def quantize(self, nb_levels, keep_range=True):
+        """ Uniformly quantize pixel values.
+
+            Args:
+                nb_levels: Number of quantization levels.
+                keep_range: Tells if resulting values keep the same 
+                            range as the original ones. 
+
+        """
+        self._cimg.quantize(nb_levels, keep_range)
+        return self
+
+    def threshold(self, value, soft_threshold=False, strict_threshold=False):
+        """ Threshold pixel values.
+            
+            Args:
+                value: Threshold value.
+                soft_threshold: Tells if soft thresholding must be 
+                                applied (instead of hard one). 
+                strict_threshold: Tells if threshold value is strict.
+        """
+        self._cimg.threshold(value, soft_threshold, strict_threshold)
+        return self
+
+    def histogram(self, nb_levels, min_value, max_value):
+        """ Compute the histogram of pixel values.
+
+            Args:
+                nb_levels: Number of desired histogram levels.
+                min_value: Minimum pixel value considered for the 
+                           histogram computation. All pixel values 
+                           lower than min_value will not be counted. 
+                max_value: Maximum pixel value considered for the 
+                           histogram computation. All pixel values 
+                           higher than max_value will not be counted. 
+        """
+        self._cimg.histogram(nb_levels, min_value, max_value)
+        return self
+
+    def equalize(self, nb_levels, min_value, max_value):
+        """ Equalize histogram of pixel values.
+
+            Args:
+                nb_levels: Number of desired histogram levels.
+                min_value: Minimum pixel value considered for the 
+                           histogram computation. All pixel values 
+                           lower than min_value will not be counted. 
+                max_value: Maximum pixel value considered for the 
+                           histogram computation. All pixel values 
+                           higher than max_value will not be counted. 
+        """
+        self._cimg.equalize(nb_levels, min_value, max_value)
+        return self
+
+    # TODO: index, map
+
+    def label(self, is_high_connectivity=False, tolerance=0.0):
+        """ Label connected components.
+
+            Args:
+                is_high_connectivity: Boolean that choose between 4(false)
+                - or 8(true)-connectivity in 2d case, and between 6(false)
+                - or 26(true)-connectivity in 3d case. 
+                tolerance: Tolerance used to determine if two neighboring 
+                pixels belong to the same region.  
+        """
+        self._cimg.label(is_high_connectivity, tolerance)
+        return self
+
+
     def display(self):
         """ Display image into a CImgDisplay window."""
         self._cimg.display()
