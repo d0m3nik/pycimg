@@ -2,7 +2,7 @@ on: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.5
+      - image: d0m3nik/cython-primary:0.0.2
 
     working_directory: ~/repo
 

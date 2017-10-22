@@ -6,6 +6,17 @@ class CImg:
     """ CImg is a wrapper class for the CImg library: """
 
     def __init__(self, dtype=np.float32):
+        """ Create CImg with given data type.
+
+            Supported datatypes are np.int8, np.int16, np.int32,
+            np.uint8, np.uint16, np.uint32, np.float32, and np.float64.
+
+            Args:
+                dtype: Data type of CImg.
+
+            Raises:
+                RuntimeError: For unsupported data types.
+        """
         if dtype == np.int8:
             self._cimg = CImg_int8()
         elif dtype == np.int16:
@@ -26,6 +37,13 @@ class CImg:
             raise RuntimeError("Unknown data type '{}'".format(dtype))
 
     def load(self, filename):
+        """ Load image from a file.
+            
+            Args: 
+                filename: Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+        """
         if os.path.isfile(filename): 
             self._cimg.load(filename)
         else:
@@ -35,6 +53,14 @@ class CImg:
 #        self._cimg.load_cimg(filename, axis, align)
 
     def load_cimg_float16(self, filename):
+        """ Load image from a .cimg file with half precision
+            pixel values.
+
+             Args: 
+                filename: Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+        """
         if os.path.isfile(filename): 
             self._cimg.load_cimg_float16(filename)
         else:
@@ -46,57 +72,190 @@ class CImg:
 
     # Instance characteristics
     def width(self):
+        """ Return width of image. """
         return self._cimg.width()
 
     def height(self):
+        """ Return height of image. """
         return self._cimg.height()
 
     def depth(self):
+        """ Return depth of image. """
         return self._cimg.depth()
 
     def spectrum(self):
+        """ Return spectrum (number of channels) of image. """
         return self._cimg.spectrum()
 
     def size(self):
+        """ Return the total number of pixel values in the image. """
         return self._cimg.size()
 
     def asarray(self):
+        """ Convert image to a numpy array. """
         return self._cimg.asarray()
 
     def sqr(self):
+        """ Compute the square value of each pixel value. """
         self._cimg.sqr()
         return self
 
     def sqrt(self):
+        """ Compute the square root of each pixel value. """
         self._cimg.sqrt()
         return self
 
     def exp(self):
+        """ Compute the exponential of each pixel value. """
         self._cimg.exp()
         return self
 
     def log(self):
+        """ Compute the logarithm of each pixel value. """
         self._cimg.log()
         return self
 
     def log2(self):
+        """ Compute base-2 logarithm of each pixel value. """
         self._cimg.log2()
         return self
 
     def log10(self):
+        """ Compute the base-10 logarithm of each pixel value. """
         self._cimg.log10()
         return self
 
+    def abs(self):
+        """ Compute the absolute value of each pixel value. """
+        self._cimg.abs()
+        return self
+
+    def sign(self):
+        """ Compute the sign of each pixel value. """
+        self._cimg.sign()
+        return self
+
+    def cos(self):
+        """ Compute the cosine of each pixel value. """
+        self._cimg.cos()
+        return self
+
+    def sin(self):
+        """ Compute the sine of each pixel value. """
+        self._cimg.sin()
+        return self
+
+    def sinc(self):
+        """ Compute the sinc of each pixel value. """
+        self._cimg.sinc()
+        return self
+
+    def tan(self):
+        """ Compute the tangent of each pixel value. """
+        self._cimg.tan()
+        return self
+
+    def sinh(self):
+        """ Compute the hyperbolic sine of each pixel value. """
+        self._cimg.sinh()
+        return self
+
+    def tanh(self):
+        """ Compute the hyperbolic tangent of each pixel value. """
+        self._cimg.tanh()
+        return self
+
+    def acos(self):
+        """ Compute the arccosine of each pixel value. """
+        self._cimg.acos()
+        return self
+
+    def asin(self):
+        """ Compute the arcsine of each pixel value. """
+        self._cimg.asin()
+        return self
+    
+    def atan(self):
+        """ Compute the arctangent of each pixel value. """
+        self._cimg.atan()
+        return self
+
+    def atan2(self, img):
+        """ Compute the arctangent2 of each pixel value. 
+
+            Args:
+                img: Image whose pixel values specify the second 
+                     argument of the atan2() function. 
+        
+        """
+        self._cimg.atan2(img)
+        return self
+
+    def mul(self, img):
+        """ In-place pointwise multiplication.
+
+            Compute the pointwise multiplication between 
+            the image instance and the specified input image img. 
+
+            Args: 
+                img: Input image, second operand of the multiplication.
+        """
+        self._cimg.mul(img)
+        return self
+
+    def div(self, img):
+        """ In-place pointwise division.
+
+            Compute the pointwise division between 
+            the image instance and the specified input image img. 
+
+            Args: 
+                img: Input image, second operand of the division.
+        """
+        self._cimg.div(img)
+        return self
+
+    def pow(self, p):
+        """ Raise each pixel value to the specified power.
+
+            Args:
+                p: Exponent value.
+        """
+        self._cimg.pow(p)
+
+
     # ...
     def noise(self, sigma, noise_type):
+        """ Add random noise to pixel values. 
+
+            Args:
+                sigma: Amplitude of the random additive noise. 
+                       If sigma<0, it stands for a percentage of 
+                       the global value range.
+
+                noise_type: Type of additive noise (can be 
+                            0=gaussian, 
+                            1=uniform, 
+                            2=Salt and Pepper, 
+                            3=Poisson or 
+                            4=Rician). 
+        
+        """
         self._cimg.noise(sigma, noise_type)
         return self
 
     def normalize(self, min_value, max_value):
+        """ Linearly normalize pixel values.
+
+            Args:
+                min_value: Minimum desired value of resulting image.
+                max_value: Maximum desired value of resulting image.
+        """
         self._cimg.normalize(min_value, max_value)
         return self
 
     def display(self):
+        """ Display image into a CImgDisplay window."""
         self._cimg.display()
 
 

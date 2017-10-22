@@ -3,22 +3,17 @@ from libc.stdint cimport uint8_t, uint16_t, uint32_t
 import numpy as np
 
 ## Supported data types
-ctypedef int8_t  int8
-ctypedef int16_t int16
-ctypedef int32_t int32
-#
+ctypedef int8_t   int8
+ctypedef int16_t  int16
+ctypedef int32_t  int32
 ctypedef uint8_t  uint8
 ctypedef uint16_t uint16
 ctypedef uint32_t uint32
-#
-ctypedef float  float32
-ctypedef double float64
+ctypedef float    float32
+ctypedef double   float64
 
 cdef extern from "cimg_ext.h" namespace "cimg_library":
 
-    # Utility function for loading CImg[T] from a cimg
-    # file with half precision floats
-    CImg[T] load_float16[T](const char* const filename)
 
     cdef cppclass CImg[T]:
         # Constructors
@@ -54,10 +49,29 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& log()
         CImg& log2()
         CImg& log10()
+        CImg& abs()
+        CImg& sign()
+        CImg& cos()
+        CImg& sin()
+        CImg& sinc()
+        CImg& tan()
+        CImg& sinh()
+        CImg& tanh()
+        CImg& acos()
+        CImg& asin()
+        CImg& atan()
+        CImg& atan2(const CImg& img)
+        CImg& mul(const CImg& img)
+        CImg& div(const CImg& img)
+        CImg& pow(const double p)
+        
         # ...
         CImg& noise(const double sigma, const unsigned int noise_type)
         CImg& normalize(const T& min_value, const T& max_value)
 
+    # Utility function for loading CImg[T] from a cimg
+    # file with half precision floats
+    CImg[T] load_float16[T](const char* const filename)
 
 
 # The following files are generated from pycimg_template.pyx

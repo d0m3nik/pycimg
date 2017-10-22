@@ -1,12 +1,6 @@
 cdef class CImg_{T}:
     cdef CImg[{T}] _cimg;
 
-    # Constructors
-#    def __cinit__(self, filename):
-#        byte_string = filename.encode('UTF-8')
-#        cdef char* fn = byte_string
-#        self._cimg = CImg[{T}](fn)
-
     def load(self, filename):
         byte_string = filename.encode('UTF-8')
         cdef char* fn = byte_string
@@ -38,10 +32,6 @@ cdef class CImg_{T}:
 #                raise RuntimeError('Element access with >4 dimensions')
 #        return self._cimg(x)
 #
-#    # TODO: Not working atm
-#    def __add__(self, rhs):
-#        return self._cimg + rhs
-
 
     # Instance characteristics
     def width(self):
@@ -93,6 +83,67 @@ cdef class CImg_{T}:
         self._cimg.log10()
         return self
 
+    def abs(self):
+        self._cimg.abs()
+        return self
+
+    def sign(self):
+        self._cimg.sign()
+        return self
+
+    def cos(self):
+        self._cimg.cos()
+        return self
+
+    def sin(self):
+        self._cimg.sin()
+        return self
+
+    def sinc(self):
+        self._cimg.sinc()
+        return self
+
+    def tan(self):
+        self._cimg.tan()
+        return self
+
+    def sinh(self):
+        self._cimg.sinh()
+        return self
+
+    def tanh(self):
+        self._cimg.tanh()
+        return self
+
+    def acos(self):
+        self._cimg.acos()
+        return self
+
+    def asin(self):
+        self._cimg.asin()
+        return self
+
+    def atan(self):
+        self._cimg.atan()
+        return self
+
+    def atan2(self, img):
+        self._cimg.atan2(<CImg[{T}]&>img._cimg)
+        return self
+
+    def mul(self, img):
+        self._cimg.mul(<CImg[{T}]&>img._cimg)
+        return self
+
+    def div(self, img):
+        self._cimg.div(<CImg[{T}]&>img._cimg)
+        return self
+
+    def pow(self, p):
+        self._cimg.pow(p)
+        return self
+
+
     # ...
     def noise(self, sigma, noise_type):
         self._cimg.noise(sigma, noise_type)
@@ -102,11 +153,6 @@ cdef class CImg_{T}:
         self._cimg.normalize(min_value, max_value)
         return self
 
-
-
     cpdef display(self):
         self._cimg.display()
-
-
-
 
