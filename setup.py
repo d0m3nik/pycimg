@@ -14,7 +14,7 @@ if platform == 'linux':
     extra_compile_args = ["-std=c++11"]
     extra_link_args = ["-std=c++11"]
     library_dirs = ["./thirdparty/zlib-1.2.11/build"]
-    libraries = ["pthread", "X11", "z"]
+    libraries = ["pthread", "X11", "z", "jpeg", "png"]
 
 elif platform == 'win32':
     library_dirs = ["./thirdparty/zlib-1.2.11/contrib/vstudio/vc14/x64/ZlibStatRelease"]

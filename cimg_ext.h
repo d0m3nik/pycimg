@@ -1,8 +1,11 @@
-#include <utility>
 #define cimg_use_zlib 1
+#define cimg_use_jpeg 1
+#define cimg_use_png  1 
+#include <png.h>
 #include <CImg.h>
 #include <half.hpp>
 #include <iostream>
+#include <utility>
 
 namespace cimg_library{
 
