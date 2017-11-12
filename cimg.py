@@ -66,6 +66,17 @@ class CImg:
         else:
             raise RuntimeError("File '{}' does not exist".format(filename))
 
+    def save(self, filename):
+        """ Save image as a file.
+
+            The used file format is defined by the file extension 
+            in the filename.
+
+            Args:
+                filename: Filneame of image.
+        """
+        self._cimg.save(filename)
+
     # Operators
     def __call__(self, x):
         self._cimg(x)
@@ -351,6 +362,71 @@ class CImg:
         self._cimg.label(is_high_connectivity, tolerance)
         return self
 
+    # Geometric / Spatial Manipulation
+
+    def resize(self, size_x, size_y=-100, size_z=-100, size_c=-100,
+               interpolation_type=1, boundary_conditions=0,
+               centering_x=0,
+               centering_y=0,
+               centering_z=0,
+               centering_c=0):
+        """ Resize image to new dimensions. 
+
+            Args:
+                size_x: Number of columns (new size along the X-axis).
+                size_y: Number of rows (new size along the Y-axis).
+                size_z: Number of slices (new size along the Z-axis).
+                size_c: Number of vector-channels (new size along the C-axis).
+                interpolation_type:  Method of interpolation:
+                    -1 = no interpolation: raw memory resizing.
+                    0 = no interpolation: additional space is filled 
+                                          according to boundary_conditions.
+                    1 = nearest-neighbor interpolation.
+                    2 = moving average interpolation.
+                    3 = linear interpolation.
+                    4 = grid interpolation.
+                    5 = cubic interpolation.
+                    6 = lanczos interpolation.
+                boundary_conditions: Type of boundary conditions used if 
+                                     necessary.
+                centering_x: Set centering type (only if interpolation_type=0).
+                centering_y: Set centering type (only if interpolation_type=0).
+                centering_z: Set centering type (only if interpolation_type=0).
+                centering_c: Set centering type (only if interpolation_type=0). 
+        """
+        self._cimg.resize(size_x, size_y, size_z, size_c, 
+                          interpolation_type, boundary_conditions,
+                          centering_x,
+                          centering_y,
+                          centering_z,
+                          centering_c)
+        return self
+
+
+
+    # Drawing functions
+
+    def draw_rectangle(self, x0, y0, x1, y1, color):
+        """ Draw a filled 2d rectangle. 
+
+            Args:
+                x0: X-coordinate of the upper-left rectangle corner. 
+                y0: Y-coordinate of the upper-left rectangle corner. 
+                x1: X-coordinate of the lower-right rectangle corner. 
+                y1: Y-coordinate of the lower-right rectangle corner. 
+
+            Raises:
+                RuntimeError: If list of color values does not have spectrum()
+                entries.
+        """
+        n = self._cimg.spectrum()
+        if not len(color) == n: 
+            raise RuntimeError('Color should have {} entries'.format(n))
+        self._cimg.draw_rectangle(x0, y0, x1, y1, color)
+        return self
+
+    # ...
+    
 
     def display(self):
         """ Display image into a CImgDisplay window."""

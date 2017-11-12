@@ -1,3 +1,5 @@
+from libcpp.vector cimport vector
+
 cdef class CImg_{T}:
     cdef CImg[{T}] _cimg;
 
@@ -17,7 +19,10 @@ cdef class CImg_{T}:
         cdef char* fn = byte_string
         self._cimg = load_float16[{T}](fn)
 
-
+    def save(self, filename):
+        byte_string = filename.encode('UTF-8')
+        cdef char* fn = byte_string
+        self._cimg.save(fn)
 
     # Operators
 #    def __call__(self, x):
@@ -56,9 +61,10 @@ cdef class CImg_{T}:
         cdef int spectrum = self.spectrum()
         cdef {T}* data = self._cimg.data()
         # For cimg storage format see: http://cimg.eu/reference/group__cimg__storage.html
-        cdef {T}[:,:,:,::1] mem_view = <{T}[:spectrum,:depth,:height,:width]>data
-        return np.asarray(mem_view)
+        return np.asarray(<{T}[:spectrum,:depth,:height,:width]>data)
 
+
+    # Mathmatical functions
     def sqr(self):
         self._cimg.sqr()
         return self
@@ -145,6 +151,13 @@ cdef class CImg_{T}:
 
 
     # ...
+
+    # Value manipulation
+    def fill(self, val):
+        self._cimg.fill(val)
+        return self
+    # ...
+
     def noise(self, sigma, noise_type):
         self._cimg.noise(sigma, noise_type)
         return self
@@ -185,6 +198,27 @@ cdef class CImg_{T}:
 
     def label(self, is_high_connectivity, tolerance):
         self._cimg.label(is_high_connectivity, tolerance)
+        return self
+
+    # Geometric / Spatial Manipulation
+    def resize(self, size_x, size_y, size_z, size_c,
+               interpolation_type, boundary_conditions,
+               centering_x,
+               centering_y,
+               centering_z,
+               centering_c):
+        self._cimg.resize(size_x, size_y, size_z, size_c,
+                          interpolation_type, boundary_conditions,
+                          centering_x,
+                          centering_y,
+                          centering_z,
+                          centering_c)
+        return self
+
+    # Drawing functions
+    def draw_rectangle(self, x0, y0, x1, y1, color):
+        cdef vector[{T}] _color = color
+        self._cimg.draw_rectangle(x0, y0, x1, y1, _color.data())
         return self
 
     cpdef display(self):

@@ -24,6 +24,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& load(const char* const filename)
 #        CImg& load_cimg(const char* const filename, const char axis='z', 
 #                const float align=0)
+        const CImg& save(const char* const filename)
 
         # Operators
         T& operator()(const unsigned int x) 
@@ -44,6 +45,8 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         int spectrum() const
         unsigned long size() const
         T* data()
+
+        # Mathmatical functions
         CImg& sqr()
         CImg& sqrt()
         CImg& exp()
@@ -67,6 +70,9 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& pow(const double p)
         
         # ...
+
+        # Value manipulation
+        CImg& fill(const T& val)
         CImg& noise(const double sigma, const unsigned int noise_type)
         CImg& normalize(const T& min_value, const T& max_value)
         CImg& normalize()
@@ -84,6 +90,56 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& map(const CImg& colormap, 
                   const unsigned int boundary_conditions)
         CImg& label(const bool is_high_connectivity, const float tolerance)
+
+
+        # Geometric / Spatial Manipulation
+        CImg& resize(const int size_x, const int size_y, const int size_z,
+                     const int size_c, const int interpolation_type,
+                     const unsigned int boundary_conditions,
+                     const float centering_x,
+                     const float centering_y,
+                     const float centering_z,
+                     const float centering_c)
+
+        CImg& resize_halfXY()
+        CImg& resize_doubleXY()
+        CImg& resize_tripleXY()
+        CImg& mirror(const char* const axes)
+        CImg& shift(const int delta_x, const int delta_y, const int delta_z,
+                    const int delta_c, const unsigned int boundary_conditions)
+        CImg& permute_axes(const char* const order)
+        CImg& unroll(const char axes)
+        CImg& rotate(const float angle, const unsigned int interpolation,
+                     const unsigned int boundary_conditions)
+        # TODO: warp
+        CImg& crop(const int x0, const int y0, const int z0, const int c0, 
+                   const int x1, const int y1, const int z1, const int c1, 
+                   const unsigned int boundary_conditions)
+                     
+        CImg& autocrop(const T& value, const char* const axes)
+        # ...
+
+        # Filtering / Transforms
+        CImg& correlate(const CImg& kernel, const bool boundary_conditions,
+                        const bool is_normalized)
+
+        CImg& convolve(const CImg& kernel, const bool boundary_conditions,
+                       const bool is_normalized)
+
+        CImg& erode(const CImg& kernel, const bool boundary_conditions,
+                    const bool is_normalized)
+
+        CImg& dilate(const CImg& kernel, const bool boundary_conditions,
+                     const bool is_normalized)
+        # ...
+
+
+        # Drawing functions
+        CImg& draw_rectangle(const int x0, const int y0,
+                             const int x1, const int y1,
+                             const T* const color)
+        # ...
+        
 
 
     # Utility function for loading CImg[T] from a cimg
