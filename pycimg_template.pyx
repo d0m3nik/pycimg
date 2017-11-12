@@ -61,7 +61,9 @@ cdef class CImg_{T}:
         cdef int spectrum = self.spectrum()
         cdef {T}* data = self._cimg.data()
         # For cimg storage format see: http://cimg.eu/reference/group__cimg__storage.html
-        return np.asarray(<{T}[:spectrum,:depth,:height,:width]>data)
+        cdef {T}[:,:,:,::1] mem_view = <{T}[:spectrum,:depth,:height,:width]>data
+        return np.asarray(mem_view)
+    
 
 
     # Mathmatical functions
