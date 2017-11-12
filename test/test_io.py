@@ -8,7 +8,7 @@ class TestIO(unittest.TestCase):
     def test_load(self):
         im = CImg()
         self.assertRaises(RuntimeError, im.load, 'notexistent.jpg')
-        im.load(get_test_iamge())
+        im.load(get_test_image())
         self.assertEqual(im.width(), 640)
         self.assertEqual(im.height(), 426)
         self.assertEqual(im.depth(), 1)
