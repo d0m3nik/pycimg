@@ -1,14 +1,14 @@
 import unittest
 import os
 from datetime import datetime
-from context import CImg
+from context import CImg, get_test_image
 
 class TestIO(unittest.TestCase):
 
     def test_load(self):
         im = CImg()
         self.assertRaises(RuntimeError, im.load, 'notexistent.jpg')
-        im.load('test.jpg')
+        im.load(get_test_iamge())
         self.assertEqual(im.width(), 640)
         self.assertEqual(im.height(), 426)
         self.assertEqual(im.depth(), 1)
@@ -16,7 +16,7 @@ class TestIO(unittest.TestCase):
 
     def test_save(self):
         im = CImg()
-        im.load('test.jpg')
+        im.load(get_test_image())
         for ext in ['.jpg', '.png', '.cimg']:
             filename = datetime.now().isoformat() + ext  
             print(filename)

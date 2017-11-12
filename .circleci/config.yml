@@ -2,10 +2,16 @@ on: 2
 jobs:
   build:
     docker:
-      - image: d0m3nik/cython-primary:0.0.3
+      - image: d0m3nik/cython-primary:0.0.4
 
     working_directory: ~/repo
 
     steps:
       - checkout
       - run: ./build.sh 
+      - run: 
+          command: |
+            nosetests3
+      - store_artifacts:
+          path: test-reports/
+          destination: trl

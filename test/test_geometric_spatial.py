@@ -1,13 +1,13 @@
 import unittest
 import os
 from datetime import datetime
-from context import CImg
+from context import CImg, get_test_image
 
 class TestGeometricSpatial(unittest.TestCase):
 
     def test_resize(self):
         im = CImg()
-        im.load('test.jpg')
+        im.load(get_test_image())
         im.resize(100, 50)
         self.assertEqual(im.width(), 100)
         self.assertEqual(im.height(), 50)
