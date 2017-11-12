@@ -7,7 +7,7 @@ if __name__ == '__main__':
                 ]
         for dtype in dtypes:
             out = code.format(T = dtype)
-            print(out)
+            #print(out)
             outname = 'pycimg_{}.pyx'.format(dtype)
             with open(outname, 'w') as fout:
                 fout.write(out)       
