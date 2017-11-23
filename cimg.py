@@ -66,6 +66,14 @@ class CImg:
         else:
             raise RuntimeError("File '{}' does not exist".format(filename))
 
+    def save_cimg_float16(self, filename):
+        """ Save image to a .cimg file with half precision pixel values.
+
+            Args:
+                filename: Filename of image.
+        """
+        self._cimg.save_cimg_float16(filename)
+
     def save(self, filename):
         """ Save image as a file.
 
@@ -105,6 +113,24 @@ class CImg:
     def asarray(self):
         """ Convert image to a numpy array. """
         return self._cimg.asarray()
+
+    def fromarray(self, arr):
+        """ Convert numpy array to cimg. 
+
+            Args: 
+                arr : numpy array
+
+            Raises:
+                RuntimeError: if array has more than 4 dimensions
+        """
+        ndim = len(arr.shape)
+        if ndim > 4:
+            raise RuntimeError('Cannot convert from array with %d > 4 dimensions' % ndim)
+        self.resize(*list(reversed(arr.shape)))
+        a = self.asarray()
+        a[:] = arr[:]
+#        axes_indices = list(range(ndim-1, -1, -1))
+#        a[:] = arr.transpose(*axes_indices)[:]
 
     def sqr(self):
         """ Compute the square value of each pixel value. """

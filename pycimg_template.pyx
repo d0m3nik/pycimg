@@ -19,6 +19,11 @@ cdef class CImg_{T}:
         cdef char* fn = byte_string
         self._cimg = load_float16[{T}](fn)
 
+    def save_cimg_float16(self, filename):
+        byte_string = filename.encode('UTF-8')
+        cdef char* fn = byte_string
+        save_float16[{T}](self._cimg, fn)
+
     def save(self, filename):
         byte_string = filename.encode('UTF-8')
         cdef char* fn = byte_string

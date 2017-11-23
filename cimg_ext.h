@@ -17,4 +17,11 @@ CImg<T> load_float16(const char* filename)
   return std::move(CImg<T>(im));
 }
 
+template<class T>
+void save_float16(CImg<T> const& im, const char* filename)
+{
+  CImg<half_float::half> im_half(im);
+  im_half.save_cimg(filename);
 }
+
+} // namespace cimg_library 

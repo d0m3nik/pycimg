@@ -144,7 +144,10 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
 
     # Utility function for loading CImg[T] from a cimg
     # file with half precision floats
-    CImg[T] load_float16[T](const char* const filename)
+    CImg[T] load_float16[T](const char* filename)
+    # Utility function for saveing CImg[T] to a cimg file
+    # with half precision floats
+    void save_float16[T](const CImg[T]& im, const char* filename)
 
 
 # The following files are generated from pycimg_template.pyx
