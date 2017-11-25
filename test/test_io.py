@@ -2,7 +2,7 @@ import unittest
 import os
 import numpy as np
 from datetime import datetime
-from context import CImg, get_test_image
+from context import cimg, CImg, get_test_image
 
 class TestIO(unittest.TestCase):
 
@@ -13,10 +13,10 @@ class TestIO(unittest.TestCase):
         im = CImg()
         self.assertRaises(RuntimeError, im.load, 'notexistent.jpg')
         im.load(get_test_image())
-        self.assertEqual(im.width(), 640)
-        self.assertEqual(im.height(), 426)
-        self.assertEqual(im.depth(), 1)
-        self.assertEqual(im.spectrum(), 3)
+        self.assertEqual(im.width, 640)
+        self.assertEqual(im.height, 426)
+        self.assertEqual(im.depth, 1)
+        self.assertEqual(im.spectrum, 3)
 
     def test_save(self):
         im = CImg()

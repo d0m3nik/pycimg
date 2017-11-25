@@ -1,7 +1,7 @@
 from libcpp.vector cimport vector
 
 cdef class CImg_{T}:
-    cdef CImg[{T}] _cimg;
+    cdef CImg[{T}] _cimg
 
     def load(self, filename):
         byte_string = filename.encode('UTF-8')
@@ -29,21 +29,9 @@ cdef class CImg_{T}:
         cdef char* fn = byte_string
         self._cimg.save(fn)
 
-    # Operators
-#    def __call__(self, x):
-#        if isinstance(x, tuple):
-#            if len(x) == 2:
-#                return self._cimg(x[0], x[1])
-#            elif len(x) == 3:
-#                return self._cimg(x[0], x[1], x[2])
-#            elif len(x) == 4:
-#                return self._cimg(x[0], x[1], x[2], x[3])
-#            else:
-#                raise RuntimeError('Element access with >4 dimensions')
-#        return self._cimg(x)
-#
-
+    ############################################################################
     # Instance characteristics
+    ############################################################################
     def width(self):
         return self._cimg.width()
 
@@ -69,9 +57,22 @@ cdef class CImg_{T}:
         cdef {T}[:,:,:,::1] mem_view = <{T}[:spectrum,:depth,:height,:width]>data
         return np.asarray(mem_view)
     
+    def linear_atX(self, fx, y, z, c):
+        return self._cimg.linear_atX(fx, y, z, c)
+
+    def linear_atXY(self, fx, fy, z, c):
+        return self._cimg.linear_atXY(fx, fy, z, c)
+
+    def linear_atXYZ(self, fx, fy, fz, c):
+        return self._cimg.linear_atXYZ(fx, fy, fz, c)
+
+    def linear_atXYZC(self, fx, fy, fz, fc):
+        return self._cimg.linear_atXYZC(fx, fy, fz, fc)
 
 
+    ############################################################################
     # Mathmatical functions
+    ############################################################################
     def sqr(self):
         self._cimg.sqr()
         return self
@@ -207,7 +208,9 @@ cdef class CImg_{T}:
         self._cimg.label(is_high_connectivity, tolerance)
         return self
 
+    ############################################################################
     # Geometric / Spatial Manipulation
+    ############################################################################
     def resize(self, size_x, size_y, size_z, size_c,
                interpolation_type, boundary_conditions,
                centering_x,
@@ -222,7 +225,9 @@ cdef class CImg_{T}:
                           centering_c)
         return self
 
+    ############################################################################
     # Drawing functions
+    ############################################################################
     def draw_rectangle(self, x0, y0, x1, y1, color):
         cdef vector[{T}] _color = color
         self._cimg.draw_rectangle(x0, y0, x1, y1, _color.data())

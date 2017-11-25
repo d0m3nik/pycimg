@@ -45,6 +45,10 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         int spectrum() const
         unsigned long size() const
         T* data()
+        T linear_atX(const float fx, const int y, const int z, const int c) 
+        T linear_atXY(const float fx, const float fy, const int z, const int c)
+        T linear_atXYZ(const float fx, const float fy, const float fz, const int c)
+        T linear_atXYZC(const float fx, const float fy, const float fy, const float fc)
 
         # Mathmatical functions
         CImg& sqr()

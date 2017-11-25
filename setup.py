@@ -1,7 +1,5 @@
-from distutils.core import setup, Extension
+from setuptools import setup, Extension, distutils
 from Cython.Build import cythonize
-import distutils.cmd
-import distutils.log
 
 platform = distutils.sys.platform
 
@@ -10,11 +8,13 @@ extra_link_args = []
 library_dirs = []
 libraries = []
 
-if platform == 'linux':
-    extra_compile_args = ["-std=c++11"]
+if 'linux' in platform:
+    extra_compile_args = ["-std=c++11", "-fPIC"]
     extra_link_args = ["-std=c++11"]
-    library_dirs = ["./thirdparty/zlib-1.2.11/build"]
-    libraries = ["pthread", "X11", "z", "jpeg", "png"]
+    library_dirs = ["./thirdparty/zlib/build", 
+                    "./thirdparty/libjpeg-turbo/build/.libs", 
+                    "./thirdparty/libpng/build" ]
+    libraries = ["pthread", "X11", ":libz.a", ":libjpeg.a", ":libpng.a"]
 
 elif platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
@@ -45,4 +45,22 @@ ext = Extension("pycimg",
         extra_link_args = extra_link_args)
 
 setup(name="pycimg", 
+      version="0.0.1a",
+      description="Python extension for the CImg library",
+      long_description="This package contains a single class CImg"\
+                       "that provides access to the image processing"\
+                       "methods of the C++ CImg library (http://www.cimg.eu).",
+      url="https://github.com/d0m3nik/pycimg",
+      author="Dominik Brugger",
+      license="GPL-3.0",
+      classifiers=[
+              "Development Status :: 3 - Alpha",
+              "Intended Audience :: Developers",
+              "Topic :: Software Development :: Libraries",
+              "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+              "Programming Language :: Python :: 3.4"
+              ],
+      keywords="image processing library",
+      install_requires=["numpy"],
+      python_requires="~=3.5",
       ext_modules=cythonize(ext))

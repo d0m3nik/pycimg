@@ -2,21 +2,66 @@ import numpy as np
 import os.path
 from pycimg import CImg_int8, CImg_int16, CImg_int32, CImg_uint8, CImg_uint16, CImg_uint32, CImg_float32, CImg_float64 
 
+# Supported numeric pixel type 
+int8 = np.int8
+int16 = np.int16
+int32 = np.int32
+uint8 = np.uint8
+uint16 = np.uint16
+uint32 = np.uint32
+float32 = np.float32
+float64 = np.float64
+
+# Interpolation type
+NONE_RAW = -1
+NONE = 0
+NEAREST = 1
+MOVING_AVERAGE = 2
+LINEAR = 3
+GRID = 4
+CUBIC = 5
+LANCZOS = 6
+
+# Boundary condition type
+DIRICHLET = 0
+NEUMANN = 1
+PERIODIC = 2
+MIRROR = 3
+
 class CImg:
     """ CImg is a wrapper class for the CImg library: """
 
-    def __init__(self, dtype=np.float32):
+    def __init__(self, *args, **kwargs):
         """ Create CImg with given data type.
 
-            Supported datatypes are np.int8, np.int16, np.int32,
-            np.uint8, np.uint16, np.uint32, np.float32, and np.float64.
+            Supported datatypes are int8, int16, int32,
+            uint8, uint16, uint32, float32, and float64.
+
+            Examples:
+                1. Create empty image with default type float32
+                im = CImg()
+
+                2. Create image from file.
+                im = CImg("filename.png")
+               
+                3. Create image from numpy array
+                arr = np.zeros((100,2))
+                im = CImg(arr)
+
+                4. Create image of size 100x200 with
+                im = CImg((100, 200), dtype=float32)
 
             Args:
+                Either image filename, numpy array, or image size.
+
+            Keyword arguments:
                 dtype: Data type of CImg.
 
             Raises:
                 RuntimeError: For unsupported data types.
         """
+        dtype = kwargs.get('dtype', float32)
+
         if dtype == np.int8:
             self._cimg = CImg_int8()
         elif dtype == np.int16:
@@ -35,6 +80,19 @@ class CImg:
             self._cimg = CImg_float64()
         else:
             raise RuntimeError("Unknown data type '{}'".format(dtype))
+
+        if len(args) == 1:
+            if isinstance(args[0], str):
+                self.load(args[0])
+            elif isinstance(args[0], np.ndarray):
+                self.fromarray(args[0])
+            elif isinstance(args[0], tuple):
+                self.resize(*args[0], interpolation_type=NONE_RAW)
+            elif isinstance(args[0], int):
+                self.resize(args[0], interpolation_type=NONE_RAW)
+            else:
+                raise RuntimeError("Type of first argument not supported")
+
 
     def load(self, filename):
         """ Load image from a file.
@@ -90,22 +148,32 @@ class CImg:
         self._cimg(x)
 
     # Instance characteristics
+    @property
     def width(self):
         """ Return width of image. """
         return self._cimg.width()
 
+    @property
     def height(self):
         """ Return height of image. """
         return self._cimg.height()
 
+    @property
     def depth(self):
         """ Return depth of image. """
         return self._cimg.depth()
 
+    @property
     def spectrum(self):
         """ Return spectrum (number of channels) of image. """
         return self._cimg.spectrum()
 
+    @property
+    def shape(self):
+        """ Return shape of image data. """
+        return (self.spectrum, self.depth, self.height, self.width)
+
+    @property
     def size(self):
         """ Return the total number of pixel values in the image. """
         return self._cimg.size()
@@ -126,12 +194,78 @@ class CImg:
         ndim = len(arr.shape)
         if ndim > 4:
             raise RuntimeError('Cannot convert from array with %d > 4 dimensions' % ndim)
-        self.resize(*list(reversed(arr.shape)))
+        self.resize(*list(reversed(arr.shape)), interpolation_type=NONE_RAW)
         a = self.asarray()
         a[:] = arr[:]
-#        axes_indices = list(range(ndim-1, -1, -1))
-#        a[:] = arr.transpose(*axes_indices)[:]
 
+    def linear_atX(self, fx, y=0, z=0, c=0):
+        """ Return pixel value, using linear interpolation 
+            and Neumann boundary conditions for the X-coordinate.
+            Warning: No bounds check for y, z, and c. They must be
+            within image bounds.
+
+            Args:
+                fx:  X-coordinate of the pixel value (float-valued).
+                y:   Y-coordinate of the pixel value.
+                z:   Z-coordinate of the pixel value.
+                c:   C-coordinate of the pixel value.
+
+            Returns: a linearly-interpolated pixel value of the image 
+                     instance located at (fx,y,z,c), or the value of the 
+                     nearest pixel location in the image instance in case 
+                     of out-of-bounds access along the X-axis.
+        """
+        return self._cimg.linear_atX(fx, y, z, c)
+
+    def linear_atXY(self, fx, fy, z=0, c=0):
+        """ Return pixel value, using linear interpolation 
+            and Neumann boundary conditions for the X and Y-coordinates.
+
+            Args:
+                fx:  X-coordinate of the pixel value (float-valued).
+                fy:  Y-coordinate of the pixel value (float-valued).
+                z:   Z-coordinate of the pixel value.
+                c:   C-coordinate of the pixel value.
+
+            Returns: a linearly-interpolated pixel value of the image 
+                     instance located at (fx,fy,z,c).
+        """ 
+        return self._cimg.linear_atXY(fx, fy, z, c)
+
+    def linear_atXYZ(self, fx, fy, fz, c=0):
+        """ Return pixel value, using linear interpolation 
+            and Neumann boundary conditions for the X,Y and Z-coordinates.
+
+            Args:
+                fx:  X-coordinate of the pixel value (float-valued).
+                fy:  Y-coordinate of the pixel value (float-valued).
+                fz:  Z-coordinate of the pixel value (float-valued).
+                c:   C-coordinate of the pixel value.
+
+            Returns: a linearly-interpolated pixel value of the image 
+                     instance located at (fx,fy,fz,c).
+        """ 
+
+        return self._cimg.linear_atXYZ(fx, fy, fz, c)
+
+    def linear_atXYZC(self, fx, fy, fz, fc):
+        """ Return pixel value, using linear interpolation 
+            and Neumann boundary conditions for the X,Y,Z and C-coordinates.
+
+            Args:
+                fx:  X-coordinate of the pixel value (float-valued).
+                fy:  Y-coordinate of the pixel value (float-valued).
+                fz:  Z-coordinate of the pixel value (float-valued).
+                fc:  C-coordinate of the pixel value (float-valued).
+
+            Returns: a linearly-interpolated pixel value of the image 
+                     instance located at (fx,fy,fz,fc).
+        """ 
+        return self._cimg.linear_atXYZC(fx, fy, fz, fc)
+    
+    ###########################################################################
+    # Mathmatical functions
+    ###########################################################################
     def sqr(self):
         """ Compute the square value of each pixel value. """
         self._cimg.sqr()
@@ -388,10 +522,11 @@ class CImg:
         self._cimg.label(is_high_connectivity, tolerance)
         return self
 
+    ###########################################################################
     # Geometric / Spatial Manipulation
-
+    ###########################################################################
     def resize(self, size_x, size_y=-100, size_z=-100, size_c=-100,
-               interpolation_type=1, boundary_conditions=0,
+               interpolation_type=NEAREST, boundary_conditions=DIRICHLET,
                centering_x=0,
                centering_y=0,
                centering_z=0,
@@ -404,21 +539,22 @@ class CImg:
                 size_z: Number of slices (new size along the Z-axis).
                 size_c: Number of vector-channels (new size along the C-axis).
                 interpolation_type:  Method of interpolation:
-                    -1 = no interpolation: raw memory resizing.
-                    0 = no interpolation: additional space is filled 
+                    NONE_RAW = no interpolation: raw memory resizing.
+                    NONE = no interpolation: additional space is filled 
                                           according to boundary_conditions.
-                    1 = nearest-neighbor interpolation.
-                    2 = moving average interpolation.
-                    3 = linear interpolation.
-                    4 = grid interpolation.
-                    5 = cubic interpolation.
-                    6 = lanczos interpolation.
+                    NEAREST = nearest-neighbor interpolation.
+                    MOVING_AVERAGE = moving average interpolation.
+                    LINEAR = linear interpolation.
+                    GRID = grid interpolation.
+                    CUBIC = cubic interpolation.
+                    LANCZOS = lanczos interpolation.
                 boundary_conditions: Type of boundary conditions used if 
                                      necessary.
-                centering_x: Set centering type (only if interpolation_type=0).
-                centering_y: Set centering type (only if interpolation_type=0).
-                centering_z: Set centering type (only if interpolation_type=0).
-                centering_c: Set centering type (only if interpolation_type=0). 
+                    DIRICHLET | NEUMANN | PERIODIC | MIRROR
+                centering_x: Set centering type (only if interpolation_type=NONE).
+                centering_y: Set centering type (only if interpolation_type=NONE).
+                centering_z: Set centering type (only if interpolation_type=NONE).
+                centering_c: Set centering type (only if interpolation_type=NONE). 
         """
         self._cimg.resize(size_x, size_y, size_z, size_c, 
                           interpolation_type, boundary_conditions,
@@ -430,8 +566,9 @@ class CImg:
 
 
 
+    ###########################################################################
     # Drawing functions
-
+    ###########################################################################
     def draw_rectangle(self, x0, y0, x1, y1, color):
         """ Draw a filled 2d rectangle. 
 

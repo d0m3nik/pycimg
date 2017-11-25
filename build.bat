@@ -1,4 +1,4 @@
-set PYTHON=python
+set PYTHON_EXE=%PYTHON%/python.exe
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 
@@ -33,7 +33,11 @@ popd
 popd
 
 :: Generate .pyx files
-%PYTHON% generate.py 
+%PYTHON_EXE% generate.py 
 
 :: Build extension
-%PYTHON% setup.py build_ext --inplace
+::%PYTHON_EXE% setup.py build_ext --inplace
+
+:: Build wheel package
+%PYTHON_EXE% setup.py bdist_wheel 
+
