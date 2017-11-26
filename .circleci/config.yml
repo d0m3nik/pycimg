@@ -13,8 +13,8 @@ jobs:
           path: /tmp/dist
           destination: dist 
       - store_artifacts:
-          path: /tmp/test-reports
-          destination: test-reports 
+          path: /tmp/test-report
+          destination: test-report 
       - store_artifacts:
           path: /tmp/cover
           destination: cover

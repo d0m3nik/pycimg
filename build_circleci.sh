@@ -6,13 +6,9 @@ git submodule update --init --recursive
 # Build thirdparty
 ./build_thirdparty.sh
 
-#PYTHON_VERSIONS="cp27-cp27m cp27-cp27mu cp33-cp33m cp34-cp34m cp35-cp35m cp36-cp36m" 
-mkdir /tmp/test-reports
-mkdir /tmp/cover
-PYTHON_VERSIONS="cp35-cp35m" 
-for PYTHON_VERSION in PYTHON_VERSIONS; do
-  PYTHON="/opt/local/$PYTHON_VERSION/bin/python"
-  PIP="/opt/local/$PYTHON_VERSION/bin/pip"
+for PY_VER in `ls /opt/python/cp* | grep -E "cp2|3.*"`; do 
+  PYTHON="/opt/local/$PY_VER/bin/python"
+  PIP="/opt/local/$PY_VER/bin/pip"
 
   echo "Building for python version `$PYTHON --version`"
 
@@ -26,11 +22,12 @@ for PYTHON_VERSION in PYTHON_VERSIONS; do
   cp -r dist /tmp
 
   # Run tests
-  mkdir test-reports
+  mkdir test-results
   mkdir cover
   $PYTHON setup.py nosetests
+  COVERALLS_REPO_TOKEN=VcjHJa4uHN87FO2LAn1Sg5yMH0zB4EXj0 coveralls
   mkdir /tmp/$PYTHON_VERSION
-  cp -r test-reports /tmp/$PYTHON_VERSION
+  cp -r test-results /tmp/$PYTHON_VERSION
   cp -r cover /tmp/$PYTHON_VERSION
 
 done
