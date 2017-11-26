@@ -2,16 +2,13 @@ on: 2
 jobs:
   build:
     docker:
-      - image: 
-        d0m3nik/cython-primary:0.0.6
+      - image: d0m3nik/cython-primary:0.0.6
 
     working_directory: ~/repo
 
     steps:
       - checkout
-      - run: 
-          command: |
-            ./build_circleci.sh 
+      - run: ./build_circleci.sh 
       - store_artifacts:
           path: /tmp/dist
           destination: dist 
