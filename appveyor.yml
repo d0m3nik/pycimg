@@ -33,7 +33,7 @@ install:
   - curl -o "c:\yasm\yasm.exe" http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe
   - yasm --version
   # Python packages for building and test
-  - "%PYTHON%\\python.exe -m pip install cython numpy wheel nose"
+  - "%PYTHON%\\python.exe -m pip -r requirements_dev.txt"
 
 build_script: #off
   # Build thirdparty libs and bdist_wheel 

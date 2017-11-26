@@ -45,7 +45,7 @@ ext = Extension("pycimg",
         extra_link_args = extra_link_args)
 
 setup(name="pycimg", 
-      version="0.0.1a",
+      version="0.0.1a0",
       description="Python extension for the CImg library",
       long_description="This package contains a single class CImg"\
                        "that provides access to the image processing"\

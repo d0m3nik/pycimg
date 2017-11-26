@@ -1,17 +1,20 @@
------------------
+---
 
 | **`Linux`** | **`Windows`** |
 |-------------|---------------| 
-| [![CircleCI](https://circleci.com/gh/d0m3nik/pycimg.svg?style=svg)](https://circleci.com/gh/d0m3nik/pycimg) |  |
+| [![CircleCI](https://circleci.com/gh/d0m3nik/pycimg.svg?style=svg)](https://circleci.com/gh/d0m3nik/pycimg) | [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/d0m3nik/pycimg?branch=master&svg=true)](https://ci.appveyor.com/project/d0m3nik/pycimg) |
 
-**pycimg** is a python extension for the [CImg library](http://www.cimg.eu)
+**pycimg** is a python extension for the [CImg library](http://www.cimg.eu).
 
 ## TODO
+- [] Build package with multilinux image
+- [] Setup PyPI distribution
+- [] Coveralls status
+- [] Add more unit tests
 - [x] Add interpolation methods linearAtXXX
 - [x] Unit test for interpolation methods
-- [] AppVeyor windows build
+- [x] AppVeyor windows build
 - [x] Package as python wheel
-- [] Build package with multilinux image
 - [x] Make width, height etc. properties
 - [x] Constructor should be more useful, accepting sizes, np.array
 - [x] Introduce constants cimg.float32, cimg.linear for types, interpolation etc
