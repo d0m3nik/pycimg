@@ -6,9 +6,9 @@ git submodule update --init --recursive
 # Build thirdparty
 ./build_thirdparty.sh
 
-for PY_VER in `ls /opt/python/cp* | grep -E "cp2|3.*"`; do 
-  PYTHON="/opt/local/$PY_VER/bin/python"
-  PIP="/opt/local/$PY_VER/bin/pip"
+for PY_VER in `ls -d /opt/python/cp* | grep -E "cp2|3.*"`; do 
+  PYTHON="$PY_VER/bin/python"
+  PIP="$PY_VER/bin/pip"
 
   echo "Building for python version `$PYTHON --version`"
 
