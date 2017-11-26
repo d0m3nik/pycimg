@@ -10,7 +10,7 @@ git submodule update --init --recursive
 mkdir /tmp/test-reports
 mkdir /tmp/cover
 PYTHON_VERSIONS="cp35-cp35m" 
-for PYTHON_VERSION in PYTHON_VERSIONS do
+for PYTHON_VERSION in PYTHON_VERSIONS; do
   PYTHON="/opt/local/$PYTHON_VERSION/bin/python"
   PIP="/opt/local/$PYTHON_VERSION/bin/pip"
 
@@ -26,10 +26,11 @@ for PYTHON_VERSION in PYTHON_VERSIONS do
   cp -r dist /tmp
 
   # Run tests
+  mkdir test-reports
+  mkdir cover
   $PYTHON setup.py nosetests
-  mkdir /tmp/test-reports/$PYTHON_VERSION
-  mkdir /tmp/cover/$PYTHON_VERSION
-  cp -r test-reports /tmp/test-reports/$PYTHON_VERSION
-  cp -r cover /tmp/cover/$PYTHON_VERSION
+  mkdir /tmp/$PYTHON_VERSION
+  cp -r test-reports /tmp/$PYTHON_VERSION
+  cp -r cover /tmp/$PYTHON_VERSION
 
 done

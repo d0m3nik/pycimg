@@ -40,6 +40,8 @@ build_script: #off
   - "build.bat"
 
 test_script:
+  - mkdir test-reports
+  - mkdir cover
   - "%PYTHON%\\python.exe setup.py nosetests"
 
   # after_test:
