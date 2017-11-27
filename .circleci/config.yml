@@ -14,7 +14,7 @@ jobs:
           destination: dist 
       - store_artifacts:
           path: /tmp/test-report
-          destination: test-report 
+          destination: test-results 
       - store_artifacts:
           path: /tmp/cover
           destination: cover
