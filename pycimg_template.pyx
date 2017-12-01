@@ -47,6 +47,34 @@ cdef class CImg_{T}:
     def size(self):
         return self._cimg.size()
 
+    def fromarray(self, arr):
+        ndim = len(arr.shape)
+        if ndim > 4:
+            raise RuntimeError('Cannot convert from array with %d > 4 dimensions' % ndim)
+        x = 1
+        y = 1
+        z = 1
+        c = 1
+        shape = list(reversed(arr.shape))
+        if len(shape) == 1:
+            x = shape[0]
+        elif len(shape) == 2:
+            x, y = shape
+        elif len(shape) == 3:
+            x, y, z = shape
+        elif len(shape) == 4:
+            x, y, z, c = shape
+        self.resize(x, y, z, c, interpolation_type=-1,
+                          boundary_conditions=0,
+                          centering_x=0,
+                          centering_y=0,
+                          centering_z=0,
+                          centering_c=0
+                          )
+        a = self.asarray()
+        a[:] = arr[:]
+
+
     def asarray(self):
         cdef int width = self.width()
         cdef int height = self.height()
@@ -228,10 +256,32 @@ cdef class CImg_{T}:
     ############################################################################
     # Drawing functions
     ############################################################################
-    def draw_rectangle(self, x0, y0, x1, y1, color):
+    def draw_rectangle(self, x0, y0, x1, y1, color, opacity):
         cdef vector[{T}] _color = color
-        self._cimg.draw_rectangle(x0, y0, x1, y1, _color.data())
+        self._cimg.draw_rectangle(x0, y0, x1, y1, _color.data(), opacity)
         return self
+
+    def draw_polygon(self, points, color, opacity):
+       cdef vector[{T}] _color = color
+       cdef CImg_{T} _points = CImg_{T}()
+       _points.fromarray(points)
+       self._cimg.draw_polygon(_points._cimg, _color.data(), opacity)
+
+    def draw_circle(self, x0, y0, radius, color, opacity):
+       cdef vector[{T}] _color = color
+       self._cimg.draw_circle(x0, y0, radius, _color.data(), opacity)
+        
+
+    # def draw_polygon(self, points, color, opacity):
+    #     cdef vector[{T}] _color = color
+    #     cdef int n = len(points)
+    #     cdef CImg_{T} _cp = CImg_{T}()
+    #     _cp.resize(n, 2, 1, 1, 0, 1, 0, 0, 0, 0)
+    #     _points = _cp.asarray().transpose((3,2,1,0)).squeeze()
+    #     for i in range(n):
+    #         _points[i,0] = points[i][0]
+    #         _points[i,1] = points[i][1]
+    #     self._cimg.draw_polygon(_cp._cimg, _color.data(), opacity)
 
     cpdef display(self):
         self._cimg.display()

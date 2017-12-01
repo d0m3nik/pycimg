@@ -17,9 +17,13 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
 
 
     cdef cppclass CImg[T]:
-        # Constructors
+        # Constructors / Instance Management
         CImg() except+
         CImg(const char* const filename) except +
+        CImg(const unsigned int x,
+             const unsigned int y,
+             const unsigned int z,
+             const unsigned int c) except +
 
         CImg& load(const char* const filename)
 #        CImg& load_cimg(const char* const filename, const char axis='z', 
@@ -27,13 +31,6 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         const CImg& save(const char* const filename)
 
         # Operators
-        T& operator()(const unsigned int x) 
-        T& operator()(const unsigned int x, const unsigned int y) 
-        T& operator()(const unsigned int x, const unsigned int y, 
-                const unsigned int z) 
-        T& operator()(const unsigned int x, const unsigned int y, 
-                const unsigned int z, const unsigned int c) 
-
         CImg& operator+(const T value)
 
         const CImg& display() except + 
@@ -45,6 +42,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         int spectrum() const
         unsigned long size() const
         T* data()
+        T& atX(const int x, const int y, const int z, const int c)
         T linear_atX(const float fx, const int y, const int z, const int c) 
         T linear_atXY(const float fx, const float fy, const int z, const int c)
         T linear_atXYZ(const float fx, const float fy, const float fz, const int c)
@@ -141,14 +139,22 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         # Drawing functions
         CImg& draw_rectangle(const int x0, const int y0,
                              const int x1, const int y1,
-                             const T* const color)
+                             const T* const color, const float opacity)
         # ...
+        CImg& draw_polygon(const CImg& points, const T* const color, const float opacity)
+        # draw_ellipse
+        CImg& draw_circle(const int x0,
+                          const int y0,
+                          int radius,
+                          const T* const color,
+                          const float opacity)
         
 
 
     # Utility function for loading CImg[T] from a cimg
     # file with half precision floats
     CImg[T] load_float16[T](const char* filename)
+
     # Utility function for saveing CImg[T] to a cimg file
     # with half precision floats
     void save_float16[T](const CImg[T]& im, const char* filename)

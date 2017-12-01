@@ -85,7 +85,7 @@ class CImg:
             if isinstance(args[0], str):
                 self.load(args[0])
             elif isinstance(args[0], np.ndarray):
-                self.fromarray(args[0])
+                self._cimg.fromarray(args[0])
             elif isinstance(args[0], tuple):
                 self.resize(*args[0], interpolation_type=NONE_RAW)
             elif isinstance(args[0], int):
@@ -143,11 +143,9 @@ class CImg:
         """
         self._cimg.save(filename)
 
-    # Operators
-    def __call__(self, x):
-        self._cimg(x)
-
+    ###########################################################################
     # Instance characteristics
+    ###########################################################################
     @property
     def width(self):
         """ Return width of image. """
@@ -191,12 +189,8 @@ class CImg:
             Raises:
                 RuntimeError: if array has more than 4 dimensions
         """
-        ndim = len(arr.shape)
-        if ndim > 4:
-            raise RuntimeError('Cannot convert from array with %d > 4 dimensions' % ndim)
-        self.resize(*list(reversed(arr.shape)), interpolation_type=NONE_RAW)
-        a = self.asarray()
-        a[:] = arr[:]
+        self._cimg.fromarray(arr)
+        return self
 
     def linear_atX(self, fx, y=0, z=0, c=0):
         """ Return pixel value, using linear interpolation 
@@ -569,7 +563,15 @@ class CImg:
     ###########################################################################
     # Drawing functions
     ###########################################################################
-    def draw_rectangle(self, x0, y0, x1, y1, color):
+
+    def _check_color(self, color):
+        """ Raises a RuntimeError if color does not have the correct 
+            number of entries."""
+        n = self._cimg.spectrum()
+        if not len(color) == n: 
+            raise RuntimeError('Color should have {} entries'.format(n))
+
+    def draw_rectangle(self, x0, y0, x1, y1, color, opacity=1):
         """ Draw a filled 2d rectangle. 
 
             Args:
@@ -577,18 +579,27 @@ class CImg:
                 y0: Y-coordinate of the upper-left rectangle corner. 
                 x1: X-coordinate of the lower-right rectangle corner. 
                 y1: Y-coordinate of the lower-right rectangle corner. 
+                color: List of color value with spectrum() entries.
+                opacity: Drawing opacity.
 
             Raises:
                 RuntimeError: If list of color values does not have spectrum()
                 entries.
         """
-        n = self._cimg.spectrum()
-        if not len(color) == n: 
-            raise RuntimeError('Color should have {} entries'.format(n))
-        self._cimg.draw_rectangle(x0, y0, x1, y1, color)
+        self._check_color(color)
+        self._cimg.draw_rectangle(x0, y0, x1, y1, color, opacity)
         return self
 
     # ...
+    def draw_polygon(self, points, color, opacity=1):
+        self._check_color(color)
+        self._cimg.draw_polygon( points, color, opacity)
+        return self
+
+    def draw_circle(self, x0, y0, radius, color, opacity=1):
+       self._check_color(color)
+       self._cimg.draw_circle(x0, y0, radius, color, opacity)
+       return self
     
 
     def display(self):
