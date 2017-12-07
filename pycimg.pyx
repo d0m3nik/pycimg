@@ -19,19 +19,49 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
     cdef cppclass CImg[T]:
         # Constructors / Instance Management
         CImg() except+
+
         CImg(const char* const filename) except +
+
         CImg(const unsigned int x,
              const unsigned int y,
              const unsigned int z,
              const unsigned int c) except +
 
-        CImg& load(const char* const filename)
-#        CImg& load_cimg(const char* const filename, const char axis='z', 
-#                const float align=0)
-        const CImg& save(const char* const filename)
+        CImg& load(const char* const filename) except +
+        CImg& load_bmp(const char* const filename) except +
+        CImg& load_jpeg(const char* const filename) except +
+        CImg& load_png(const char* const filename,
+                       unsigned int* const bits_per_pixel) except +
+        CImg& load_tiff(const char* const filename,
+                        const unsigned int first_frame,
+                        const unsigned int last_frame,
+                        const unsigned int step_frame,
+                        float* const voxel_size,
+                        CImg* const description) except +
+        CImg& load_cimg(const char* const filename, 
+                        const char axis, 
+                        const float align) except +
+
+        const CImg& save(const char* const filename,
+                         const int number,
+                         const unsigned int digits) except +
+        CImg& save_bmp(const char* const filename) except +
+        CImg& save_jpeg(const char* const filename,
+                        const unsigned int quality) except +
+        CImg& save_png(const char* const filename,
+                       const unsigned int bytes_per_pixel) except +
+        CImg& save_tiff(const char* const filename,
+                        const unsigned int compression_type,
+                        const float* const voxel_size,
+                        const char* const description,
+                        const bool use_bigtiff) except +
+        CImg& save_cimg(const char* const filename, 
+                        const bool is_compressed) except +
 
         # Operators
         CImg& operator+(const T value)
+        bool operator==(const CImg& img)
+        bool operator!=(const CImg& img)
 
         const CImg& display() except + 
 
@@ -42,7 +72,6 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         int spectrum() const
         unsigned long size() const
         T* data()
-        T& atX(const int x, const int y, const int z, const int c)
         T linear_atX(const float fx, const int y, const int z, const int c) 
         T linear_atXY(const float fx, const float fy, const int z, const int c)
         T linear_atXYZ(const float fx, const float fy, const float fz, const int c)
@@ -70,33 +99,60 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& mul(const CImg& img)
         CImg& div(const CImg& img)
         CImg& pow(const double p)
-        
         # ...
+        T& min_max(T& max_val)
+        T& max_min(T& min_val)
+        T kth_smallest(const unsigned long k)
+        double variance(const unsigned int variance_method)
+        double variance_mean(const unsigned int variance_method,
+                             T& mean)
+        double variance_noise(const unsigned int variance_method)
+        double MSE(const CImg& img)
+        double PSNR(const CImg& img, 
+                    const double max_value)
+        # eval ...
+        # Vector / Matrix Operations 
+        double magnitude(const int magnitude_type)
+        double dot(const CImg& img)
 
-        # Value manipulation
+        # Value Manipulation
         CImg& fill(const T& val)
-        CImg& noise(const double sigma, const unsigned int noise_type)
-        CImg& normalize(const T& min_value, const T& max_value)
+        CImg& invert_endianness()
+        CImg& rand(const T& val_min, const T& val_max)
+        CImg& round(const double y, const int rounding_type)
+        CImg& noise(const double sigma,
+                    const unsigned int noise_type)
+        CImg& normalize(const T& min_value,
+                        const T& max_value)
         CImg& normalize()
         CImg& norm(const int norm_type)
-        CImg& cut(const T& min_value, const T& max_value)
-        CImg& quantize(const unsigned int nb_levels, const bool keep_range)
-        CImg& threshold(const T& value, const bool soft_threshold, 
+        CImg& cut(const T& min_value,
+                  const T& max_value)
+        CImg& quantize(const unsigned int nb_levels,
+                       const bool keep_range)
+        CImg& threshold(const T& value,
+                        const bool soft_threshold, 
                         const bool strict_threshold)
-        CImg& histogram(const unsigned int nb_levels, const T& min_value,
+        CImg& histogram(const unsigned int nb_levels,
+                        const T& min_value,
                         const T& max_value)
-        CImg& equalize(const unsigned int nb_levels, const T& min_value,
+        CImg& equalize(const unsigned int nb_levels,
+                       const T& min_value,
                        const T& max_value)
-        CImg& index(const CImg& colormap, const float dithering, 
+        CImg& index(const CImg& colormap,
+                    const float dithering, 
                     const bool map_indexes)
         CImg& map(const CImg& colormap, 
                   const unsigned int boundary_conditions)
-        CImg& label(const bool is_high_connectivity, const float tolerance)
-
+        CImg& label(const bool is_high_connectivity,
+                    const float tolerance)
 
         # Geometric / Spatial Manipulation
-        CImg& resize(const int size_x, const int size_y, const int size_z,
-                     const int size_c, const int interpolation_type,
+        CImg& resize(const int size_x, 
+                     const int size_y,
+                     const int size_z,
+                     const int size_c,
+                     const int interpolation_type,
                      const unsigned int boundary_conditions,
                      const float centering_x,
                      const float centering_y,
@@ -107,41 +163,70 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& resize_doubleXY()
         CImg& resize_tripleXY()
         CImg& mirror(const char* const axes)
-        CImg& shift(const int delta_x, const int delta_y, const int delta_z,
-                    const int delta_c, const unsigned int boundary_conditions)
+        CImg& shift(const int delta_x,
+                    const int delta_y,
+                    const int delta_z,
+                    const int delta_c,
+                    const unsigned int boundary_conditions)
         CImg& permute_axes(const char* const order)
         CImg& unroll(const char axes)
-        CImg& rotate(const float angle, const unsigned int interpolation,
+        CImg& rotate(const float angle,
+                     const unsigned int interpolation,
                      const unsigned int boundary_conditions)
         # TODO: warp
-        CImg& crop(const int x0, const int y0, const int z0, const int c0, 
-                   const int x1, const int y1, const int z1, const int c1, 
+        CImg& crop(const int x0,
+                   const int y0,
+                   const int z0,
+                   const int c0, 
+                   const int x1,
+                   const int y1,
+                   const int z1,
+                   const int c1, 
                    const unsigned int boundary_conditions)
                      
-        CImg& autocrop(const T& value, const char* const axes)
+        CImg& autocrop(const T* const color, 
+                       const char* const axes)
         # ...
 
         # Filtering / Transforms
-        CImg& correlate(const CImg& kernel, const bool boundary_conditions,
+        CImg& correlate(const CImg& kernel,
+                        const bool boundary_conditions,
                         const bool is_normalized)
 
-        CImg& convolve(const CImg& kernel, const bool boundary_conditions,
+        CImg& convolve(const CImg& kernel,
+                       const bool boundary_conditions,
                        const bool is_normalized)
 
-        CImg& erode(const CImg& kernel, const bool boundary_conditions,
+        CImg& erode(const CImg& kernel,
+                    const bool boundary_conditions,
                     const bool is_normalized)
 
-        CImg& dilate(const CImg& kernel, const bool boundary_conditions,
+        CImg& dilate(const CImg& kernel,
+                     const bool boundary_conditions,
                      const bool is_normalized)
         # ...
 
 
         # Drawing functions
-        CImg& draw_rectangle(const int x0, const int y0,
-                             const int x1, const int y1,
-                             const T* const color, const float opacity)
+        CImg& draw_triangle(const int x0, 
+                            const int y0,
+                            const int x1, 
+                            const int y1,
+                            const int x2, 
+                            const int y2,
+                            const T* const color, 
+                            const float opacity)
+
+        CImg& draw_rectangle(const int x0, 
+                             const int y0,
+                             const int x1, 
+                             const int y1,
+                             const T* const color, 
+                             const float opacity)
         # ...
-        CImg& draw_polygon(const CImg& points, const T* const color, const float opacity)
+        CImg& draw_polygon(const CImg& points, 
+                           const T* const color,
+                           const float opacity)
         # draw_ellipse
         CImg& draw_circle(const int x0,
                           const int y0,

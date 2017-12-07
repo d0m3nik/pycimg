@@ -1,6 +1,7 @@
 import numpy as np
+import numbers
 import os.path
-from pycimg import CImg_int8, CImg_int16, CImg_int32, CImg_uint8, CImg_uint16, CImg_uint32, CImg_float32, CImg_float64 
+from pycimg import CImg_int8, CImg_int16, CImg_int32, CImg_uint8, CImg_uint16, CImg_uint32, CImg_float32, CImg_float64
 
 # Supported numeric pixel type 
 int8 = np.int8
@@ -27,6 +28,41 @@ DIRICHLET = 0
 NEUMANN = 1
 PERIODIC = 2
 MIRROR = 3
+
+# Variance method
+SECOND_MOMENT = 0
+BEST_UNBIASED = 1
+LEAST_MEDIAN_SQ = 2
+LEAST_TRIMMED_SQ = 3
+
+# Norm type
+LINF_NORM = -1
+L0_NORM = 0
+L1_NORM = 1
+L2_NORM = 2
+
+# Rounding type
+R_BACKWARD = -1
+R_NEAREST = 0
+R_FORWARD = 1
+
+# Noise type
+GAUSSIAN = 0
+UNIFORM = 1
+SALT_AND_PEPPER = 2
+POISSON = 3
+RICIAN = 4
+
+# Compression type
+C_NONE = 0
+C_LZW = 1
+C_JPEG = 2
+
+# Compression type
+C_NONE = 0
+C_LZW = 1
+C_JPEG = 2
+
 
 class CImg:
     """ CImg is a wrapper class for the CImg library: """
@@ -93,22 +129,179 @@ class CImg:
             else:
                 raise RuntimeError("Type of first argument not supported")
 
+    def __eq__(self, img):
+        return self._cimg._equal(img._cimg)
+
+    def __neq__(self, img):
+        return self._cimg._not_equal(img._cimg)
+
+    def __repr__(self):
+        return 'CImg(' + repr(self.asarray()) + ')'
+
+    def __str__(self):
+        return "%s %5d\n%s %5d\n%s %5d\n%s %5d\n%s\n%s" % \
+                ("height:  ", self.height,
+                 "width:   ", self.width,
+                 "depth:   ", self.depth,
+                 "spectrum:", self.spectrum,
+                 "data:    ", self.asarray())
 
     def load(self, filename):
         """ Load image from a file.
-            
-            Args: 
+
+            Args:
                 filename: Filename of image.
             Raises:
                 RuntimeError: If file does not exist.
         """
-        if os.path.isfile(filename): 
+        if os.path.isfile(filename):
             self._cimg.load(filename)
         else:
             raise RuntimeError("File '{}' does not exist".format(filename))
 
-#    def load_cimg(self, filename, axis='z', align=0):
-#        self._cimg.load_cimg(filename, axis, align)
+    def load_bmp(self, filename):
+        """ Load image from a BMP file.
+
+            Args:
+                filename: Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+        """
+        if os.path.isfile(filename):
+            self._cimg.load_bmp(filename)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
+
+
+    def load_jpeg(self, filename):
+        """ Load image from a JPEG file.
+
+            Args:
+                filename: Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+        """
+        if os.path.isfile(filename):
+            self._cimg.load_jpeg(filename)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
+
+    def load_png(self, filename):
+        """ Load image from a PNG file.
+
+            Args:
+                filename: Filename of image.
+            Returns:
+                Bits per pixel
+            Raises:
+                RuntimeError: If file does not exist.
+        """
+        if os.path.isfile(filename):
+            return self._cimg.load_png(filename)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
+
+    def load_tiff(self, filename, first_frame=0, last_frame=0xFFFFFFFF, step_frame=1):
+        """ Load image from a TIFF file.
+
+            Args:
+                filename: Filename of image.
+                first_frame: First frame to read (for multi-pages tiff).
+                last_frame: Last frame to read (for multi-pages tiff).
+                step_frame: Step value of frame reading.
+            Returns:
+                Voxel size, as stored in the filename. 
+            Raises:
+                RuntimeError: If file does not exist.
+        """
+        if os.path.isfile(filename):
+            return self._cimg.load_tiff(filename, first_frame, last_frame, step_frame)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
+
+
+    def load_cimg(self, filename, axis='z', align=0):
+        """ Load image from a .cimg[z] file.
+
+            Args:
+                filename: Filename of image.
+                axis: Appending axis, if file contains multiple images. 
+                      Can be { 'x' | 'y' | 'z' | 'c' }.
+                align: Appending alignment.
+            Raises:
+                RuntimeError: If file does not exist or axis is invalid.
+        """
+        if not axis in "xyzc":
+            raise RuntimeError("Invalid axis.")
+        if os.path.isfile(filename):
+            return self._cimg.load_cimg(filename, axis, align)
+        else:
+            raise RuntimeError("File '{}' does not exist".format(filename))
+
+    def save(self, filename, number=-1, digits=6):
+        """ Save image as a file.
+
+            The used file format is defined by the file extension
+            in the filename.
+
+            Args:
+                filename: Filneame of image.
+                number: When positive, represents an index added to the filename.
+                        Otherwise, no number is added.
+                digits: Number of digits used for adding the number to the filename.
+        """
+        self._cimg.save(filename, number, digits)
+
+    def save_bmp(self, filename):
+        """ Save image as a BMP file.
+
+            Args:
+                filename: Filename of image.
+        """
+        self._cimg.save_bmp(filename)
+
+    def save_jpeg(self, filename, quality=100):
+        """ Save image as a JPEG file.
+
+            Args:
+                filename: Filename of image.
+                quality: Image quality (in %).
+        """
+        self._cimg.save_jpeg(filename, quality)
+
+    def save_png(self, filename, bytes_per_pixel=0):
+        """ Save image as a PNG file.
+
+            Args:
+                filename: Filename of image.
+                bytes_per_pixel: Force the number of bytes per pixels for
+                                 saving, when possible.
+        """
+        self._cimg.save_png(filename, bytes_per_pixel)
+
+    def save_tiff(self, filename, compression_type=C_NONE, voxel_size=0,
+                  description="", use_bigtiff=True):
+        """ Save image as a TIFF file.
+
+            Args:
+                filename: Filename of image.
+                compression_type:    Type of data compression. 
+                    Can be: C_NONE, C_LZW, C_JPEG.
+                voxel_size: Voxel size, to be stored in the filename.
+                description: Description, to be stored in the filename.
+                use_bigtiff: Allow to save big tiff files (>4Gb).
+        """
+        self._cimg.save_tiff(filename, compression_type, voxel_size,
+                             description, use_bigtiff)
+
+    def save_cimg(self, filename, is_compressed=False):
+        """ Save image as a .cimg file.
+
+            Args:
+                filename: Filename of image.
+                is_compressed: Tells if the file contains compressed image data.
+        """
+        self._cimg.save_cimg(filename, is_compressed)
 
     def load_cimg_float16(self, filename):
         """ Load image from a .cimg file with half precision
@@ -131,17 +324,6 @@ class CImg:
                 filename: Filename of image.
         """
         self._cimg.save_cimg_float16(filename)
-
-    def save(self, filename):
-        """ Save image as a file.
-
-            The used file format is defined by the file extension 
-            in the filename.
-
-            Args:
-                filename: Filneame of image.
-        """
-        self._cimg.save(filename)
 
     ###########################################################################
     # Instance characteristics
@@ -353,31 +535,31 @@ class CImg:
                      argument of the atan2() function. 
         
         """
-        self._cimg.atan2(img)
+        self._cimg.atan2(img._cimg)
         return self
 
     def mul(self, img):
         """ In-place pointwise multiplication.
 
-            Compute the pointwise multiplication between 
-            the image instance and the specified input image img. 
+            Compute the pointwise multiplication between
+            the image instance and the specified input image img.
 
-            Args: 
+            Args:
                 img: Input image, second operand of the multiplication.
         """
-        self._cimg.mul(img)
+        self._cimg.mul(img._cimg)
         return self
 
     def div(self, img):
         """ In-place pointwise division.
 
-            Compute the pointwise division between 
-            the image instance and the specified input image img. 
+            Compute the pointwise division between
+            the image instance and the specified input image img.
 
-            Args: 
+            Args:
                 img: Input image, second operand of the division.
         """
-        self._cimg.div(img)
+        self._cimg.div(img._cimg)
         return self
 
     def pow(self, p):
@@ -388,23 +570,160 @@ class CImg:
         """
         self._cimg.pow(p)
 
+    def min_max(self):
+        """ Returns: tuple with minimum and maximum pixel value. """
+        return self._cimg.min_max()
 
-    # ...
-    def noise(self, sigma, noise_type):
-        """ Add random noise to pixel values. 
+    def max_min(self):
+        """ Returns: tuple with maximum and minimum pixel value. """
+        return self._cimg.max_min()
+
+    def kth_smallest(self, k):
+        """ Returns the kth smallest pixel value. 
+            
+            Args:
+                k: Rank of the search smallest element.
+
+            Returns: kth smallest pixel value.
+        """
+        return self._cimg.kth_smallest(k)
+
+    def variance(self, variance_method=BEST_UNBIASED):
+        """ Returns the variance of the pixel values.
 
             Args:
-                sigma: Amplitude of the random additive noise. 
-                       If sigma<0, it stands for a percentage of 
+                variance_method: Method used to estimate the variance. 
+                                 Can be:
+                                    SECOND_MOMENT
+                                    BEST_UNBIASED
+                                    LEAST_MEDIAN_SQ
+                                    LEAST_TRIMMED_SQ
+
+            Returns: Variance of pixel values. 
+        """
+        return self._cimg.variance(variance_method)
+
+    def variance_mean(self, variance_method=BEST_UNBIASED):
+        """ Returns variance and average of pixel values.
+
+            Args:
+                variance_method: Method used to estimate the variance. 
+
+            Returns: Tuple with variance and mean of pixel values.
+        """
+        return self._cimg.variance_mean(variance_method)
+
+    def variance_noise(self, variance_method=LEAST_MEDIAN_SQ):
+        """ Returns estimated variance of noise.
+
+            Args:
+                variance_method: Method used to estimate the variance. 
+
+            Returns: Estimated variance of noise.
+        """
+        return self._cimg.variance_noise(variance_method)
+
+    def mse(self, img):
+        """ Compute the MSE (Mean-Squared Error) between two images.
+
+            Args:
+                img: Image used as the second argument of the MSE operator.
+
+            Returns: mean squared error between self and img.
+        """
+        return self._cimg.mse(img._cimg)
+
+    def psnr(self, img, max_value=255):
+        """ Compute the PSNR (Peak Signal-to-Noise Ratio) between two images.
+
+            Args:
+                img: Image used as the second argument of the PSNR operator.
+                max_value: Maximum theoretical value of the signal.
+
+            Returns: peak signal-to-noise ratio between self and img.
+        """
+        return self._cimg.psnr(img._cimg, max_value)
+
+    ###########################################################################
+    # Vector / Matrix Operations
+    ###########################################################################
+    def magnitude(self, magnitude_type):
+        """ Compute norm of the image, viewed as a matrix.
+
+            Args:
+                magnitude_type: Norm type. Can be:
+                    LINF_NORM
+                    L0_NORM
+                    L1_NORM
+                    L2_NORM
+
+            Returns: Norm of image.
+        """
+        return self._cimg.magnitude(magnitude_type)
+
+    def dot(self, img):
+        """ Compute the dot product between instance and argument, viewed as matrices"
+
+            Args:
+                img: Image used as a second argument of the dot product.
+
+            Returns: Dot product between self and img.
+        """
+        return self._cimg.dot(img._cimg)
+
+    ###########################################################################
+    # Value Manipulation
+    ###########################################################################
+    def fill(self, val):
+        """ Fill all pixel values with specified value.
+
+            Args:
+                val: Fill value.
+        """
+        self._cimg.fill(val)
+        return self
+    
+    def invert_endianness(self):
+        """ Invert endianness of all pixel values. """
+        self._cimg.invert_endianness()
+        return self
+   
+    def rand(self, val_min, val_max):
+        """ Fill image with random values in specified range.
+
+            Args:
+                val_min: Minimal authorized random value.
+                val_max: Maximal authorized random value. 
+        """
+        self._cimg.rand(val_min, val_max)
+        return self
+
+    def round(self, y=1, rounding_type=R_NEAREST):
+        """ Round pixel values.
+
+            Args:
+                y: Rounding precision.
+                rounding_type: Rounding type. Can be:
+                    R_BACKWARD, R_NEAREST, R_FORWARD
+        """
+        self._cimg.round(y, rounding_type)
+        return self
+
+    def noise(self, sigma, noise_type=GAUSSIAN):
+        """ Add random noise to pixel values.
+
+            Args:
+                sigma: Amplitude of the random additive noise.
+                       If sigma<0, it stands for a percentage of
                        the global value range.
 
-                noise_type: Type of additive noise (can be 
-                            0=gaussian, 
-                            1=uniform, 
-                            2=Salt and Pepper, 
-                            3=Poisson or 
-                            4=Rician). 
-        
+                noise_type: Type of additive noise (can be
+                            GAUSSIAN,
+                            UNIFORM,
+                            SALT_AND_PEPPER,
+                            POISSON or
+                            RICIAN).
+
         """
         self._cimg.noise(sigma, noise_type)
         return self
@@ -420,25 +739,25 @@ class CImg:
         return self
 
     def normalize_l2(self):
-        """ Normalize multi-valued pixels of the image instance, 
-            with respect to their L2-norm. 
+        """ Normalize multi-valued pixels of the image instance,
+            with respect to their L2-norm.
         """
         self._cimg.normalize_l2()
         return self
 
-    def norm(self, norm_type):
-        """ Compute Lp-norm of each multi-valued pixel of the 
+    def norm(self, norm_type=L2_NORM):
+        """ Compute Lp-norm of each multi-valued pixel of the
             image instance.
 
             Args:
-                norm_type: Type of computed vector norm 
-                            (can be -1=Linf, or greater or equal than 0). 
+                norm_type: Type of computed vector norm. Can be:
+                LINF_NORM, L0_NORM, L1_NORM, L2_NORM, or value p>2
         """
         self._cimg.norm(norm_type)
         return self
 
     def cut(self, min_value, max_value):
-        """ Cut pixel values in specified range. 
+        """ Cut pixel values in specified range.
 
             Args:
                 min_value: Minimum desired value of resulting image.
@@ -452,8 +771,8 @@ class CImg:
 
             Args:
                 nb_levels: Number of quantization levels.
-                keep_range: Tells if resulting values keep the same 
-                            range as the original ones. 
+                keep_range: Tells if resulting values keep the same
+                            range as the original ones.
 
         """
         self._cimg.quantize(nb_levels, keep_range)
@@ -501,7 +820,30 @@ class CImg:
         self._cimg.equalize(nb_levels, min_value, max_value)
         return self
 
-    # TODO: index, map
+    def index(self, colormap, dithering=1, map_indexes=False):
+        """ Index multi-valued pixels regarding to a specified colormap.
+            
+            Args:
+                colormap: Multi-valued colormap used as the basis for 
+                          multi-valued pixel indexing.
+                dithering: Level of dithering (0=disable, 1=standard level).
+                map_indexes: Tell if the values of the resulting image are 
+                             the colormap indices or the colormap vectors.
+        """
+        self._cimg.index(colormap._cimg, dithering, map_indexes)
+        return self
+
+    def map(self, colormap, boundary_conditions=DIRICHLET):
+        """ Map predefined colormap on the scalar (indexed) image instance.
+
+            Args:
+                colormap: Multi-valued colormap used for mapping the indexes.
+                boundary_conditions: The border condition type. Can be:
+                    DIRICHLET, NEUMANN, PERIODIC, or MIRROR.
+        
+        """
+        self._cimg.map(colormap._cimg, boundary_conditions)
+        return self
 
     def label(self, is_high_connectivity=False, tolerance=0.0):
         """ Label connected components.
@@ -559,6 +901,111 @@ class CImg:
         return self
 
 
+    def resize_halfXY(self):
+        """ Resize image to half-size along XY axes, using an optimized filter. """
+        self._cimg.resize_halfXY()
+        return self
+
+    def resize_doubleXY(self):
+        """ Resize image to double-size, using the Scale2X algorithm. """ 
+        self._cimg.resize_doubleXY()
+        return self
+
+    def resize_tripleXY(self):
+        """ Resize image to triple-size, using the Scale3X algorithm. """
+        self._cimg.resize_tripleXY()
+        return self
+
+    def mirror(self, axes):
+        """ Mirror image content along specified axes.
+        
+            Args:
+                axes: Mirror axes as string, e.g. "x" or "xyz"
+        """
+        self._cimg.mirror(axes)
+        return self
+
+    def shift(self, delta_x, delta_y=0, delta_z=0, delta_c=0, boundary_conditions=DIRICHLET):
+        """ Shift image content.
+
+            Args:
+                delta_x: Amount of displacement along the X-axis.
+                delta_y: Amount of displacement along the Y-axis.
+                delta_z: Amount of displacement along the Z-axis.
+                delta_c: Amount of displacement along the C-axis.
+                boundary_conditions: Border condition.
+        """
+        self._cimg.shift(delta_x, delta_y, delta_z, delta_c, boundary_conditions)
+        return self
+
+    def permute_axes(self, order):
+        """ Permute axes order.
+            
+            Args:
+                order: Axes permutations as string of length 4.
+
+            Raises: RuntimeError if order is invalid.
+        """
+        if (not len(order) == 4) or (not all(o in "xyzc" for o in order)):
+            raise RuntimeError("Invalid axes order.")
+        self._cimg.permute_axes(order)
+        return self
+
+    def unroll(self, axis):
+        """ Unroll pixel values along specified axis.
+
+            Args:
+                axis: 'x', 'y', 'z', or 'c'.
+
+            Raises: RuntimeError if axis is invalid.
+        """
+        if not axis in "xyzc":
+            raise RuntimeError("Invalid axis.")
+        self._cimg.unroll(axis)
+        return self
+
+    def rotate(self, angle, interpolation=1, boundary_conditions=DIRICHLET):
+        """ Rotate image with arbitrary angle.
+
+            Args:
+                angle: Rotation angle, in degrees.
+                interpolation: Type of interpolation. 
+                               Can be { 0=nearest | 1=linear | 2=cubic | 3=mirror }.
+                boundary_conditions: Boundary conditions.
+        """
+        self._cimg.rotate(angle, interpolation, boundary_conditions)
+        return self
+
+    def crop(self, x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions=DIRICHLET):
+        """ Crop image region.
+
+            Args:
+               x0: X-coordinate of the upper-left crop rectangle corner.
+               y0: Y-coordinate of the upper-left crop rectangle corner.
+               z0: Z-coordinate of the upper-left crop rectangle corner.
+               c0: C-coordinate of the upper-left crop rectangle corner.
+               x1: X-coordinate of the lower-right crop rectangle corner.
+               y1: Y-coordinate of the lower-right crop rectangle corner.
+               z1: Z-coordinate of the lower-right crop rectangle corner.
+               c1: C-coordinate of the lower-right crop rectangle corner.
+               boundary_conditions: boundary conditions.
+        """
+        self._cimg.crop(x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions)
+        return self
+   
+    def autocrop(self, color=0, axes="xyz"):
+        """ Autocrop image region, regarding the specified background color.
+
+            Args:
+                color: Color used for the crop. If 0, color is guessed.
+                axes: Axes used for crop.
+
+            Autocrop image region, regarding the specified background value. 
+        """
+        if color != 0:
+            color = self._check_color(color)
+        self._cimg.autocrop(color, axes)
+        return self
 
     ###########################################################################
     # Drawing functions
@@ -567,9 +1014,33 @@ class CImg:
     def _check_color(self, color):
         """ Raises a RuntimeError if color does not have the correct 
             number of entries."""
+        if isinstance(color, numbers.Number):
+            color = [color]
         n = self._cimg.spectrum()
-        if not len(color) == n: 
+        if hasattr(color, '__len__') and not len(color) == n:
             raise RuntimeError('Color should have {} entries'.format(n))
+        return color
+
+    def draw_triangle(self, x0, y0, x1, y1, x2, y2, color, opacity=1):
+        """ Draw a filled 2d triangle. 
+
+            Args:
+                x0: X-coordinate of the first vertex. 
+                y0: Y-coordinate of the first vertex. 
+                x1: X-coordinate of the second vertex. 
+                y1: Y-coordinate of the second vertex. 
+                x2: X-coordinate of the third vertex. 
+                y2: Y-coordinate of the third vertex. 
+                color: List of color value with spectrum() entries.
+                opacity: Drawing opacity.
+
+            Raises:
+                RuntimeError: If list of color values does not have spectrum()
+                entries.
+        """
+        color = self._check_color(color)
+        self._cimg.draw_triangle(x0, y0, x1, y1, x2, y2, color, opacity)
+        return self
 
     def draw_rectangle(self, x0, y0, x1, y1, color, opacity=1):
         """ Draw a filled 2d rectangle. 
@@ -586,24 +1057,46 @@ class CImg:
                 RuntimeError: If list of color values does not have spectrum()
                 entries.
         """
-        self._check_color(color)
+        color = self._check_color(color)
         self._cimg.draw_rectangle(x0, y0, x1, y1, color, opacity)
         return self
 
     # ...
     def draw_polygon(self, points, color, opacity=1):
-        self._check_color(color)
-        self._cimg.draw_polygon( points, color, opacity)
+        """ Draw filled 2d polygon.
+
+        Args:
+            points: (n x 2) numpy array of polygon vertices
+            color: List of color value with spectrum() entries.
+            opacity: Drawing opacity.
+
+        Raises:
+            RuntimeError: If list of color values does not have spectrum()
+            entries.
+        """
+        color = self._check_color(color)
+        self._cimg.draw_polygon( points.T, color, opacity)
         return self
 
     def draw_circle(self, x0, y0, radius, color, opacity=1):
-       self._check_color(color)
-       self._cimg.draw_circle(x0, y0, radius, color, opacity)
-       return self
-    
+        """ Draw a filled 2d circle.
+
+        Args:
+            x0:  X-coordinate of the circle center.
+            y0:  Y-coordinate of the circle center.
+            radius:  Circle radius.
+            color: List of color value with spectrum() entries.
+            opacity: Drawing opacity.
+
+        Raises:
+            RuntimeError: If list of color values does not have spectrum()
+            entries.
+        """
+        color = self._check_color(color)
+        self._cimg.draw_circle(x0, y0, radius, color, opacity)
+        return self
 
     def display(self):
         """ Display image into a CImgDisplay window."""
         self._cimg.display()
-
 

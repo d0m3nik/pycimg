@@ -11,38 +11,48 @@ libraries = []
 if 'linux' in platform:
     extra_compile_args = ["-std=c++11", "-fPIC"]
     extra_link_args = ["-std=c++11"]
-    library_dirs = ["./thirdparty/zlib/build", 
-                    "./thirdparty/libjpeg-turbo/build/.libs", 
-                    "./thirdparty/libpng/build" ]
+    library_dirs = ["./thirdparty/zlib/build",
+                    "./thirdparty/libjpeg-turbo/build/.libs",
+                    "./thirdparty/libpng/build"]
     libraries = ["pthread", "X11", ":libz.a", ":libjpeg.a", ":libpng.a"]
+
+elif 'darwin' in platform:
+    extra_compile_args = ["-std=c++11", "-stdlib=libc++", "-fPIC"]
+    extra_link_args = ["-std=c++11",
+                       "./thirdparty/zlib/build/libz.a",
+                       "./thirdparty/libjpeg-turbo/build/.libs/libjpeg.a",
+                       "./thirdparty/libpng/build/libpng.a",
+                       "./thirdparty/libtiff/build/libtiff/libtiff.a"]
+    include_dirs = ["/usr/X11R6/include"]
+    library_dirs = ["/usr/X11R6/lib"]
+    libraries = ["pthread", "X11"]
 
 elif platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
     extra_compile_args = ["/MD"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     library_dirs = ["./thirdparty/zlib/build/Release",
-            "./thirdparty/libpng/build/Release",
-            "./thirdparty/libjpeg-turbo/build/Release"
-            ]
+                    "./thirdparty/libpng/build/Release",
+                    "./thirdparty/libjpeg-turbo/build/Release"]
     libraries = ["gdi32", "user32", "shell32", "zlibstatic", "libpng16_static", "jpeg-static"]
 
 else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(platform))
                 
 ext = Extension("pycimg", 
-        sources = ["pycimg.pyx"],
-        include_dirs = [".", 
-                "./thirdparty/half/include", 
-                "./thirdparty/CImg-2.0.4", 
-                "./thirdparty/zlib",
-                "./thirdparty/libpng",
-                "./thirdparty/libjpeg-turbo"
-                ],
-        library_dirs = library_dirs,
-        libraries = libraries,
-        language = "c++",
-        extra_compile_args = extra_compile_args,
-        extra_link_args = extra_link_args)
+                sources=["pycimg.pyx"],
+                include_dirs=include_dirs + [".",
+                        "./thirdparty/half/include",
+                        "./thirdparty/CImg-2.0.4",
+                        "./thirdparty/zlib",
+                        "./thirdparty/libpng",
+                        "./thirdparty/libjpeg-turbo",
+                        "./thirdparty/libtiff/libtiff"],
+                library_dirs=library_dirs,
+                libraries=libraries,
+                language="c++",
+                extra_compile_args=extra_compile_args,
+                extra_link_args=extra_link_args)
 
 setup(name="pycimg", 
       version="0.0.1a0",

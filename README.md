@@ -7,10 +7,12 @@
 **pycimg** is a python extension for the [CImg library](http://www.cimg.eu).
 
 ## TODO
-- [] Build package with multilinux image
 - [] Setup PyPI distribution
-- [] Coveralls status
 - [] Add more unit tests
+- [] Mac build on CircleCI
+- [] Add tiff support
+- [x] Build package with multilinux image
+- [x] Coveralls status
 - [x] Add interpolation methods linearAtXXX
 - [x] Unit test for interpolation methods
 - [x] AppVeyor windows build
