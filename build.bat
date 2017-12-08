@@ -36,7 +36,7 @@ popd
 pushd .\thirdparty\libpng
 pushd build
 cmake -g "Visual Studio 14 2015 Win64" -A x64 -DCMAKE_C_FLAGS="/MD" -DCMAKE_BUILD_TYPE=Release -DZLIB_LIBRARY=..\..\zlib\build\Release\zlibstatic.lib -DZLIB_INCLUDE_DIR=..\..\zlib ..
-msbuild libtiff.sln /p:Configuration=Release /p:Platform="x64"
+msbuild tiff.sln /p:Configuration=Release /p:Platform="x64"
 cp libtiff/tiffconf.h ../libtiff
 dir ../libtiff
 dir ./libtiff
