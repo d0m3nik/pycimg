@@ -46,4 +46,4 @@ workflows:
   build_all:
     jobs:
       - build_linux
-      - build_macos
+      # - build_macos
