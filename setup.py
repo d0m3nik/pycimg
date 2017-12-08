@@ -14,7 +14,8 @@ if 'linux' in platform:
     extra_link_args = ["-std=c++11"]
     library_dirs = ["./thirdparty/zlib/build",
                     "./thirdparty/libjpeg-turbo/build/.libs",
-                    "./thirdparty/libpng/build"]
+                    "./thirdparty/libpng/build",
+                    "./thirdparty/libtiff/build/libtiff"]
     libraries = ["pthread", "X11", ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
 
 elif 'darwin' in platform:
