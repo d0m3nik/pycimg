@@ -2,7 +2,7 @@ on: 2
 jobs:
   build_linux:
     docker:
-      - image: d0m3nik/cython-primary:0.0.6
+      - image: d0m3nik/cython-primary:0.0.7
 
     working_directory: ~/repo
 

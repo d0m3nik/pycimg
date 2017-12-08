@@ -7,6 +7,7 @@ extra_compile_args = []
 extra_link_args = []
 library_dirs = []
 libraries = []
+include_dirs = []
 
 if 'linux' in platform:
     extra_compile_args = ["-std=c++11", "-fPIC"]
