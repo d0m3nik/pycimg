@@ -34,8 +34,9 @@ elif platform == 'win32':
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     library_dirs = ["./thirdparty/zlib/build/Release",
                     "./thirdparty/libpng/build/Release",
-                    "./thirdparty/libjpeg-turbo/build/Release"]
-    libraries = ["gdi32", "user32", "shell32", "zlibstatic", "libpng16_static", "jpeg-static"]
+                    "./thirdparty/libjpeg-turbo/build/Release",
+                    "./thirdparty/libtiff/build/Release"]
+    libraries = ["gdi32", "user32", "shell32", "zlibstatic", "libpng16_static", "jpeg-static", "libtiff_static"]
 
 else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(platform))
