@@ -1,8 +1,8 @@
 ---
 
-[![CircleCI](https://circleci.com/gh/d0m3nik/pycimg.svg?style=svg)](https://circleci.com/gh/d0m3nik/pycimg)
+[![Build Status](https://travis-ci.org/d0m3nik/pycimg.svg?branch=master)](https://travis-ci.org/d0m3nik/pycimg)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/d0m3nik/pycimg?branch=master&svg=true)](https://ci.appveyor.com/project/d0m3nik/pycimg) 
-[![Coverage Status](https://coveralls.io/repos/github/d0m3nik/pycimg/badge.svg)](https://coveralls.io/github/d0m3nik/pycimg)
+[![Coverage Status](https://coveralls.io/repos/github/d0m3nik/pycimg/badge.svg?branch=master)](https://coveralls.io/github/d0m3nik/pycimg?branch=master)
 
 **pycimg** is a python extension for the [CImg library](http://www.cimg.eu).
 

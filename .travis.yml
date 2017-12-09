@@ -1,13 +1,19 @@
-sudo: required
-
-services: 
-  - docker
-
-env: DOCKER_IMAGE=d0m3nik/cython-primary:0.0.7
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      language: generic
+      sudo: required
+      services:
+        - docker
+      env: DOCKER_IMAGE=d0m3nik/cython-primary:0.0.7
+    - os: osx
+      sudo: required
+      osx_image: xcode9
 
 before_install:
-  - docker pull $DOCKER_IMAGE
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
 
 script:
-  - docker run -v `pwd`:`pwd` -w `pwd` $DOCKER_IMAGE `pwd`/build_circleci.sh
+  - ./build_travis.sh
   - ls dist/
