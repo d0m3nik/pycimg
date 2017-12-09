@@ -8,8 +8,9 @@ matrix:
         - docker
       env: DOCKER_IMAGE=d0m3nik/cython-primary:0.0.7
     - os: osx
-      sudo: required
       osx_image: xcode9
+      language: generic
+      sudo: required
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi

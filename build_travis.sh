@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "$TRAVIS_OS_NAME"
+
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
   docker run -v `pwd`:`pwd` -w `pwd` $DOCKER_IMAGE `pwd`/build_linux.sh; 
 fi
