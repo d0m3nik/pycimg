@@ -20,22 +20,22 @@ class TestMathematical(unittest.TestCase):
         self.assertTrue( np.allclose( np.exp(arr), img.exp().asarray() ) )
 
     def test_log(self):
-        arr = np.random.randn(10, 5)
-        arr = np.maximum(1e-6, arr)
+        exponents = np.linspace(-10, 10, 11)
+        arr = (np.e * np.ones((1,11)))**exponents
         img = CImg(arr)
-        self.assertTrue( np.allclose( np.log(arr), img.log().asarray() ) )
+        self.assertTrue( np.allclose( exponents, 10, 11), img.log().asarray() )
 
     def test_log2(self):
-        arr = np.random.randn(10, 5)
-        arr = np.maximum(1e-6, arr)
+        exponents = np.linspace(-10, 10, 11)
+        arr = (2* np.ones((1,11)))**exponents
         img = CImg(arr)
-        self.assertTrue( np.allclose( np.log2(arr), img.log2().asarray() ) )
+        self.assertTrue( np.allclose( exponents, img.log2().asarray() ) )
 
     def test_log10(self):
-        arr = np.random.randn(10, 5)
-        arr = np.maximum(1e-6, arr)
+        exponents = np.linspace(-10, 10, 11)
+        arr = (10* np.ones((1,11)))**exponents
         img = CImg(arr)
-        self.assertTrue( np.allclose( np.log10(arr), img.log10().asarray() ) )
+        self.assertTrue( np.allclose( exponents, img.log10().asarray() ) )
 
     def test_abs(self):
         arr = np.random.randn(10, 5)
@@ -57,15 +57,13 @@ class TestMathematical(unittest.TestCase):
         img = CImg(arr)
         self.assertTrue( np.allclose( np.sin(arr), img.sin().asarray() ) )
 
-#    def test_sinc(self):
-#        arr = np.random.randn(10, 5)
-#        img = CImg(arr)
-#        print(np.sinc(arr))
-#        print(img.sinc().asarray())
-#        self.assertTrue( np.allclose( np.sinc(arr), img.sinc().asarray() ) )
+    def test_sinc(self):
+        arr  = np.linspace(-10, 10, 100)
+        img = CImg(arr)
+        self.assertTrue( np.allclose( np.sinc(arr/np.pi), img.sinc().asarray() ) )
 
     def test_tan(self):
-        arr = np.random.randn(10, 5)
+        arr = np.linspace(-0.5, 0.5, 100)
         img = CImg(arr)
         self.assertTrue( np.allclose( np.tan(arr), img.tan().asarray() ) )
 

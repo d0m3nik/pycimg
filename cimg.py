@@ -63,6 +63,12 @@ C_NONE = 0
 C_LZW = 1
 C_JPEG = 2
 
+# Filter order
+SMOOTH_FILTER = 0
+FIRST_DERIV = 1
+SECOND_DERIV = 2
+THIRD_DERIV = 3 
+
 
 class CImg:
     """ CImg is a wrapper class for the CImg library: """
@@ -84,8 +90,8 @@ class CImg:
                 arr = np.zeros((100,2))
                 im = CImg(arr)
 
-                4. Create image of size 100x200 with
-                im = CImg((100, 200), dtype=float32)
+                4. Create image of size 100x200 with data type uint8
+                im = CImg((100, 200), dtype=uint8)
 
             Args:
                 Either image filename, numpy array, or image size.
@@ -128,6 +134,8 @@ class CImg:
                 self.resize(args[0], interpolation_type=NONE_RAW)
             else:
                 raise RuntimeError("Type of first argument not supported")
+        elif len(args) > 1:
+            raise RuntimeError("More than one arguemnt not supported")
 
     def __eq__(self, img):
         return self._cimg._equal(img._cimg)
@@ -1000,11 +1008,183 @@ class CImg:
                 color: Color used for the crop. If 0, color is guessed.
                 axes: Axes used for crop.
 
-            Autocrop image region, regarding the specified background value. 
         """
         if color != 0:
             color = self._check_color(color)
         self._cimg.autocrop(color, axes)
+        return self
+
+    ############################################################################
+    # Filtering / Transforms 
+    ############################################################################
+    def correlate(self, kernel, boundary_conditions=True, is_normalized=False):
+        """ Correlate image by a kernel.
+
+            Args:
+                kernel: the correlation kernel.
+                boundary_conditions: boundary conditions can be 
+                                    (False=dirichlet, True=neumann)
+                is_normalized: enable local normalization.
+        """
+        self._cimg.correlate(kernel._cimg, boundary_conditions, is_normalized)
+        return self
+
+    def convolve(self, kernel, boundary_conditions=True, is_normalized=False):
+        """ Convolve image by a kernel.
+
+            Args:
+                kernel: the correlation kernel.
+                boundary_conditions: boundary conditions can be 
+                                    (False=dirichlet, True=neumann)
+                is_normalized: enable local normalization.
+        """
+        self._cimg.convolve(kernel._cimg, boundary_conditions, is_normalized)
+        return self
+
+    def cumulate(self, axes):
+        """ Cumulate image values, optionally along specified axes.
+
+            Args:
+                axes: Cumulation axes as string, e.g. "x" or "xyz".
+        """
+        self._cimg.cumulate(axes)
+        return self
+
+    def erode(self, kernel, boundary_conditions=True, is_real=False):
+        """ Erode image by a structuring element.
+
+            Args:
+                kernel:	Structuring element.
+                boundary_conditions: Boundary conditions.
+                is_real: Do the erosion in real (a.k.a 'non-flat') mode (true) 
+                         rather than binary mode (false).
+        """
+        self._cimg.erode(kernel._cimg, boundary_conditions, is_real)
+        return self
+
+    def dilate(self, kernel, boundary_conditions=True, is_real=False):
+        """ Dilate image by a structuring element.
+
+            Args:
+                kernel:	Structuring element.
+                boundary_conditions: Boundary conditions.
+                is_real: Do the erosion in real (a.k.a 'non-flat') mode (true) 
+                         rather than binary mode (false).
+        """
+        self._cimg.dilate(kernel._cimg, boundary_conditions, is_real)
+        return self
+
+    def watershed(self, priority, is_high_connectivity=False):
+        """ Compute watershed transform.
+
+            Args:
+                priority: Priority map.
+                is_high_connectivity: Boolean that choose between 4(false)- or 
+                                      8(true)-connectivity in 2d case, 
+                                      and between 6(false)- or 
+                                      26(true)-connectivity in 3d case.
+        """
+        self._cimg.watershed(priority._cimg, is_high_connectivity)
+        return self
+        
+    def deriche(self, sigma, order=SMOOTH_FILTER, axis="x", boundary_conditions=True):
+        """ Apply recursive Deriche filter.
+
+            Args:
+                sigma: Standard deviation of the filter.
+                order: Order of the filter. Can be: 
+                       SMOOTH_FILTER, FIRST_DERIV, or SECOND_DERIV.
+                axis: Axis along which the filter is computed. Can be:
+                      { 'x' | 'y' | 'z' | 'c' }.
+                boundary_conditions: Boundary conditions. Can be:
+                      { False=dirichlet | True=neumann }.
+        """
+        self._cimg.deriche(sigma, order, axis, boundary_conditions)
+        return self
+
+    def vanvliet(self, sigma, order, axis="x", boundary_conditions=True):
+        """ Van Vliet recursive Gaussian filter.
+
+            Args:
+                sigma: Standard deviation of the Gaussian filter.
+                order: Order of the filter. Can be: 
+                       SMOOTH_FILTER, FIRST_DERIV, SECOND_DERIV, or THIRD_DERIV.
+                axis: Axis along which the filter is computed. Can be:
+                      { 'x' | 'y' | 'z' | 'c' }.
+                boundary_conditions: Boundary conditions. Can be:
+                      { False=dirichlet | True=neumann }.
+        """
+        self._cimg.vanvliet(sigma, order, axis, boundary_conditions)
+        return self
+
+    def blur(self, sigma, boundary_conditions=True, is_gaussian=False):
+        """ Blur image isotropically.
+
+            Note: The blur is computed as a 0-order Deriche filter. 
+            This is not a gaussian blur. This is a recursive algorithm, 
+            not depending on the values of the standard deviations.
+
+            Args:
+                sigma: Standard deviation of the blur.
+                boundary_conditions: Boundary conditions. Can be 
+                                     { False=dirichlet | True=neumann }.
+                is_gaussian: Tells if the blur uses a gaussian (True) 
+                             or quasi-gaussian (False) kernel.
+        """
+        self._cimg.blur(sigma, boundary_conditions, is_gaussian)
+        return self
+        
+    def boxfilter(self, boxsize, order, axis, boundary_conditions, nb_iter):
+        """ Apply box filter to image.
+
+            Args:
+                boxsize: Size of the box window (can be subpixel)
+                order:   the order of the filter 0,1 or 2.
+                axis:    Axis along which the filter is computed. 
+                         Can be { 'x' | 'y' | 'z' | 'c' }.
+                boundary_conditions: Boundary conditions. Can be 
+                                     { False=dirichlet | True=neumann }.
+                nb_iter: Number of filter iterations.
+        """
+        self._cimg.boxfilter(boxsize, order, axis, boundary_conditions, nb_iter)
+        return self
+
+    def blur_box(self, boxsize, boundary_conditions=True):
+        """ Blur image with a box filter.
+
+            Args:
+                boxsize: Size of the box window (can be subpixel).
+                boundary_conditions: Boundary conditions. Can be 
+                                     { False=dirichlet | True=neumann }.
+        """
+        self._cimg.blur_box(boxsize_x, boxsize_y, boxsize_z, 
+                            boundary_conditions, nb_iter)
+        return self
+
+    def blur_median(self, n, threshold=0):
+        """ Blur image with the median filter.
+
+            Args:
+                n: Size of the median filter.
+                threshold: Threshold used to discard pixels too far 
+                           from the current pixel value in the median computation.
+        """
+        self._cimg.blur_median(n, threshold)
+        return self
+
+    def sharpen(self, amplitude, sharpen_type=False, edge=1, alpha=0, sigma=0):
+        """ Sharpen image.
+
+            Args:
+                amplitude: Sharpening amplitude
+                sharpen_type: Select sharpening method. Can be 
+                              { False=inverse diffusion | True=shock filters }.
+                edge: Edge threshold (shock filters only).
+                alpha: Gradient smoothness (shock filters only).
+                sigma: Tensor smoothness (shock filters only).
+            
+        """
+        self._cimg.sharpen(amplitude, sharpen_type, edge, alpha, sigma)
         return self
 
     ###########################################################################
@@ -1099,4 +1279,8 @@ class CImg:
     def display(self):
         """ Display image into a CImgDisplay window."""
         self._cimg.display()
+
+    def display_graph(self):
+        """ Display 1d graph in an interactive window. """
+        self._cimg.display_graph()
 

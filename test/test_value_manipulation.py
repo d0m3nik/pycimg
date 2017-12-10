@@ -82,5 +82,37 @@ class TestValueManipulation(unittest.TestCase):
         img_expected = CImg(np.array([0, 0, 2, 2, 2]))
         self.assertEqual(img, img_expected)
 
+    def test_threshold(self):
+        """ Test threshold. """
+        img = CImg(np.array([0, 1, 2, 3, 4]))
+        img.threshold(2)
+        img_expected = CImg(np.array([0, 0, 1, 1, 1]))
+        self.assertEqual(img, img_expected)
+
+    def test_histogram(self):
+        """ Test histogram. """
+        img = CImg(np.array([0, 1, 2, 3, 4]))
+        img.histogram(2, 0, 4)
+        img_expected = CImg(np.array([2, 3]))
+        self.assertEqual(img, img_expected)
+
+    def test_equalize(self):
+        """ Test equalize. """
+        img = CImg(np.array([1, 1, 2, 2]))
+        img.equalize(2, 1, 2)
+        img_expected = CImg(np.array([1.5, 1.5, 2, 2]))
+        self.assertEqual(img, img_expected)
+
+    def test_label(self):
+        """ Test label. """
+        img = CImg(np.array([[0, 1, 0, 0], 
+                             [1, 1, 1, 0], 
+                             [0, 0, 0, 0]]))
+        img.label()
+        img_expected = CImg(np.array([[ 0,  1,  2,  2],
+                                      [ 1,  1,  1,  2],
+                                      [ 2,  2,  2,  2]]))
+        self.assertEqual(img, img_expected)
+
 if __name__ == '__main__':
     unittest.main()

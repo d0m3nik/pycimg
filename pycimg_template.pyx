@@ -1,12 +1,6 @@
 from libcpp.vector cimport vector
 
 
-#cdef bool equal_{T}(CImg_{T} img1, CImg_{T} img2):
-#    cdef CImg[{T}] im1 = <CImg[{T}]&>img1._cimg
-#    cdef CImg[{T}] im2 = <CImg[{T}]&>img2._cimg
-#    return im1 == im2
-
-
 cdef class CImg_{T}:
     cdef CImg[{T}] _cimg
 
@@ -98,17 +92,13 @@ cdef class CImg_{T}:
     ############################################################################
     # Equality 
     ############################################################################
-    cdef bool _cequal(self, CImg_{T} img):
-        return self._cimg == img._cimg
-
     def _equal(self, img):
-        return self._cequal(img) 
-
-    cdef bool _cnot_equal(self, CImg_{T} img):
-        return self._cimg != img._cimg
+        cdef CImg_{T} _img = img
+        return self._cimg == _img._cimg
 
     def _not_equal(self, img):
-        return self._cnot_equal(img) 
+        cdef CImg_{T} _img = img
+        return self._cimg != _img._cimg
 
     ############################################################################
     # Instance characteristics
@@ -250,48 +240,36 @@ cdef class CImg_{T}:
         self._cimg.atan()
         return self
 
-    cdef _catan2(self, CImg_{T} img):
-        self._cimg.atan2(img._cimg)
-
     def atan2(self, img):
-        self._catan2(img)
+        cdef CImg_{T} _img = img
+        self._cimg.atan2(_img._cimg)
         return self
-
-    cdef _cmul(self, CImg_{T} img):
-        self._cimg.mul(img._cimg)
 
     def mul(self, img):
-        self._cmul(img)
+        cdef CImg_{T} _img = img
+        self._cimg.mul(_img._cimg)
         return self
 
-    cdef _cdiv(self, CImg_{T} img):
-        self._cimg.div(img._cimg)
-
     def div(self, img):
-        self._cdiv(img)
+        cdef CImg_{T} _img = img
+        self._cimg.div(_img._cimg)
         return self
 
     def pow(self, p):
         self._cimg.pow(p)
         return self
 
-    cdef _cmin_max(self):
+    def min_max(self):
         cdef {T} max_val = 0
         cdef {T} min_val = 0
         min_val = self._cimg.min_max(max_val)
         return (min_val, max_val)
 
-    def min_max(self):
-        return self._cmin_max()        
-
-    cdef _cmax_min(self):
+    def max_min(self):
         cdef {T} max_val = 0
         cdef {T} min_val = 0
         max_val = self._cimg.max_min(min_val)
         return (max_val, min_val)
-
-    def max_min(self):
-        return self._cmax_min()        
 
     def kth_smallest(self, k):
         return self._cimg.kth_smallest(k)
@@ -299,38 +277,29 @@ cdef class CImg_{T}:
     def variance(self, variance_method):
         return self._cimg.variance(variance_method)
 
-    cdef _cvariance_mean(self, variance_method):
+    def variance_mean(self, variance_method):
         cdef {T} mean = 0
         cdef double v = 0.0
         v = self._cimg.variance_mean(variance_method, mean)
         return (v, mean)
 
-    def variance_mean(self, variance_method):
-        return self._cvariance_mean(variance_method)
-
     def variance_noise(self, variance_method):
         return self._cimg.variance_noise(variance_method)
 
-    cdef _cmse(self, CImg_{T} img):
-        return self._cimg.MSE(img._cimg)
-
     def mse(self, img):
-        return self._cmse(img)
-
-    cdef _psnr(self, CImg_{T} img, double max_value):
-        return self._cimg.PSNR(img._cimg, max_value)
+        cdef CImg_{T} _img = img
+        return self._cimg.MSE(_img._cimg)
 
     def psnr(self, img, max_value):
-        return self._psnr(img, max_value)
+        cdef CImg_{T} _img = img
+        return self._cimg.PSNR(_img._cimg, max_value)
 
     def magnitude(self, magnitude_type):
         return self._cimg.magnitude(magnitude_type)
 
-    cdef _cdot(self, CImg_{T} img):
-        return self._cimg.dot(img._cimg)
-
     def dot(self, img):
-        return self._cdot(img)
+        cdef CImg_{T} _img = img
+        return self._cimg.dot(_img._cimg)
 
     # ...
 
@@ -472,6 +441,74 @@ cdef class CImg_{T}:
         return self
 
     ############################################################################
+    # Filtering / Transforms 
+    ############################################################################
+    def correlate(self, kernel, boundary_conditions, is_normalized):
+        cdef CImg_{T} _kernel = kernel
+        self._cimg.correlate(_kernel._cimg, boundary_conditions, is_normalized)
+        return self
+
+    def convolve(self, kernel, boundary_conditions, is_normalized):
+        cdef CImg_{T} _kernel = kernel
+        self._cimg.convolve(_kernel._cimg, boundary_conditions, is_normalized)
+        return self
+
+    def cumulate(self, axes):
+        byte_string = axes.encode('UTF-8')
+        cdef char* _axes = byte_string
+        self._cimg.cumulate(_axes)
+        return self
+
+    def erode(self, kernel, boundary_conditions, is_real):
+        cdef CImg_{T} _kernel = kernel
+        self._cimg.erode(_kernel._cimg, boundary_conditions, is_real)
+        return self
+
+    def dilate(self, kernel, boundary_conditions, is_real):
+        cdef CImg_{T} _kernel = kernel
+        self._cimg.dilate(_kernel._cimg, boundary_conditions, is_real)
+        return self
+
+    def watershed(self, priority, is_high_connectivity):
+        cdef CImg_{T} _priority = priority
+        self._cimg.watershed(_priority._cimg, is_high_connectivity)
+        return self
+        
+    def deriche(self, sigma, order, axis, boundary_conditions):
+        byte_string = axis.encode('UTF-8')
+        cdef char* _axis = byte_string
+        self._cimg.deriche(sigma, order, _axis[0], boundary_conditions)
+        return self
+
+    def vanvliet(self, sigma, order, axis, boundary_conditions):
+        byte_string = axis.encode('UTF-8')
+        cdef char* _axis = byte_string
+        self._cimg.vanvliet(sigma, order, _axis[0], boundary_conditions)
+        return self
+
+    def blur(self, sigma, boundary_conditions, is_gaussian):
+        self._cimg.blur(sigma, boundary_conditions, is_gaussian)
+        return self
+        
+    def boxfilter(self, boxsize, order, axis, boundary_conditions, nb_iter):
+        byte_string = axis.encode('UTF-8')
+        cdef char* _axis = byte_string
+        self._cimg.boxfilter(boxsize, order, _axis[0], boundary_conditions, nb_iter)
+        return self
+
+    def blur_box(self, boxsize, boundary_conditions):
+        self._cimg.blur_box(boxsize, boundary_conditions)
+        return self
+
+    def blur_median(self, n, threshold):
+        self._cimg.blur_median(n, threshold)
+        return self
+
+    def sharpen(self, amplitude, sharpen_type, edge, alpha, sigma):
+        self._cimg.sharpen(amplitude, sharpen_type, edge, alpha, sigma)
+        return self
+             
+    ############################################################################
     # Drawing functions
     ############################################################################
     def draw_triangle(self, x0, y0, x1, y1, x2, y2, color, opacity):
@@ -494,5 +531,9 @@ cdef class CImg_{T}:
         cdef vector[{T}] _color = color
         self._cimg.draw_circle(x0, y0, radius, _color.data(), opacity)
 
-    cpdef display(self):
+    def display(self):
         self._cimg.display()
+
+    def display_graph(self):
+        cdef CImgDisplay disp = CImgDisplay()
+        self._cimg.display_graph(disp)

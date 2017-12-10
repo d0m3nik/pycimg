@@ -15,6 +15,8 @@ ctypedef double   float64
 
 cdef extern from "cimg_ext.h" namespace "cimg_library":
 
+    cdef cppclass CImgDisplay:
+        CImgDisplay() except+
 
     cdef cppclass CImg[T]:
         # Constructors / Instance Management
@@ -64,6 +66,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         bool operator!=(const CImg& img)
 
         const CImg& display() except + 
+        const CImg& display_graph(CImgDisplay& disp) except +
 
         # Instance characteristics
         int width() const
@@ -187,6 +190,10 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& autocrop(const T* const color, 
                        const char* const axes)
         # ...
+        CImg& append(CImg& img,
+                     const char axis,
+                     const float align)
+        # ...
 
         # Filtering / Transforms
         CImg& correlate(const CImg& kernel,
@@ -197,15 +204,50 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                        const bool boundary_conditions,
                        const bool is_normalized)
 
+        CImg& cumulate(const char* const axes)
+
         CImg& erode(const CImg& kernel,
                     const bool boundary_conditions,
-                    const bool is_normalized)
+                    const bool is_real)
 
         CImg& dilate(const CImg& kernel,
                      const bool boundary_conditions,
-                     const bool is_normalized)
-        # ...
+                     const bool is_real)
 
+        CImg& watershed(const CImg& priority,
+                        const bool is_high_connectivity)
+
+        CImg& deriche(const float sigma, 
+                      const unsigned int order, 
+                      const char axis, 
+                      const bool boundary_conditions)
+
+        CImg& vanvliet(const float sigma, 
+                       const unsigned int order,
+                       const char axis,
+                       const bool boundary_conditions)
+                 
+        CImg& blur(const float sigma,
+                   const bool boundary_conditions,
+                   const bool is_gaussian)
+
+        CImg& boxfilter(const float boxsize,
+                        const int order,
+                        const char axis,
+                        const bool boundary_conditions,
+                        const unsigned int nb_iter)
+ 
+        CImg& blur_box(const float boxsize, 
+                       const bool boundary_conditions)
+
+        CImg& blur_median(const unsigned int n,
+                          const float threshold)
+             
+        CImg& sharpen(const float amplitude,
+                      const bool sharpen_type,
+                      const float edge,
+                      const float alpha,
+                      const float sigma)
 
         # Drawing functions
         CImg& draw_triangle(const int x0, 
