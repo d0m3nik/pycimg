@@ -9,8 +9,8 @@
 ## TODO
 - [] Setup PyPI distribution
 - [] Add more unit tests
-- [] Mac build on CircleCI
-- [] Add tiff support
+- [] Add docs
+- [x] Add tiff support
 - [x] Build package with multilinux image
 - [x] Coveralls status
 - [x] Add interpolation methods linearAtXXX

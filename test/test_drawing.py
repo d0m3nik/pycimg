@@ -52,6 +52,8 @@ class TestDrawing(unittest.TestCase):
                         ])*255
         img_expected = CImg(arr, dtype=cimg.uint8)
         self.assertEqual(img, img_expected)
+        with self.assertRaises(RuntimeError):
+            img.draw_circle(4, 4, 2, [255, 0, 0])
 
     def test_draw_triangle(self):
         """ Test draw triangle. """

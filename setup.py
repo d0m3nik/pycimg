@@ -57,11 +57,11 @@ ext = Extension("pycimg",
                 extra_compile_args=extra_compile_args,
                 extra_link_args=extra_link_args)
 
-setup(name="pycimg", 
+setup(name="pycimg",
       version="0.0.1a0",
-      description="Python extension for the CImg library",
-      long_description="This package contains a single class CImg"\
-                       "that provides access to the image processing"\
+      description="Python extension for the CImg library.",
+      long_description="This package contains a single class CImg "\
+                       "that provides access to the image processing "\
                        "methods of the C++ CImg library (http://www.cimg.eu).",
       url="https://github.com/d0m3nik/pycimg",
       author="Dominik Brugger",
@@ -71,9 +71,11 @@ setup(name="pycimg",
               "Intended Audience :: Developers",
               "Topic :: Software Development :: Libraries",
               "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-              "Programming Language :: Python :: 3.4"
+              "Programming Language :: Python :: 3.5"
+              "Programming Language :: Python :: 3.6"
               ],
       keywords="image processing library",
       install_requires=["numpy"],
       python_requires="~=3.5",
+      py_modules=["cimg"],
       ext_modules=cythonize(ext))

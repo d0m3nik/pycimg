@@ -198,24 +198,24 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         # Filtering / Transforms
         CImg& correlate(const CImg& kernel,
                         const bool boundary_conditions,
-                        const bool is_normalized)
+                        const bool is_normalized) except +
 
         CImg& convolve(const CImg& kernel,
                        const bool boundary_conditions,
-                       const bool is_normalized)
+                       const bool is_normalized) except +
 
-        CImg& cumulate(const char* const axes)
+        CImg& cumulate(const char* const axes) except +
 
         CImg& erode(const CImg& kernel,
                     const bool boundary_conditions,
-                    const bool is_real)
+                    const bool is_real) except +
 
         CImg& dilate(const CImg& kernel,
                      const bool boundary_conditions,
-                     const bool is_real)
+                     const bool is_real) except +
 
         CImg& watershed(const CImg& priority,
-                        const bool is_high_connectivity)
+                        const bool is_high_connectivity) except +
 
         CImg& deriche(const float sigma, 
                       const unsigned int order, 
