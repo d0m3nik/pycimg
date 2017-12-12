@@ -315,7 +315,7 @@ class CImg:
         """ Load image from a .cimg file with half precision
             pixel values.
 
-             Args:
+            Args:
                 filename: Filename of image.
             Raises:
                 RuntimeError: If file does not exist.
@@ -601,11 +601,7 @@ class CImg:
 
             Args:
                 variance_method: Method used to estimate the variance.
-                                 Can be:
-                                    SECOND_MOMENT
-                                    BEST_UNBIASED
-                                    LEAST_MEDIAN_SQ
-                                    LEAST_TRIMMED_SQ
+                                 Can be: SECOND_MOMENT | BEST_UNBIASED | LEAST_MEDIAN_SQ | LEAST_TRIMMED_SQ
 
             Returns: Variance of pixel values.
         """
@@ -884,8 +880,7 @@ class CImg:
                 size_c: Number of vector-channels (new size along the C-axis).
                 interpolation_type:  Method of interpolation:
                     NONE_RAW = no interpolation: raw memory resizing.
-                    NONE = no interpolation: additional space is filled
-                                          according to boundary_conditions.
+                    NONE = no interpolation: additional space is filled according to boundary_conditions.
                     NEAREST = nearest-neighbor interpolation.
                     MOVING_AVERAGE = moving average interpolation.
                     LINEAR = linear interpolation.
@@ -893,12 +888,12 @@ class CImg:
                     CUBIC = cubic interpolation.
                     LANCZOS = lanczos interpolation.
                 boundary_conditions: Type of boundary conditions used if
-                                     necessary.
-                    DIRICHLET | NEUMANN | PERIODIC | MIRROR
+                                     necessary. Can be: DIRICHLET | NEUMANN | PERIODIC | MIRROR
                 centering_x: Set centering type (only if interpolation_type=NONE).
                 centering_y: Set centering type (only if interpolation_type=NONE).
                 centering_z: Set centering type (only if interpolation_type=NONE).
                 centering_c: Set centering type (only if interpolation_type=NONE).
+
         """
         self._cimg.resize(size_x, size_y, size_z, size_c,
                           interpolation_type, boundary_conditions,
@@ -1021,10 +1016,10 @@ class CImg:
         """ Correlate image by a kernel.
 
             Args:
-                kernel: the correlation kernel.
-                boundary_conditions: boundary conditions can be
-                                    (False=dirichlet, True=neumann)
-                is_normalized: enable local normalization.
+                kernel (CImg): the correlation kernel.
+                boundary_conditions (bool): boundary conditions can be
+                                            (False=dirichlet, True=neumann)
+                is_normalized (bool): enable local normalization.
         """
         self._cimg.correlate(kernel._cimg, boundary_conditions, is_normalized)
         return self
@@ -1214,8 +1209,7 @@ class CImg:
                 opacity: Drawing opacity.
 
             Raises:
-                RuntimeError: If list of color values does not have spectrum()
-                entries.
+                RuntimeError: If list of color values does not have spectrum() entries.
         """
         color = self._check_color(color)
         self._cimg.draw_triangle(x0, y0, x1, y1, x2, y2, color, opacity)
@@ -1233,8 +1227,7 @@ class CImg:
                 opacity: Drawing opacity.
 
             Raises:
-                RuntimeError: If list of color values does not have spectrum()
-                entries.
+                RuntimeError: If list of color values does not have spectrum() entries.
         """
         color = self._check_color(color)
         self._cimg.draw_rectangle(x0, y0, x1, y1, color, opacity)
@@ -1250,8 +1243,7 @@ class CImg:
             opacity: Drawing opacity.
 
         Raises:
-            RuntimeError: If list of color values does not have spectrum()
-            entries.
+            RuntimeError: If list of color values does not have spectrum() entries.
         """
         color = self._check_color(color)
         self._cimg.draw_polygon( points.T, color, opacity)
@@ -1268,8 +1260,7 @@ class CImg:
             opacity: Drawing opacity.
 
         Raises:
-            RuntimeError: If list of color values does not have spectrum()
-            entries.
+            RuntimeError: If list of color values does not have spectrum() entries.
         """
         color = self._check_color(color)
         self._cimg.draw_circle(x0, y0, radius, color, opacity)

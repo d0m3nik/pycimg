@@ -1,5 +1,13 @@
 from setuptools import setup, Extension, distutils
 from Cython.Build import cythonize
+from codecs import open
+from os import path
+
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
 platform = distutils.sys.platform
 
@@ -60,9 +68,7 @@ ext = Extension("pycimg",
 setup(name="pycimg",
       version="0.0.1a0",
       description="Python extension for the CImg library.",
-      long_description="This package contains a single class CImg "\
-                       "that provides access to the image processing "\
-                       "methods of the C++ CImg library (http://www.cimg.eu).",
+      long_description=long_description,
       url="https://github.com/d0m3nik/pycimg",
       author="Dominik Brugger",
       license="GPL-3.0",

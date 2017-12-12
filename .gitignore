@@ -1,5 +1,6 @@
 __pycache__/
 build
+_build
 *.swp
 *.so
 *.py[cod]
