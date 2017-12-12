@@ -1,9 +1,15 @@
 .. image:: https://travis-ci.org/d0m3nik/pycimg.svg?branch=master
-    :target: https://travis-ci.org/d0m3nik/pycimg
+  :target: https://travis-ci.org/d0m3nik/pycimg
+  :alt: Travis Status
 .. image:: https://ci.appveyor.com/api/projects/status/github/d0m3nik/pycimg?branch=master&svg=true
-    :target: https://ci.appveyor.com/project/d0m3nik/pycimg
+  :target: https://ci.appveyor.com/project/d0m3nik/pycimg
+  :alt: AppVeyor Status
 .. image:: https://coveralls.io/repos/github/d0m3nik/pycimg/badge.svg?branch=HEAD
-    :target: https://coveralls.io/github/d0m3nik/pycimg?branch=HEAD
+  :target: https://coveralls.io/github/d0m3nik/pycimg?branch=HEAD
+  :alt: Coverage Status
+.. image:: https://readthedocs.org/projects/pycimg/badge/?version=latest
+  :target: http://pycimg.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
 
 README
 ======
@@ -49,6 +55,10 @@ Install pycimg by running:
 
    pip install pycimg
 
+Documentation
+-------------
+See readthedocs_.
+
 License
 -------
 The project is licensed under the GPL3 license.
@@ -75,3 +85,4 @@ TODO
 .. _jpeg: https://github.com/libjpeg-turbo/libjpeg-turbo
 .. _png: https://github.com/glennrp/libpng/
 .. _tiff: https://gitlab.com/libtiff/libtiff
+.. _readthedocs: http://pycimg.readthedocs.io/en/latest/ 
