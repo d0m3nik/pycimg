@@ -25,7 +25,7 @@ or a image file. Supported file formats are png_, jpeg_, tiff_, bmp, and cimg.
 
 .. code-block:: python
 
-     from cimg import CImg
+     from pycimg import CImg
      import numpy as np
 
      # Load image from file
@@ -67,18 +67,10 @@ TODO
 ----
 - [] Setup PyPI distribution
 - [] Add more unit tests
-- [] Add docs
-- [x] Add tiff support
-- [x] Build package with multilinux image
-- [x] Coveralls status
-- [x] Add interpolation methods linearAtXXX
-- [x] Unit test for interpolation methods
-- [x] AppVeyor windows build
-- [x] Package as python wheel
-- [x] Make width, height etc. properties
-- [x] Constructor should be more useful, accepting sizes, np.array
-- [x] Introduce constants cimg.float32, cimg.linear for types, interpolation etc
-
+- [x] Add docs
+- [] Add tutorial
+- [] Add support for different Mac OS X versions
+- [] Support python2.7, 3.4, 3.5, 3.6
 
 .. _CImg: http://www.cimg.eu
 .. _numpy: http://www.numpy.org/

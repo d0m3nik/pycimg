@@ -1,4 +1,4 @@
-from setuptools import setup, Extension, distutils
+from setuptools import setup, Extension, distutils, find_packages
 from Cython.Build import cythonize
 from codecs import open
 from os import path
@@ -50,9 +50,9 @@ elif platform == 'win32':
 else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(platform))
                 
-ext = Extension("pycimg", 
-                sources=["pycimg.pyx"],
-                include_dirs=include_dirs + [".",
+ext = Extension("pycimg.pycimg", 
+                sources=["./src/pycimg.pyx"],
+                include_dirs=include_dirs + ["./src",
                         "./thirdparty/half/include",
                         "./thirdparty/CImg-2.0.4",
                         "./thirdparty/zlib",
@@ -66,7 +66,7 @@ ext = Extension("pycimg",
                 extra_link_args=extra_link_args)
 
 setup(name="pycimg",
-      version="0.0.1a0",
+      version="0.0.1a2",
       description="Python extension for the CImg library.",
       long_description=long_description,
       url="https://github.com/d0m3nik/pycimg",
@@ -77,11 +77,12 @@ setup(name="pycimg",
               "Intended Audience :: Developers",
               "Topic :: Software Development :: Libraries",
               "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-              "Programming Language :: Python :: 3.5"
+              "Programming Language :: Python :: 3",
+              "Programming Language :: Python :: 3.5",
               "Programming Language :: Python :: 3.6"
               ],
       keywords="image processing library",
       install_requires=["numpy"],
-      python_requires="~=3.5",
-      py_modules=["cimg"],
+      python_requires="~=2.7",
+      packages=find_packages(exclude=['test', 'docs']),
       ext_modules=cythonize(ext))
