@@ -160,7 +160,7 @@ class CImg:
         """ Load image from a file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
             Raises:
                 RuntimeError: If file does not exist.
         """
@@ -173,7 +173,7 @@ class CImg:
         """ Load image from a BMP file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
             Raises:
                 RuntimeError: If file does not exist.
         """
@@ -187,7 +187,7 @@ class CImg:
         """ Load image from a JPEG file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
             Raises:
                 RuntimeError: If file does not exist.
         """
@@ -200,7 +200,7 @@ class CImg:
         """ Load image from a PNG file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
             Returns:
                 Bits per pixel
             Raises:
@@ -215,7 +215,7 @@ class CImg:
         """ Load image from a TIFF file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
                 first_frame: First frame to read (for multi-pages tiff).
                 last_frame: Last frame to read (for multi-pages tiff).
                 step_frame: Step value of frame reading.
@@ -234,7 +234,7 @@ class CImg:
         """ Load image from a .cimg[z] file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
                 axis: Appending axis, if file contains multiple images.
                       Can be { 'x' | 'y' | 'z' | 'c' }.
                 align: Appending alignment.
@@ -255,7 +255,7 @@ class CImg:
             in the filename.
 
             Args:
-                filename: Filneame of image.
+                filename (str): Filneame of image.
                 number: When positive, represents an index added to the filename.
                         Otherwise, no number is added.
                 digits: Number of digits used for adding the number to the filename.
@@ -266,7 +266,7 @@ class CImg:
         """ Save image as a BMP file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
         """
         self._cimg.save_bmp(filename)
 
@@ -274,7 +274,7 @@ class CImg:
         """ Save image as a JPEG file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
                 quality: Image quality (in %).
         """
         self._cimg.save_jpeg(filename, quality)
@@ -283,7 +283,7 @@ class CImg:
         """ Save image as a PNG file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
                 bytes_per_pixel: Force the number of bytes per pixels for
                                  saving, when possible.
         """
@@ -294,7 +294,7 @@ class CImg:
         """ Save image as a TIFF file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
                 compression_type:    Type of data compression.
                     Can be: C_NONE, C_LZW, C_JPEG.
                 voxel_size: Voxel size, to be stored in the filename.
@@ -308,7 +308,7 @@ class CImg:
         """ Save image as a .cimg file.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
                 is_compressed: Tells if the file contains compressed image data.
         """
         self._cimg.save_cimg(filename, is_compressed)
@@ -318,7 +318,7 @@ class CImg:
             pixel values.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
             Raises:
                 RuntimeError: If file does not exist.
         """
@@ -331,7 +331,7 @@ class CImg:
         """ Save image to a .cimg file with half precision pixel values.
 
             Args:
-                filename: Filename of image.
+                filename (str): Filename of image.
         """
         self._cimg.save_cimg_float16(filename)
 
@@ -369,14 +369,20 @@ class CImg:
         return self._cimg.size()
 
     def asarray(self):
-        """ Convert image to a numpy array. """
+        """ Convert image to a numpy array.
+
+            Note that the data of the array is shared
+            with the image instance. Changes to the array
+            therefore propagate to the image.
+       
+        """
         return self._cimg.asarray()
 
     def fromarray(self, arr):
         """ Convert numpy array to cimg.
 
             Args:
-                arr : numpy array
+                arr (ndarray) : numpy array
 
             Raises:
                 RuntimeError: if array has more than 4 dimensions
@@ -391,10 +397,10 @@ class CImg:
             within image bounds.
 
             Args:
-                fx:  X-coordinate of the pixel value (float-valued).
-                y:   Y-coordinate of the pixel value.
-                z:   Z-coordinate of the pixel value.
-                c:   C-coordinate of the pixel value.
+                fx (float): X-coordinate of the pixel value.
+                y (int):    Y-coordinate of the pixel value.
+                z (int):    Z-coordinate of the pixel value.
+                c (int):    C-coordinate of the pixel value.
 
             Returns: a linearly-interpolated pixel value of the image
                      instance located at (fx,y,z,c), or the value of the
@@ -408,10 +414,10 @@ class CImg:
             and Neumann boundary conditions for the X and Y-coordinates.
 
             Args:
-                fx:  X-coordinate of the pixel value (float-valued).
-                fy:  Y-coordinate of the pixel value (float-valued).
-                z:   Z-coordinate of the pixel value.
-                c:   C-coordinate of the pixel value.
+                fx (float): X-coordinate of the pixel value.
+                fy (float): Y-coordinate of the pixel value.
+                z (int):    Z-coordinate of the pixel value.
+                c (int):    C-coordinate of the pixel value.
 
             Returns: a linearly-interpolated pixel value of the image
                      instance located at (fx,fy,z,c).
@@ -423,10 +429,10 @@ class CImg:
             and Neumann boundary conditions for the X,Y and Z-coordinates.
 
             Args:
-                fx:  X-coordinate of the pixel value (float-valued).
-                fy:  Y-coordinate of the pixel value (float-valued).
-                fz:  Z-coordinate of the pixel value (float-valued).
-                c:   C-coordinate of the pixel value.
+                fx (float): X-coordinate of the pixel value.
+                fy (float): Y-coordinate of the pixel value.
+                fz (float): Z-coordinate of the pixel value.
+                c (int):    C-coordinate of the pixel value.
 
             Returns: a linearly-interpolated pixel value of the image
                      instance located at (fx,fy,fz,c).
@@ -439,10 +445,10 @@ class CImg:
             and Neumann boundary conditions for the X,Y,Z and C-coordinates.
 
             Args:
-                fx:  X-coordinate of the pixel value (float-valued).
-                fy:  Y-coordinate of the pixel value (float-valued).
-                fz:  Z-coordinate of the pixel value (float-valued).
-                fc:  C-coordinate of the pixel value (float-valued).
+                fx (float): X-coordinate of the pixel value.
+                fy (float): Y-coordinate of the pixel value.
+                fz (float): Z-coordinate of the pixel value.
+                fc (float): C-coordinate of the pixel value.
 
             Returns: a linearly-interpolated pixel value of the image
                      instance located at (fx,fy,fz,fc).
@@ -541,8 +547,8 @@ class CImg:
         """ Compute the arctangent2 of each pixel value.
 
             Args:
-                img: Image whose pixel values specify the second
-                     argument of the atan2() function.
+                img (CImg): Image whose pixel values specify the second
+                            argument of the atan2() function.
 
         """
         self._cimg.atan2(img._cimg)
@@ -555,7 +561,7 @@ class CImg:
             the image instance and the specified input image img.
 
             Args:
-                img: Input image, second operand of the multiplication.
+                img (CImg): Input image, second operand of the multiplication.
         """
         self._cimg.mul(img._cimg)
         return self
@@ -567,7 +573,7 @@ class CImg:
             the image instance and the specified input image img.
 
             Args:
-                img: Input image, second operand of the division.
+                img (CImg): Input image, second operand of the division.
         """
         self._cimg.div(img._cimg)
         return self
@@ -576,7 +582,7 @@ class CImg:
         """ Raise each pixel value to the specified power.
 
             Args:
-                p: Exponent value.
+                p (int): Exponent value.
         """
         self._cimg.pow(p)
 
@@ -592,7 +598,7 @@ class CImg:
         """ Returns the kth smallest pixel value.
 
             Args:
-                k: Rank of the search smallest element.
+                k (int): Rank of the search smallest element.
 
             Returns: kth smallest pixel value.
         """
@@ -602,7 +608,7 @@ class CImg:
         """ Returns the variance of the pixel values.
 
             Args:
-                variance_method: Method used to estimate the variance.
+                variance_method (int): Method used to estimate the variance.
                                  Can be: SECOND_MOMENT | BEST_UNBIASED | LEAST_MEDIAN_SQ | LEAST_TRIMMED_SQ
 
             Returns: Variance of pixel values.
@@ -613,7 +619,7 @@ class CImg:
         """ Returns variance and average of pixel values.
 
             Args:
-                variance_method: Method used to estimate the variance.
+                variance_method (int): Method used to estimate the variance.
 
             Returns: Tuple with variance and mean of pixel values.
         """
@@ -623,7 +629,7 @@ class CImg:
         """ Returns estimated variance of noise.
 
             Args:
-                variance_method: Method used to estimate the variance.
+                variance_method (int): Method used to estimate the variance.
 
             Returns: Estimated variance of noise.
         """
@@ -633,7 +639,7 @@ class CImg:
         """ Compute the MSE (Mean-Squared Error) between two images.
 
             Args:
-                img: Image used as the second argument of the MSE operator.
+                img (CImg): Image used as the second argument of the MSE operator.
 
             Returns: mean squared error between self and img.
         """
@@ -643,8 +649,8 @@ class CImg:
         """ Compute the PSNR (Peak Signal-to-Noise Ratio) between two images.
 
             Args:
-                img: Image used as the second argument of the PSNR operator.
-                max_value: Maximum theoretical value of the signal.
+                img (CImg): Image used as the second argument of the PSNR operator.
+                max_value (float): Maximum theoretical value of the signal.
 
             Returns: peak signal-to-noise ratio between self and img.
         """
@@ -657,7 +663,7 @@ class CImg:
         """ Compute norm of the image, viewed as a matrix.
 
             Args:
-                magnitude_type: Norm type. Can be:
+                magnitude_type (int): Norm type. Can be:
                     LINF_NORM
                     L0_NORM
                     L1_NORM
@@ -671,7 +677,7 @@ class CImg:
         """ Compute the dot product between instance and argument, viewed as matrices"
 
             Args:
-                img: Image used as a second argument of the dot product.
+                img (CImg): Image used as a second argument of the dot product.
 
             Returns: Dot product between self and img.
         """
@@ -684,7 +690,7 @@ class CImg:
         """ Fill all pixel values with specified value.
 
             Args:
-                val: Fill value.
+                val (float): Fill value.
         """
         self._cimg.fill(val)
         return self
@@ -698,8 +704,8 @@ class CImg:
         """ Fill image with random values in specified range.
 
             Args:
-                val_min: Minimal authorized random value.
-                val_max: Maximal authorized random value.
+                val_min (float): Minimal authorized random value.
+                val_max (float): Maximal authorized random value.
         """
         self._cimg.rand(val_min, val_max)
         return self
@@ -708,8 +714,8 @@ class CImg:
         """ Round pixel values.
 
             Args:
-                y: Rounding precision.
-                rounding_type: Rounding type. Can be:
+                y (int): Rounding precision.
+                rounding_type (int): Rounding type. Can be:
                     R_BACKWARD, R_NEAREST, R_FORWARD
         """
         self._cimg.round(y, rounding_type)
@@ -719,16 +725,16 @@ class CImg:
         """ Add random noise to pixel values.
 
             Args:
-                sigma: Amplitude of the random additive noise.
-                       If sigma<0, it stands for a percentage of
-                       the global value range.
+                sigma (float): Amplitude of the random additive noise.
+                               If sigma<0, it stands for a percentage of
+                               the global value range.
 
-                noise_type: Type of additive noise (can be
-                            GAUSSIAN,
-                            UNIFORM,
-                            SALT_AND_PEPPER,
-                            POISSON or
-                            RICIAN).
+                noise_type (int): Type of additive noise (can be
+                                  GAUSSIAN,
+                                  UNIFORM,
+                                  SALT_AND_PEPPER,
+                                  POISSON or
+                                  RICIAN).
 
         """
         self._cimg.noise(sigma, noise_type)
@@ -738,8 +744,8 @@ class CImg:
         """ Linearly normalize pixel values.
 
             Args:
-                min_value: Minimum desired value of resulting image.
-                max_value: Maximum desired value of resulting image.
+                min_value (float): Minimum desired value of resulting image.
+                max_value (float): Maximum desired value of resulting image.
         """
         self._cimg.normalize(min_value, max_value)
         return self
@@ -756,7 +762,7 @@ class CImg:
             image instance.
 
             Args:
-                norm_type: Type of computed vector norm. Can be:
+                norm_type (int): Type of computed vector norm. Can be:
                 LINF_NORM, L0_NORM, L1_NORM, L2_NORM, or value p>2
         """
         self._cimg.norm(norm_type)
@@ -766,8 +772,8 @@ class CImg:
         """ Cut pixel values in specified range.
 
             Args:
-                min_value: Minimum desired value of resulting image.
-                max_value: Maximum desired value of resulting image.
+                min_value (float): Minimum desired value of resulting image.
+                max_value (float): Maximum desired value of resulting image.
         """
         self._cimg.cut(min_value, max_value)
         return self
@@ -776,9 +782,9 @@ class CImg:
         """ Uniformly quantize pixel values.
 
             Args:
-                nb_levels: Number of quantization levels.
-                keep_range: Tells if resulting values keep the same
-                            range as the original ones.
+                nb_levels (int): Number of quantization levels.
+                keep_range (bool): Tells if resulting values keep the same
+                                   range as the original ones.
 
         """
         self._cimg.quantize(nb_levels, keep_range)
@@ -788,10 +794,10 @@ class CImg:
         """ Threshold pixel values.
 
             Args:
-                value: Threshold value.
-                soft_threshold: Tells if soft thresholding must be
-                                applied (instead of hard one).
-                strict_threshold: Tells if threshold value is strict.
+                value (float): Threshold value.
+                soft_threshold (bool): Tells if soft thresholding must be
+                                        applied (instead of hard one).
+                strict_threshold (bool): Tells if threshold value is strict.
         """
         self._cimg.threshold(value, soft_threshold, strict_threshold)
         return self
@@ -800,13 +806,13 @@ class CImg:
         """ Compute the histogram of pixel values.
 
             Args:
-                nb_levels: Number of desired histogram levels.
-                min_value: Minimum pixel value considered for the
-                           histogram computation. All pixel values
-                           lower than min_value will not be counted.
-                max_value: Maximum pixel value considered for the
-                           histogram computation. All pixel values
-                           higher than max_value will not be counted.
+                nb_levels (int): Number of desired histogram levels.
+                min_value (float): Minimum pixel value considered for the
+                                   histogram computation. All pixel values
+                                   lower than min_value will not be counted.
+                max_value (float): Maximum pixel value considered for the
+                                   histogram computation. All pixel values
+                                   higher than max_value will not be counted.
         """
         self._cimg.histogram(nb_levels, min_value, max_value)
         return self
@@ -815,13 +821,13 @@ class CImg:
         """ Equalize histogram of pixel values.
 
             Args:
-                nb_levels: Number of desired histogram levels.
-                min_value: Minimum pixel value considered for the
-                           histogram computation. All pixel values
-                           lower than min_value will not be counted.
-                max_value: Maximum pixel value considered for the
-                           histogram computation. All pixel values
-                           higher than max_value will not be counted.
+                nb_levels (int): Number of desired histogram levels.
+                min_value (float): Minimum pixel value considered for the
+                                   histogram computation. All pixel values
+                                   lower than min_value will not be counted.
+                max_value (float): Maximum pixel value considered for the
+                                   histogram computation. All pixel values
+                                   higher than max_value will not be counted.
         """
         self._cimg.equalize(nb_levels, min_value, max_value)
         return self
@@ -830,11 +836,11 @@ class CImg:
         """ Index multi-valued pixels regarding to a specified colormap.
 
             Args:
-                colormap: Multi-valued colormap used as the basis for
-                          multi-valued pixel indexing.
-                dithering: Level of dithering (0=disable, 1=standard level).
-                map_indexes: Tell if the values of the resulting image are
-                             the colormap indices or the colormap vectors.
+                colormap (CImg): Multi-valued colormap used as the basis for
+                                 multi-valued pixel indexing.
+                dithering (int): Level of dithering (0=disable, 1=standard level).
+                map_indexes (bool): Tell if the values of the resulting image are
+                                    the colormap indices or the colormap vectors.
         """
         self._cimg.index(colormap._cimg, dithering, map_indexes)
         return self
@@ -843,8 +849,9 @@ class CImg:
         """ Map predefined colormap on the scalar (indexed) image instance.
 
             Args:
-                colormap: Multi-valued colormap used for mapping the indexes.
-                boundary_conditions: The border condition type. Can be:
+                colormap (CImg): Multi-valued colormap used for 
+                                 mapping the indexes.
+                boundary_conditions (int): The border condition type. Can be:
                     DIRICHLET, NEUMANN, PERIODIC, or MIRROR.
 
         """
@@ -855,11 +862,11 @@ class CImg:
         """ Label connected components.
 
             Args:
-                is_high_connectivity: Boolean that choose between 4(false)
+                is_high_connectivity (bool): Choose between 4(false)
                 - or 8(true)-connectivity in 2d case, and between 6(false)
                 - or 26(true)-connectivity in 3d case.
-                tolerance: Tolerance used to determine if two neighboring
-                pixels belong to the same region.
+                tolerance (float): Tolerance used to determine if two neighboring
+                                   pixels belong to the same region.
         """
         self._cimg.label(is_high_connectivity, tolerance)
         return self
@@ -876,11 +883,11 @@ class CImg:
         """ Resize image to new dimensions.
 
             Args:
-                size_x: Number of columns (new size along the X-axis).
-                size_y: Number of rows (new size along the Y-axis).
-                size_z: Number of slices (new size along the Z-axis).
-                size_c: Number of vector-channels (new size along the C-axis).
-                interpolation_type:  Method of interpolation:
+                size_x (int): Number of columns (new size along the X-axis).
+                size_y (int): Number of rows (new size along the Y-axis).
+                size_z (int): Number of slices (new size along the Z-axis).
+                size_c (int): Number of vector-channels (new size along the C-axis).
+                interpolation_type (int):  Method of interpolation:
                     NONE_RAW = no interpolation: raw memory resizing.
                     NONE = no interpolation: additional space is filled according to boundary_conditions.
                     NEAREST = nearest-neighbor interpolation.
@@ -889,12 +896,12 @@ class CImg:
                     GRID = grid interpolation.
                     CUBIC = cubic interpolation.
                     LANCZOS = lanczos interpolation.
-                boundary_conditions: Type of boundary conditions used if
+                boundary_conditions (int): Type of boundary conditions used if
                                      necessary. Can be: DIRICHLET | NEUMANN | PERIODIC | MIRROR
-                centering_x: Set centering type (only if interpolation_type=NONE).
-                centering_y: Set centering type (only if interpolation_type=NONE).
-                centering_z: Set centering type (only if interpolation_type=NONE).
-                centering_c: Set centering type (only if interpolation_type=NONE).
+                centering_x (int): Set centering type (only if interpolation_type=NONE).
+                centering_y (int): Set centering type (only if interpolation_type=NONE).
+                centering_z (int): Set centering type (only if interpolation_type=NONE).
+                centering_c (int): Set centering type (only if interpolation_type=NONE).
 
         """
         self._cimg.resize(size_x, size_y, size_z, size_c,
@@ -925,7 +932,7 @@ class CImg:
         """ Mirror image content along specified axes.
 
             Args:
-                axes: Mirror axes as string, e.g. "x" or "xyz"
+                axes (str): Mirror axes as string, e.g. "x" or "xyz"
         """
         self._cimg.mirror(axes)
         return self
@@ -934,11 +941,11 @@ class CImg:
         """ Shift image content.
 
             Args:
-                delta_x: Amount of displacement along the X-axis.
-                delta_y: Amount of displacement along the Y-axis.
-                delta_z: Amount of displacement along the Z-axis.
-                delta_c: Amount of displacement along the C-axis.
-                boundary_conditions: Border condition.
+                delta_x (int): Amount of displacement along the X-axis.
+                delta_y (int): Amount of displacement along the Y-axis.
+                delta_z (int): Amount of displacement along the Z-axis.
+                delta_c (int): Amount of displacement along the C-axis.
+                boundary_conditions (int): Border condition.
         """
         self._cimg.shift(delta_x, delta_y, delta_z, delta_c, boundary_conditions)
         return self
@@ -947,7 +954,7 @@ class CImg:
         """ Permute axes order.
 
             Args:
-                order: Axes permutations as string of length 4.
+                order (str): Axes permutations as string of length 4.
 
             Raises: RuntimeError if order is invalid.
         """
@@ -960,7 +967,7 @@ class CImg:
         """ Unroll pixel values along specified axis.
 
             Args:
-                axis: 'x', 'y', 'z', or 'c'.
+                axis (str): 'x', 'y', 'z', or 'c'.
 
             Raises: RuntimeError if axis is invalid.
         """
@@ -973,10 +980,10 @@ class CImg:
         """ Rotate image with arbitrary angle.
 
             Args:
-                angle: Rotation angle, in degrees.
-                interpolation: Type of interpolation.
+                angle (float): Rotation angle, in degrees.
+                interpolation (int): Type of interpolation.
                                Can be { 0=nearest | 1=linear | 2=cubic | 3=mirror }.
-                boundary_conditions: Boundary conditions.
+                boundary_conditions (int): Boundary conditions.
         """
         self._cimg.rotate(angle, interpolation, boundary_conditions)
         return self
@@ -985,15 +992,15 @@ class CImg:
         """ Crop image region.
 
             Args:
-               x0: X-coordinate of the upper-left crop rectangle corner.
-               y0: Y-coordinate of the upper-left crop rectangle corner.
-               z0: Z-coordinate of the upper-left crop rectangle corner.
-               c0: C-coordinate of the upper-left crop rectangle corner.
-               x1: X-coordinate of the lower-right crop rectangle corner.
-               y1: Y-coordinate of the lower-right crop rectangle corner.
-               z1: Z-coordinate of the lower-right crop rectangle corner.
-               c1: C-coordinate of the lower-right crop rectangle corner.
-               boundary_conditions: boundary conditions.
+               x0 (int): X-coordinate of the upper-left crop rectangle corner.
+               y0 (int): Y-coordinate of the upper-left crop rectangle corner.
+               z0 (int): Z-coordinate of the upper-left crop rectangle corner.
+               c0 (int): C-coordinate of the upper-left crop rectangle corner.
+               x1 (int): X-coordinate of the lower-right crop rectangle corner.
+               y1 (int): Y-coordinate of the lower-right crop rectangle corner.
+               z1 (int): Z-coordinate of the lower-right crop rectangle corner.
+               c1 (int): C-coordinate of the lower-right crop rectangle corner.
+               boundary_conditions (int): boundary conditions.
         """
         self._cimg.crop(x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions)
         return self
@@ -1002,8 +1009,8 @@ class CImg:
         """ Autocrop image region, regarding the specified background color.
 
             Args:
-                color: Color used for the crop. If 0, color is guessed.
-                axes: Axes used for crop.
+                color (int/list): Color used for the crop. If 0, color is guessed.
+                axes (str): Axes used for crop.
 
         """
         if color != 0:
@@ -1030,10 +1037,10 @@ class CImg:
         """ Convolve image by a kernel.
 
             Args:
-                kernel: the correlation kernel.
-                boundary_conditions: boundary conditions can be
+                kernel (CImg): the correlation kernel.
+                boundary_conditions (bool): boundary conditions can be
                                     (False=dirichlet, True=neumann)
-                is_normalized: enable local normalization.
+                is_normalized (bool): enable local normalization.
         """
         self._cimg.convolve(kernel._cimg, boundary_conditions, is_normalized)
         return self
@@ -1042,7 +1049,7 @@ class CImg:
         """ Cumulate image values, optionally along specified axes.
 
             Args:
-                axes: Cumulation axes as string, e.g. "x" or "xyz".
+                axes (str): Cumulation axes as string, e.g. "x" or "xyz".
         """
         self._cimg.cumulate(axes)
         return self
@@ -1051,10 +1058,10 @@ class CImg:
         """ Erode image by a structuring element.
 
             Args:
-                kernel:	Structuring element.
-                boundary_conditions: Boundary conditions.
-                is_real: Do the erosion in real (a.k.a 'non-flat') mode (true)
-                         rather than binary mode (false).
+                kernel (CImg):	Structuring element.
+                boundary_conditions (bool): Boundary conditions.
+                is_real (bool): Do the erosion in real (a.k.a 'non-flat') 
+                                mode (true) rather than binary mode (false).
         """
         self._cimg.erode(kernel._cimg, boundary_conditions, is_real)
         return self
@@ -1063,10 +1070,10 @@ class CImg:
         """ Dilate image by a structuring element.
 
             Args:
-                kernel:	Structuring element.
-                boundary_conditions: Boundary conditions.
-                is_real: Do the erosion in real (a.k.a 'non-flat') mode (true)
-                         rather than binary mode (false).
+                kernel (CImg):	Structuring element.
+                boundary_conditions (bool): Boundary conditions.
+                is_real (bool): Do the erosion in real (a.k.a 'non-flat') 
+                                mode (true) rather than binary mode (false).
         """
         self._cimg.dilate(kernel._cimg, boundary_conditions, is_real)
         return self
@@ -1075,8 +1082,8 @@ class CImg:
         """ Compute watershed transform.
 
             Args:
-                priority: Priority map.
-                is_high_connectivity: Boolean that choose between 4(false)- or
+                priority (CImg): Priority map.
+                is_high_connectivity (bool): Choose between 4(false)- or
                                       8(true)-connectivity in 2d case,
                                       and between 6(false)- or
                                       26(true)-connectivity in 3d case.
@@ -1088,12 +1095,12 @@ class CImg:
         """ Apply recursive Deriche filter.
 
             Args:
-                sigma: Standard deviation of the filter.
-                order: Order of the filter. Can be:
+                sigma (float): Standard deviation of the filter.
+                order (int): Order of the filter. Can be:
                        SMOOTH_FILTER, FIRST_DERIV, or SECOND_DERIV.
-                axis: Axis along which the filter is computed. Can be:
+                axis (str): Axis along which the filter is computed. Can be:
                       { 'x' | 'y' | 'z' | 'c' }.
-                boundary_conditions: Boundary conditions. Can be:
+                boundary_conditions (bool): Boundary conditions. Can be:
                       { False=dirichlet | True=neumann }.
         """
         self._cimg.deriche(sigma, order, axis, boundary_conditions)
@@ -1103,12 +1110,12 @@ class CImg:
         """ Van Vliet recursive Gaussian filter.
 
             Args:
-                sigma: Standard deviation of the Gaussian filter.
-                order: Order of the filter. Can be:
+                sigma (float): Standard deviation of the Gaussian filter.
+                order (int): Order of the filter. Can be:
                        SMOOTH_FILTER, FIRST_DERIV, SECOND_DERIV, or THIRD_DERIV.
-                axis: Axis along which the filter is computed. Can be:
+                axis (str): Axis along which the filter is computed. Can be:
                       { 'x' | 'y' | 'z' | 'c' }.
-                boundary_conditions: Boundary conditions. Can be:
+                boundary_conditions (bool): Boundary conditions. Can be:
                       { False=dirichlet | True=neumann }.
         """
         self._cimg.vanvliet(sigma, order, axis, boundary_conditions)
@@ -1122,10 +1129,10 @@ class CImg:
             not depending on the values of the standard deviations.
 
             Args:
-                sigma: Standard deviation of the blur.
-                boundary_conditions: Boundary conditions. Can be
+                sigma (float): Standard deviation of the blur.
+                boundary_conditions (bool): Boundary conditions. Can be
                                      { False=dirichlet | True=neumann }.
-                is_gaussian: Tells if the blur uses a gaussian (True)
+                is_gaussian (bool): Tells if the blur uses a gaussian (True)
                              or quasi-gaussian (False) kernel.
         """
         self._cimg.blur(sigma, boundary_conditions, is_gaussian)
@@ -1135,13 +1142,13 @@ class CImg:
         """ Apply box filter to image.
 
             Args:
-                boxsize: Size of the box window (can be subpixel)
-                order:   the order of the filter 0,1 or 2.
-                axis:    Axis along which the filter is computed.
+                boxsize (float): Size of the box window (can be subpixel)
+                order (int):   the order of the filter 0,1 or 2.
+                axis (str):    Axis along which the filter is computed.
                          Can be { 'x' | 'y' | 'z' | 'c' }.
-                boundary_conditions: Boundary conditions. Can be
+                boundary_conditions (bool): Boundary conditions. Can be
                                      { False=dirichlet | True=neumann }.
-                nb_iter: Number of filter iterations.
+                nb_iter (int): Number of filter iterations.
         """
         self._cimg.boxfilter(boxsize, order, axis, boundary_conditions, nb_iter)
         return self
@@ -1150,8 +1157,8 @@ class CImg:
         """ Blur image with a box filter.
 
             Args:
-                boxsize: Size of the box window (can be subpixel).
-                boundary_conditions: Boundary conditions. Can be
+                boxsize (int): Size of the box window (can be subpixel).
+                boundary_conditions (bool): Boundary conditions. Can be
                                      { False=dirichlet | True=neumann }.
         """
         self._cimg.blur_box(boxsize, boundary_conditions)
@@ -1161,8 +1168,8 @@ class CImg:
         """ Blur image with the median filter.
 
             Args:
-                n: Size of the median filter.
-                threshold: Threshold used to discard pixels too far
+                n (int): Size of the median filter.
+                threshold (float): Threshold used to discard pixels too far
                            from the current pixel value in the median computation.
         """
         self._cimg.blur_median(n, threshold)
@@ -1172,12 +1179,12 @@ class CImg:
         """ Sharpen image.
 
             Args:
-                amplitude: Sharpening amplitude
-                sharpen_type: Select sharpening method. Can be
+                amplitude (float): Sharpening amplitude
+                sharpen_type (bool): Select sharpening method. Can be
                               { False=inverse diffusion | True=shock filters }.
-                edge: Edge threshold (shock filters only).
-                alpha: Gradient smoothness (shock filters only).
-                sigma: Tensor smoothness (shock filters only).
+                edge (int): Edge threshold (shock filters only).
+                alpha (float): Gradient smoothness (shock filters only).
+                sigma (float): Tensor smoothness (shock filters only).
 
         """
         self._cimg.sharpen(amplitude, sharpen_type, edge, alpha, sigma)
@@ -1201,14 +1208,14 @@ class CImg:
         """ Draw a filled 2d triangle.
 
             Args:
-                x0: X-coordinate of the first vertex.
-                y0: Y-coordinate of the first vertex.
-                x1: X-coordinate of the second vertex.
-                y1: Y-coordinate of the second vertex.
-                x2: X-coordinate of the third vertex.
-                y2: Y-coordinate of the third vertex.
-                color: List of color value with spectrum() entries.
-                opacity: Drawing opacity.
+                x0 (int): X-coordinate of the first vertex.
+                y0 (int): Y-coordinate of the first vertex.
+                x1 (int): X-coordinate of the second vertex.
+                y1 (int): Y-coordinate of the second vertex.
+                x2 (int): X-coordinate of the third vertex.
+                y2 (int): Y-coordinate of the third vertex.
+                color (list): List of color value with spectrum() entries.
+                opacity (float): Drawing opacity.
 
             Raises:
                 RuntimeError: If list of color values does not have spectrum() entries.
@@ -1221,12 +1228,12 @@ class CImg:
         """ Draw a filled 2d rectangle.
 
             Args:
-                x0: X-coordinate of the upper-left rectangle corner.
-                y0: Y-coordinate of the upper-left rectangle corner.
-                x1: X-coordinate of the lower-right rectangle corner.
-                y1: Y-coordinate of the lower-right rectangle corner.
-                color: List of color value with spectrum() entries.
-                opacity: Drawing opacity.
+                x0 (int): X-coordinate of the upper-left rectangle corner.
+                y0 (int): Y-coordinate of the upper-left rectangle corner.
+                x1 (int): X-coordinate of the lower-right rectangle corner.
+                y1 (int): Y-coordinate of the lower-right rectangle corner.
+                color (list): List of color value with spectrum() entries.
+                opacity (float): Drawing opacity.
 
             Raises:
                 RuntimeError: If list of color values does not have spectrum() entries.
@@ -1240,9 +1247,9 @@ class CImg:
         """ Draw filled 2d polygon.
 
         Args:
-            points: (n x 2) numpy array of polygon vertices
-            color: List of color value with spectrum() entries.
-            opacity: Drawing opacity.
+            points (ndarray): (n x 2) numpy array of polygon vertices
+            color (list): List of color value with spectrum() entries.
+            opacity (float): Drawing opacity.
 
         Raises:
             RuntimeError: If list of color values does not have spectrum() entries.
@@ -1255,11 +1262,11 @@ class CImg:
         """ Draw a filled 2d circle.
 
         Args:
-            x0:  X-coordinate of the circle center.
-            y0:  Y-coordinate of the circle center.
-            radius:  Circle radius.
-            color: List of color value with spectrum() entries.
-            opacity: Drawing opacity.
+            x0 (int):  X-coordinate of the circle center.
+            y0 (int):  Y-coordinate of the circle center.
+            radius (float):  Circle radius.
+            color (list): List of color value with spectrum() entries.
+            opacity (float): Drawing opacity.
 
         Raises:
             RuntimeError: If list of color values does not have spectrum() entries.
