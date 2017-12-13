@@ -374,7 +374,7 @@ class CImg:
             Note that the data of the array is shared
             with the image instance. Changes to the array
             therefore propagate to the image.
-       
+
         """
         return self._cimg.asarray()
 
@@ -609,7 +609,10 @@ class CImg:
 
             Args:
                 variance_method (int): Method used to estimate the variance.
-                                 Can be: SECOND_MOMENT | BEST_UNBIASED | LEAST_MEDIAN_SQ | LEAST_TRIMMED_SQ
+                                       Can be: SECOND_MOMENT
+                                               BEST_UNBIASED
+                                               LEAST_MEDIAN_SQ
+                                               LEAST_TRIMMED_SQ
 
             Returns: Variance of pixel values.
         """
@@ -849,7 +852,7 @@ class CImg:
         """ Map predefined colormap on the scalar (indexed) image instance.
 
             Args:
-                colormap (CImg): Multi-valued colormap used for 
+                colormap (CImg): Multi-valued colormap used for
                                  mapping the indexes.
                 boundary_conditions (int): The border condition type. Can be:
                     DIRICHLET, NEUMANN, PERIODIC, or MIRROR.
