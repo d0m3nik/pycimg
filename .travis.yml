@@ -1,34 +1,32 @@
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      language: generic
-      sudo: required
-      services:
-        - docker
-      env: DOCKER_IMAGE=d0m3nik/cython-primary:0.0.7
-    - os: osx
-      osx_image: xcode9
-      language: generic
-      sudo: required
-      env: PYTHON_VERSION=py35
-    - os: osx
-      osx_image: xcode9
-      language: generic
-      sudo: required
-      env: PYTHON_VERSION=py36
-    # - os: osx
-    #   osx_image: xcode7.3
-    #   language: generic
-    #   sudo: required
-    # - os: osx
-    #   osx_image: xcode6.4
-    #   language: generic
-    #   sudo: required
-
+  - os: linux
+    dist: trusty
+    language: generic
+    sudo: required
+    services:
+    - docker
+    env: DOCKER_IMAGE=d0m3nik/cython-primary:0.0.7
+  - os: osx
+    osx_image: xcode9
+    language: generic
+    sudo: required
+    env: PYTHON_VERSION=py35
+  - os: osx
+    osx_image: xcode9
+    language: generic
+    sudo: required
+    env: PYTHON_VERSION=py36
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
-
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
 script:
-  - ./build_travis.sh
-  - ls dist/
+- ./build_travis.sh
+- ls dist/
+deploy:
+  provider: pypi
+  user: d0m3nik
+  password: 
+  on:
+    tags: true
+dd:
+  secure: jBkwv/w4q309v9QQAYh+FcbNuZ0Dl7ZZdfdxVMB58avOAB9+fzg5bUZxyX6gonlnGaBrPmKjPeAPZawTaBVka/4QcIqVH4gnoBd8NJrliweO/CdDVHRFV742ndXRBPIfzyyOpW/ovDxfBEQZ8FiNkU1FtFKH4cj2UMkK5aAEbYIonXZZAEG+fa3Z8JbNr7/R9XlM2YLzzXFRZ4qICycGL8cFdx8ZJUupKtFkksswTniUWSK+cFZwebdGspRMvXUCWwrUFJkg+/crBFCNXXo5Agsf/vDMITWDQr1Z9Bngo3I48FTQQll6Xv1/iUgFZM6Yiq1kotKbecdm7b1o2Cpuxy7Iz4XhtQDxVAw8uF8A0arV/0EVCLytVKohBuGzbKakK6FxpOghEisH73qMnoEmiNp9J+DxrqcQG5WuEFdK+opKx3RuJnfx7zFH6LJuQh8myBz0LHepjch6HKEQ7TJiXiH/lGKIhQ5SQ324Yr7TX+sMEWJulLVXa7bNFZMtYUGG5TLOhym52DXB2hL4kTsUw//cISoCS6F6YwzjL9qsnU3U5qMTz/3OvQDtM4CgsT5lv0o6Z/QLSz4yzUKL1v82xY/s+fOMpdSpquu0VFfgHIWJq9Z46UiQAOt0AntChEOEbqpMui5VMtOp4LEztMGCAirJZt65b5q8WcMjypkdQFw=
