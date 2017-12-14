@@ -8,9 +8,10 @@ brew install autoconf automake libtool nasm
 ./build_thirdparty.sh
 
 # Install pyenv
-brew install pyenv
+brew upgrade pyenv
 eval "$(pyenv init -)"
 
+pyenv install --list
 case "${PYTHON_VERSION}" in
   # py27)
   #   curl -O https://bootstrap.pypa.io/get-pip.py
