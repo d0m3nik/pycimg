@@ -66,7 +66,7 @@ ext = Extension("pycimg.pycimg",
                 extra_link_args=extra_link_args)
 
 setup(name="pycimg",
-      version="0.0.1a2",
+      version="0.0.1a0",
       description="Python extension for the CImg library.",
       long_description=long_description,
       url="https://github.com/d0m3nik/pycimg",
