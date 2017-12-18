@@ -83,6 +83,6 @@ setup(name="pycimg",
               ],
       keywords="image processing library",
       install_requires=["numpy"],
-      python_requires="~=2.7",
+      python_requires=">=3.5",
       packages=find_packages(exclude=['test', 'docs']),
       ext_modules=cythonize(ext))
