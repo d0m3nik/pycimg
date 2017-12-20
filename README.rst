@@ -65,10 +65,12 @@ The project is licensed under the GPL3 license.
 
 TODO
 ----
-- [] Setup PyPI distribution
+- [x] Setup PyPI distribution
 - [] Add more unit tests
-- [x] Add docs
 - [] Add tutorial
+- [] Support numpy array interface
+- [] Operator overloads
+- [] Colorspace methods
 - [] Add support for different Mac OS X versions
 - [] Support python2.7, 3.4, 3.5, 3.6
 

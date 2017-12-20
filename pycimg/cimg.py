@@ -5,6 +5,10 @@ from .pycimg import CImg_int8, CImg_int16, CImg_int32
 from .pycimg import CImg_uint8, CImg_uint16, CImg_uint32
 from .pycimg import CImg_float32, CImg_float64
 
+
+# Set __version__
+_here = os.path.abspath(os.path.dirname(__file__))
+
 # Supported numeric pixel type
 int8 = np.int8
 int16 = np.int16
@@ -124,16 +128,19 @@ class CImg:
             self._cimg = CImg_float64()
         else:
             raise RuntimeError("Unknown data type '{}'".format(dtype))
-
+#        if len(args) == 0:
+#            self.resize(1, 1, 1, 1, interpolation_type=NONE_RAW)
         if len(args) == 1:
             if isinstance(args[0], str):
                 self.load(args[0])
             elif isinstance(args[0], np.ndarray):
                 self._cimg.fromarray(args[0])
             elif isinstance(args[0], tuple):
-                self.resize(*args[0], interpolation_type=NONE_RAW)
+                shape = [max(1, sz) for sz in args[0]]
+                self.resize(*shape, interpolation_type=NONE_RAW)
             elif isinstance(args[0], int):
-                self.resize(args[0], interpolation_type=NONE_RAW)
+                sz = max(1, args[0])
+                self.resize(sz, interpolation_type=NONE_RAW)
             else:
                 raise RuntimeError("Type of first argument not supported")
         elif len(args) > 1:
@@ -145,16 +152,28 @@ class CImg:
     def __neq__(self, img):
         return self._cimg._not_equal(img._cimg)
 
+    def isempty(self):
+        return self.width == 0 and  \
+               self.height == 0 and \
+               self.depth == 0 and  \
+               self.spectrum == 0
+
     def __repr__(self):
+        if self.isempty():
+            return 'CImg()'
         return 'CImg(' + repr(self.asarray()) + ')'
 
     def __str__(self):
+        if self.isempty():
+            arr = None
+        else:
+            arr = self.asarray()
         return "%s %5d\n%s %5d\n%s %5d\n%s %5d\n%s\n%s" % \
                 ("height:  ", self.height,
                  "width:   ", self.width,
                  "depth:   ", self.depth,
                  "spectrum:", self.spectrum,
-                 "data:    ", self.asarray())
+                 "data:    ", arr)
 
     def load(self, filename):
         """ Load image from a file.
@@ -1021,6 +1040,18 @@ class CImg:
         self._cimg.autocrop(color, axes)
         return self
 
+    def append(self, img, axis='x', align=0):
+        """ Append two images along specified axis.
+
+            Args:
+                img (CImg): Image to append with instance image.
+                axis (str): Appending axis. Can be { 'x' | 'y' | 'z' | 'c' }.
+                align (float): Append alignment in [0,1]. 
+        """
+        self._cimg.append(img._cimg, axis, align)
+        return self
+
+
     ############################################################################
     # Filtering / Transforms
     ############################################################################
@@ -1277,6 +1308,26 @@ class CImg:
         color = self._check_color(color)
         self._cimg.draw_circle(x0, y0, radius, color, opacity)
         return self
+
+    def draw_text(self, x0, y0, text, foreground_color, 
+                  background_color, opacity=1, font_height=13):
+        """ Draw a text string.
+
+            Args:
+                x0 (int): X-coordinate of the text in the image instance.
+                y0 (int): Y-coordinate of the text in the image instance.
+                text (str): The text.
+                foreground_color (list): List of color value with spectrum() entries.
+                background_color (list): List of color value with spectrum() entries.
+                opacity (float): Drawing opacity.
+                font_height (int): Height of the text font 
+                    (exact match for 13,23,53,103, interpolated otherwise). 
+        """
+        fc = self._check_color(foreground_color)
+        bc = self._check_color(background_color)
+        self._cimg.draw_text(x0, y0, text, fc, bc, opacity, font_height)
+        return self
+
 
     def display(self):
         """ Display image into a CImgDisplay window."""

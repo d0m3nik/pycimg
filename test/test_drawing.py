@@ -67,6 +67,23 @@ class TestDrawing(unittest.TestCase):
                                       [1, 0, 0, 0, 0]])*255)
         self.assertEqual(img, img_expected)
 
+    def test_draw_text(self):
+        """ Test draw text. """
+        img = CImg((10, 10))
+        img.draw_text(0, 0, 'A', 1, 0)
+        img_expected = CImg(np.array(
+        [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+         [0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+         [0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+         [0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+         [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+         [0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+         [0, 1, 0, 0, 0, 1, 0, 0, 0, 0]]))
+        self.assertEqual(img, img_expected)
+
 if __name__ == '__main__':
     unittest.main() 
             

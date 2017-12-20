@@ -440,6 +440,13 @@ cdef class CImg_{T}:
             self._cimg.autocrop(<{T}*>0, _axes)
         return self
 
+    def append(self, img, axis, align):
+        cdef CImg_{T} _img = img
+        byte_string = axis.encode('UTF-8')
+        cdef char* _axis = byte_string
+        self._cimg.append(_img._cimg, _axis[0], align)
+
+
     ############################################################################
     # Filtering / Transforms 
     ############################################################################
@@ -530,6 +537,15 @@ cdef class CImg_{T}:
     def draw_circle(self, x0, y0, radius, color, opacity):
         cdef vector[{T}] _color = color
         self._cimg.draw_circle(x0, y0, radius, _color.data(), opacity)
+    
+    def draw_text(self, x0, y0, text, foreground_color, 
+                  background_color, opacity, font_height):
+        cdef vector[{T}] _fc = foreground_color
+        cdef vector[{T}] _bc = background_color
+        byte_string = text.encode('UTF-8')
+        cdef char* _text = byte_string
+        self._cimg.draw_text(x0, y0, _text, _fc.data(), _bc.data(), 
+                             opacity, font_height)
 
     def display(self):
         self._cimg.display()

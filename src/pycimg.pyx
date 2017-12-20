@@ -275,6 +275,14 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                           int radius,
                           const T* const color,
                           const float opacity)
+
+        CImg& draw_text(const int x0,
+		        const int y0,
+	        	const char *const text,
+	        	const T* const foreground_color,
+	        	const T* const background_color,
+	        	const float opacity,
+	        	const unsigned int font_height) 	
         
 
 

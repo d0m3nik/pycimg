@@ -1,13 +1,25 @@
 from setuptools import setup, Extension, distutils, find_packages
 from Cython.Build import cythonize
-from codecs import open
-from os import path
+import codecs
+import os
+import re
 
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
+
+def read(*parts):
+    with codecs.open(os.path.join(here, *parts), 'r') as fp:
+        return fp.read()
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
+long_description = read('README.rst')
 
 platform = distutils.sys.platform
 
@@ -66,7 +78,7 @@ ext = Extension("pycimg.pycimg",
                 extra_link_args=extra_link_args)
 
 setup(name="pycimg",
-      version="0.0.1a2",
+      version=find_version("pycimg", "__init__.py"),
       description="Python extension for the CImg library.",
       long_description=long_description,
       url="https://github.com/d0m3nik/pycimg",

@@ -158,7 +158,29 @@ class TestGeometricSpatial(unittest.TestCase):
             [2, 2],
             [1, 1]
             ]))
-        print(img.asarray())
+        self.assertEqual(img, img_expected)
+
+    def test_append(self):
+        """ Test append. """
+        img = CImg(np.array([
+            [1, 1],
+            [1, 1],
+            [0, 1],
+            [0, 1]
+            ]))
+        img_b = CImg(np.array([
+            [0, 0],
+            [0, 0],
+            [0, 0],
+            [0, 0]
+            ]))
+        img.append(img_b)
+        img_expected = CImg(np.array([
+            [1, 1, 0, 0],
+            [1, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0]
+            ]))
         self.assertEqual(img, img_expected)
 
 if __name__ == '__main__':
