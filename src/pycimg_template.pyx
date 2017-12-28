@@ -547,9 +547,19 @@ cdef class CImg_{T}:
         self._cimg.draw_text(x0, y0, _text, _fc.data(), _bc.data(), 
                              opacity, font_height)
 
-    def display(self):
-        self._cimg.display()
-
-    def display_graph(self):
+    def display(self, title):
+        byte_string = title.encode('UTF-8')
+        cdef char* _title = byte_string
+        self._cimg.display(_title)
+    
+    def display_graph(self, plot_type, vertex_type,
+                      labelx, xmin, xmax,
+                      labely, ymin, ymax):
         cdef CImgDisplay disp = CImgDisplay()
-        self._cimg.display_graph(disp)
+        byte_string = labelx.encode('UTF-8')
+        cdef char* _labelx = byte_string
+        byte_string = labely.encode('UTF-8')
+        cdef char* _labely = byte_string
+        self._cimg.display_graph(disp, plot_type, vertex_type,
+                                 _labelx, xmin, xmax,
+                                 _labely, ymin, ymax)

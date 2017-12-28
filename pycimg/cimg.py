@@ -75,6 +75,12 @@ FIRST_DERIV = 1
 SECOND_DERIV = 2
 THIRD_DERIV = 3
 
+# Plot type
+POINTS = 0
+SEGMENTS = 1
+SPLINES = 2
+BARS = 3
+
 
 class CImg:
     """ CImg is a wrapper class for the CImg library: """
@@ -128,8 +134,6 @@ class CImg:
             self._cimg = CImg_float64()
         else:
             raise RuntimeError("Unknown data type '{}'".format(dtype))
-#        if len(args) == 0:
-#            self.resize(1, 1, 1, 1, interpolation_type=NONE_RAW)
         if len(args) == 1:
             if isinstance(args[0], str):
                 self.load(args[0])
@@ -174,6 +178,61 @@ class CImg:
                  "depth:   ", self.depth,
                  "spectrum:", self.spectrum,
                  "data:    ", arr)
+
+    def _check_index(self, index):
+        cls = type(self)
+        def raiseError():
+            msg = 'only integers and slices (`:`) are valid indices'
+            raise IndexError(msg.format(cls=cls))
+
+        # Handle special case of single index
+        if isinstance(index, numbers.Integral):
+            index = tuple([index])
+        if isinstance(index, tuple):
+            # Check number of indices
+            if len(index) > 4:
+                raise IndexError('Image has < 5 dimensions.')
+            index = list(index)
+            # Case 1: indices are a mix of integers and slices
+            if any(map(lambda t: isinstance(t, slice), index)):
+                # Expand integers to slices 
+                slice_index = []
+                for idx in index:
+                    if isinstance(idx, numbers.Integral):
+                        slice_index.append(slice(idx, idx+1, None))
+                    elif isinstance(idx, slice):
+                        slice_index.append(idx)
+                    else:
+                        raiseError()
+                index = slice_index
+                # Expand slices to cover all dimensions
+                while len(index) < 4:
+                    index.append(slice(None, None, None))
+                index = list(reversed(index))
+                return (index, True)
+            # Case 2: all indices are integers
+            elif all(map(lambda t: isinstance(t, numbers.Integral), index)):
+                # Expand indices to cover all dimensions
+                while len(index) < 4:
+                    index.append(0)
+                index = tuple(reversed(index))
+                return (index, False)
+            else:
+                raiseError()
+        else:
+            raiseError()
+
+    def __getitem__(self, index):
+        index, is_slice = self._check_index(index)
+        if is_slice:
+            cls = type(self)
+            return cls(self.asarray()[index])
+        else:
+            return self.asarray()[index]
+
+    def __setitem__(self, index, value):
+        index, is_slice = self._check_index(index)
+        self.asarray()[index] = value
 
     def load(self, filename):
         """ Load image from a file.
@@ -1328,12 +1387,31 @@ class CImg:
         self._cimg.draw_text(x0, y0, text, fc, bc, opacity, font_height)
         return self
 
+    def display(self, title=""):
+        """ Display image into a CImgDisplay window.
 
-    def display(self):
-        """ Display image into a CImgDisplay window."""
-        self._cimg.display()
+            Args:
+                title (str): Title of window.
+        
+        """
+        self._cimg.display(title)
 
-    def display_graph(self):
-        """ Display 1d graph in an interactive window. """
-        self._cimg.display_graph()
-
+    def display_graph(self, plot_type=SEGMENTS, vertex_type=1,
+                      labelx="", xmin=0, xmax=0,
+                      labely="", ymin=0, ymax=0):
+        """ Display 1d graph in an interactive window. 
+        
+            Args:
+                plot_type (int): Plot type. 
+                                 Can be POINTS | SEGMENTS | SPLINES | BARS.
+                vertex_type (int): Vertex type.
+                labelx (str): Title for the horizontal axis.
+                xmin (int): Minimum value along the X-axis.
+                xmax (int): Maximum value along the X-axis.
+                labely (str): Title for the vertical axis.
+                ymin (int): Minimum value along the X-axis.
+                ymax (int): Maximum value along the X-axis. 
+        """
+        self._cimg.display_graph(plot_type, vertex_type, 
+                                 labelx, xmin, xmax,
+                                 labely, ymin, ymax)

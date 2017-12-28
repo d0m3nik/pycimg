@@ -65,8 +65,16 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         bool operator==(const CImg& img)
         bool operator!=(const CImg& img)
 
-        const CImg& display() except + 
-        const CImg& display_graph(CImgDisplay& disp) except +
+        const CImg& display(const char* const title) except + 
+        const CImg& display_graph(CImgDisplay& disp,
+                                  const unsigned int plot_type,
+                                  const unsigned int vertex_type,
+                                  const char* const labelx,
+                                  const double xmin,
+                                  const double xmax,
+                                  const char* const labely,
+                                  const double ymin,
+                                  const double ymax) except +
 
         # Instance characteristics
         int width() const
