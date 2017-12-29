@@ -5,10 +5,6 @@ from .pycimg import CImg_int8, CImg_int16, CImg_int32
 from .pycimg import CImg_uint8, CImg_uint16, CImg_uint32
 from .pycimg import CImg_float32, CImg_float64
 
-
-# Set __version__
-_here = os.path.abspath(os.path.dirname(__file__))
-
 # Supported numeric pixel type
 int8 = np.int8
 int16 = np.int16
