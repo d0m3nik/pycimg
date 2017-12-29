@@ -18,10 +18,12 @@ matrix:
     sudo: required
     env: PYTHON_VERSION=py36
 before_install:
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
 script:
-- "./build_travis.sh"
-- ls dist/
+  - "./build_travis.sh"
+  - ls dist/
+before_deploy:
+  - pip install -r requirements_dev.txt 
 deploy:
   provider: pypi
   distributions: "bdist_wheel"
