@@ -23,7 +23,7 @@ script:
   - "./build_travis.sh"
   - ls dist/
 before_deploy:
-  - pip install --user -r requirements_dev.txt 
+  - pip install --user --ignore-installed -r requirements_dev.txt 
 deploy:
   provider: pypi
   distributions: "bdist_wheel"

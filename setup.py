@@ -3,6 +3,7 @@ from Cython.Build import cythonize
 import codecs
 import os
 import re
+import sys
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,15 +22,13 @@ def find_version(*file_paths):
 # Get the long description from the README file
 long_description = read('README.rst')
 
-platform = distutils.sys.platform
-
 extra_compile_args = []
 extra_link_args = []
 library_dirs = []
 libraries = []
 include_dirs = []
 
-if 'linux' in platform:
+if 'linux' in sys.platform:
     extra_compile_args = ["-std=c++11", "-fPIC"]
     extra_link_args = ["-std=c++11"]
     library_dirs = ["./thirdparty/zlib/build",
@@ -38,7 +37,7 @@ if 'linux' in platform:
                     "./thirdparty/libtiff/build/libtiff"]
     libraries = ["pthread", "X11", ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
 
-elif 'darwin' in platform:
+elif 'darwin' in sys.platform:
     extra_compile_args = ["-std=c++11", "-stdlib=libc++", "-fPIC"]
     extra_link_args = ["-std=c++11",
                        "./thirdparty/zlib/build/libz.a",
@@ -49,7 +48,7 @@ elif 'darwin' in platform:
     library_dirs = ["/usr/X11R6/lib"]
     libraries = ["pthread", "X11"]
 
-elif platform == 'win32':
+elif sys.platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
     extra_compile_args = ["/MD"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
@@ -60,7 +59,7 @@ elif platform == 'win32':
     libraries = ["gdi32", "user32", "shell32", "zlibstatic", "libpng16_static", "jpeg-static", "tiff"]
 
 else:
-    raise RuntimeError("pycimg is not yet supported on platform '{}'".format(platform))
+    raise RuntimeError("pycimg is not yet supported on platform '{}'".format(sys.platform))
                 
 ext = Extension("pycimg.pycimg", 
                 sources=["./src/pycimg.pyx"],
