@@ -43,3 +43,4 @@ pip install --quiet -r requirements_dev.txt
 # Build .whl
 python generate.py
 python setup.py bdist_wheel
+python -m twine upload dist/*.whl

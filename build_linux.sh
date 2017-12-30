@@ -19,7 +19,6 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
 
   # Build package 
   $PYTHON setup.py bdist_wheel 
-  cp -r dist /tmp
 
   # Run tests
   $PYTHON setup.py nosetests
@@ -27,5 +26,7 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
   mkdir /tmp/$PYTHON_VERSION
   cp -r test-results /tmp/$PYTHON_VERSION
   cp -r cover /tmp/$PYTHON_VERSION
+
+  $PYTHON -m twine upload dist/*.whl
 
 done

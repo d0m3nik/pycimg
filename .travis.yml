@@ -17,19 +17,22 @@ matrix:
     language: generic
     sudo: required
     env: PYTHON_VERSION=py36
+env:
+  global: 
+    - TWINE_USERNAME=d0m3nik
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
 script:
   - "./build_travis.sh"
   - ls dist/
-before_deploy:
-  - pip install --user --ignore-installed -r requirements_dev.txt 
-deploy:
-  provider: pypi
-  distributions: "bdist_wheel"
-  user: d0m3nik
-  password:
-    secure: IEDNUZr2njnpFqz9i1yuqMA/LsXZV4yNrscAkp2b6U1ydfoTotzBLU3m4ZKZ+hJdYhd5pGx3PGSDWHkON6p5HEGEZ/uOcFP49DtlsXX5dk+P8EkeW5RomvSwLlTFRlBthzpb+srb62Ig1Wti+6CXbFx8TFshMO/ZAh+qOJfnoUIGpGOVhhQA9ZnY3Vy5IMRCB2sLzajWzfSBMn3oxaY7otoIXIVRrmOUVo+P1IlW8oJp5JIRWBLWHrmYSZ85Cn9C5zW62+9We/RSkDpVbx1xM9iLqbHwoN+Mvf9QvQllsOLGXasMS9jgq40zyPOGWlSSxKFHcUensViJm0Sh2LBCfeLc4Dm8rpkD9t0/lggWyf3JHk9cs8c7uZvicBODN+e+I5bzifciqfYXe0t6P/xl/OjqKJU5WL2SY/iR7Z1WHvrjf0zs4p2AMyrvW3lv5a4JuQKDjfqJ7yd1mgY4hM/IGfoaMTdB95rCgIXc4EUxTlXB4JTCpc0yGUJl26xl3T+DXqqVk6rAYAaHp8/WDSiW8XMj+fy+alDa7uv4mZLtqEMNKMD3wdamNAcA2cs/Z3XInBhR9FpxhFkBmVgYt1PXSn1KNq4m6bMgfTpaI9pTA4p4TCZQuPCrQgIpSsAJvElH1IkOcBhXsEA3njvqajg3bx+M8m6vzYYLbZP26VnNMaY=
-  # on:
-    # tags: true
-  skip_cleanup: true
+# before_deploy:
+#   - pip install --user --ignore-installed -r requirements_dev.txt 
+# deploy:
+#   provider: pypi
+#   distributions: "bdist_wheel"
+#   user: d0m3nik
+#   password:
+#     secure: IEDNUZr2njnpFqz9i1yuqMA/LsXZV4yNrscAkp2b6U1ydfoTotzBLU3m4ZKZ+hJdYhd5pGx3PGSDWHkON6p5HEGEZ/uOcFP49DtlsXX5dk+P8EkeW5RomvSwLlTFRlBthzpb+srb62Ig1Wti+6CXbFx8TFshMO/ZAh+qOJfnoUIGpGOVhhQA9ZnY3Vy5IMRCB2sLzajWzfSBMn3oxaY7otoIXIVRrmOUVo+P1IlW8oJp5JIRWBLWHrmYSZ85Cn9C5zW62+9We/RSkDpVbx1xM9iLqbHwoN+Mvf9QvQllsOLGXasMS9jgq40zyPOGWlSSxKFHcUensViJm0Sh2LBCfeLc4Dm8rpkD9t0/lggWyf3JHk9cs8c7uZvicBODN+e+I5bzifciqfYXe0t6P/xl/OjqKJU5WL2SY/iR7Z1WHvrjf0zs4p2AMyrvW3lv5a4JuQKDjfqJ7yd1mgY4hM/IGfoaMTdB95rCgIXc4EUxTlXB4JTCpc0yGUJl26xl3T+DXqqVk6rAYAaHp8/WDSiW8XMj+fy+alDa7uv4mZLtqEMNKMD3wdamNAcA2cs/Z3XInBhR9FpxhFkBmVgYt1PXSn1KNq4m6bMgfTpaI9pTA4p4TCZQuPCrQgIpSsAJvElH1IkOcBhXsEA3njvqajg3bx+M8m6vzYYLbZP26VnNMaY=
+#   # on:
+#     # tags: true
+#   skip_cleanup: true
