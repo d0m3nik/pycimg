@@ -13,6 +13,7 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
   echo "Building for python version `$PYTHON --version`"
 
   $PIP install --quiet -r requirements_dev.txt
+  $PIP install auditwheel
 
   # Generate .pyx files
   $PYTHON generate.py 
@@ -27,6 +28,7 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
   cp -r test-results /tmp/$PYTHON_VERSION
   cp -r cover /tmp/$PYTHON_VERSION
 
-  $PYTHON -m twine upload dist/*.whl
+  $PYTHON -m auditwheel repair dist/*.whl 
+  $PYTHON -m twine upload wheelhouse/*.whl
 
 done
