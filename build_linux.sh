@@ -24,11 +24,14 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
   # Run tests
   $PYTHON setup.py nosetests
   COVERALLS_REPO_TOKEN=VcjHJa4uHN87FO2LAn1Sg5yMH0zB4EXj0 $COVERALLS
-  mkdir /tmp/$PYTHON_VERSION
-  cp -r test-results /tmp/$PYTHON_VERSION
-  cp -r cover /tmp/$PYTHON_VERSION
+  mkdir /tmp/$PYTHON_VER
+  cp -r test-results /tmp/$PYTHON_VER
+  cp -r cover /tmp/$PYTHON_VER
 
   $PYTHON -m auditwheel repair dist/*.whl 
   $PYTHON -m twine upload wheelhouse/*.whl
+
+  rm dist/*.whl
+  rm wheelhous/*.whl
 
 done
