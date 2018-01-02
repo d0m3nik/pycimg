@@ -530,9 +530,9 @@ cdef class CImg_{T}:
 
     def draw_polygon(self, points, color, opacity):
         cdef vector[{T}] _color = color
-        cdef CImg_{T} _points = CImg_{T}()
+        cdef CImg_uint32 _points = CImg_uint32()
         _points.fromarray(points)
-        self._cimg.draw_polygon(_points._cimg, _color.data(), opacity)
+        draw_polygon(self._cimg, _points._cimg, _color.data(), opacity)
 
     def draw_circle(self, x0, y0, radius, color, opacity):
         cdef vector[{T}] _color = color
