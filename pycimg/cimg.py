@@ -135,6 +135,8 @@ class CImg:
                 self.load(args[0])
             elif isinstance(args[0], np.ndarray):
                 self._cimg.fromarray(args[0])
+            elif isinstance(args[0], CImg):
+                self._cimg.fromarray(args[0].asarray())
             elif isinstance(args[0], tuple):
                 shape = [max(1, sz) for sz in args[0]]
                 self.resize(*shape, interpolation_type=NONE_RAW)
