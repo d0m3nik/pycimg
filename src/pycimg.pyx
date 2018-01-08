@@ -292,7 +292,8 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
 	        	const float opacity,
 	        	const unsigned int font_height) 	
         
-
+    # Utility function for polygon drawing
+    void draw_polygon[T](CImg[T]& img, CImg[uint32]& point, const T* const color, const float opacity)
 
     # Utility function for loading CImg[T] from a cimg
     # file with half precision floats
