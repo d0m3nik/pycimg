@@ -146,7 +146,7 @@ class CImg:
             else:
                 raise RuntimeError("Type of first argument not supported")
         elif len(args) > 1:
-            raise RuntimeError("More than one arguemnt not supported")
+            raise RuntimeError("More than one argument not supported")
 
     def __eq__(self, img):
         return self._cimg._equal(img._cimg)

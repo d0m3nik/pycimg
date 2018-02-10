@@ -28,6 +28,7 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
   cp -r test-results /tmp/$PYTHON_VER
   cp -r cover /tmp/$PYTHON_VER
 
+  echo "TRAVIS_TAG=${TRAVIS_TAG}"
   if [[ -n $TRAVIS_TAG ]]; then
     $PYTHON -m auditwheel repair dist/*.whl 
     $PYTHON -m twine upload wheelhouse/*.whl
