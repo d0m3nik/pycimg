@@ -20,8 +20,8 @@ class TestGeometricSpatial(unittest.TestCase):
         """ Test resize half XY."""
         img = CImg(get_test_image())
         img.resize_halfXY()
-        self.assertEqual(img.width, 320)
-        self.assertEqual(img.height, 213)
+        self.assertEqual(img.width, 600)
+        self.assertEqual(img.height, 398)
         self.assertEqual(img.depth, 1)
         self.assertEqual(img.spectrum, 3)
 
@@ -30,8 +30,8 @@ class TestGeometricSpatial(unittest.TestCase):
         """ Test resize double XY."""
         img = CImg(get_test_image())
         img.resize_doubleXY()
-        self.assertEqual(img.width, 2*640)
-        self.assertEqual(img.height, 2*426)
+        self.assertEqual(img.width, 2*1200)
+        self.assertEqual(img.height, 2*797)
         self.assertEqual(img.depth, 1)
         self.assertEqual(img.spectrum, 3)
 
@@ -39,8 +39,8 @@ class TestGeometricSpatial(unittest.TestCase):
         """ Test resize triple XY."""
         img = CImg(get_test_image())
         img.resize_tripleXY()
-        self.assertEqual(img.width, 3*640)
-        self.assertEqual(img.height, 3*426)
+        self.assertEqual(img.width, 3*1200)
+        self.assertEqual(img.height, 3*797)
         self.assertEqual(img.depth, 1)
         self.assertEqual(img.spectrum, 3)
 

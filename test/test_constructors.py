@@ -12,7 +12,7 @@ class TestConstructors(unittest.TestCase):
     def test_from_file(self):
         """ Test construction from file. """
         im = CImg(get_test_image())
-        self.assertEqual(im.shape, (3, 1, 426, 640))
+        self.assertEqual(im.shape, (3, 1, 797, 1200))
 
     def test_from_numpy(self):
         """ Test construction from numpy array. """

@@ -10,8 +10,8 @@ class TestIO(unittest.TestCase):
         return datetime.now().isoformat().replace(':','_')
 
     def _check_image_dimensions(self, im):
-        self.assertEqual(im.width, 640)
-        self.assertEqual(im.height, 426)
+        self.assertEqual(im.width, 1200)
+        self.assertEqual(im.height, 797)
         self.assertEqual(im.depth, 1)
         self.assertEqual(im.spectrum, 3)
 
