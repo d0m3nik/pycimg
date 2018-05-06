@@ -232,6 +232,47 @@ class CImg:
         index, is_slice = self._check_index(index)
         self.asarray()[index] = value
 
+    def __add__(self, other):
+        return CImg(self.asarray() + (other.asarray() if isinstance(other, CImg) else other))
+
+    def __sub__(self, other):
+        return CImg(self.asarray() - (other.asarray() if isinstance(other, CImg) else other))
+
+    def __mul__(self, other):
+        return CImg(self.asarray() * (other.asarray() if isinstance(other, CImg) else other))
+
+    def __truediv__(self, other):
+        return CImg(self.asarray() / (other.asarray() if isinstance(other, CImg) else other))
+
+    def __floordiv__(self, other):
+        return CImg(self.asarray() // (other.asarray() if isinstance(other, CImg) else other))
+
+    def __iadd__(self, other):
+        a = self.asarray()
+        a += (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __isub__(self, other):
+        a = self.asarray()
+        a -= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __imul__(self, other):
+        a = self.asarray()
+        a *= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __itruediv__(self, other):
+        a = self.asarray()
+        a /= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __ifloordiv__(self, other):
+        a = self.asarray()
+        a //= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+
     def load(self, filename):
         """ Load image from a file.
 
