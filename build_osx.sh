@@ -43,4 +43,7 @@ pip install --quiet -r requirements_dev.txt
 # Build .whl
 python generate.py
 python setup.py bdist_wheel
-python -m twine upload dist/*.whl
+echo "TRAVIS_TAG=${TRAVIS_TAG}"
+if [[ -n $TRAVIS_TAG ]]; then
+    python -m twine upload dist/*.whl
+fi
