@@ -84,7 +84,7 @@ setup(name="pycimg",
       author="Dominik Brugger",
       license="GPL-3.0",
       classifiers=[
-              "Development Status :: 3 - Alpha",
+              "Development Status :: 4 - Beta",
               "Intended Audience :: Developers",
               "Topic :: Software Development :: Libraries",
               "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
