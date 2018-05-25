@@ -10,6 +10,9 @@
 .. image:: https://readthedocs.org/projects/pycimg/badge/?version=latest
   :target: http://pycimg.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
+.. image:: https://badge.fury.io/py/pycimg.svg
+  :target: https://badge.fury.io/py/pycimg
+  :alt: PyPI version
 
 README
 ======
@@ -21,7 +24,7 @@ image processing methods of the CImg_ library.
 Pixel data of CImg objects can be accessed as a numpy_ array.
 
 Vice versa new CImg objects can be created from pixel data in a numpy_ array 
-or a image file. Supported file formats are png_, jpeg_, tiff_, bmp, and cimg.
+or an image file. Supported file formats are png_, jpeg_, tiff_, bmp, and cimg.
 
 .. code-block:: python
 
@@ -65,11 +68,8 @@ The project is licensed under the GPL3 license.
 
 TODO
 ----
-- [x] Setup PyPI distribution
-- [x] Support numpy array interface
 - [] Test package with tox
 - [] Add more unit tests
-- [] Operator overloads
 - [] Colorspace methods
 - [] Add tutorial
 - [] Add support for different Mac OS X versions
