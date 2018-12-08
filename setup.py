@@ -4,6 +4,7 @@ import codecs
 import os
 import re
 import sys
+import json
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,19 +32,11 @@ include_dirs = []
 if 'linux' in sys.platform:
     extra_compile_args = ["-std=c++11", "-fPIC"]
     extra_link_args = ["-std=c++11"]
-    library_dirs = ["./thirdparty/zlib/build",
-                    "./thirdparty/libjpeg-turbo/build/.libs",
-                    "./thirdparty/libpng/build",
-                    "./thirdparty/libtiff/build/libtiff"]
-    libraries = ["pthread", "X11", ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
+    libraries = ["pthread", "X11"] #, ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
 
 elif 'darwin' in sys.platform:
     extra_compile_args = ["-std=c++11", "-stdlib=libc++", "-fPIC"]
-    extra_link_args = ["-std=c++11",
-                       "./thirdparty/zlib/build/libz.a",
-                       "./thirdparty/libjpeg-turbo/build/.libs/libjpeg.a",
-                       "./thirdparty/libpng/build/libpng.a",
-                       "./thirdparty/libtiff/build/libtiff/libtiff.a"]
+    extra_link_args = ["-std=c++11"]
     include_dirs = ["/usr/X11R6/include"]
     library_dirs = ["/usr/X11R6/lib"]
     libraries = ["pthread", "X11"]
@@ -52,24 +45,24 @@ elif sys.platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
     extra_compile_args = ["/MD"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
-    library_dirs = ["./thirdparty/zlib/build/Release",
-                    "./thirdparty/libpng/build/Release",
-                    "./thirdparty/libjpeg-turbo/build/Release",
-                    "./thirdparty/libtiff/build/libtiff/Release"]
-    libraries = ["gdi32", "user32", "shell32", "zlibstatic", "libpng16_static", "jpeg-static", "tiff"]
+    libraries = ["gdi32", "user32", "shell32"]
 
 else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(sys.platform))
+
+
+with open('conanbuildinfo.json', 'r') as f:
+    bi = json.loads(f.read())
+    for d in bi['dependencies']:
+        include_dirs.extend(d['include_paths'])
+        library_dirs.extend(d['lib_paths'])
+        libraries.extend(d['libs'])
                 
 ext = Extension("pycimg.pycimg", 
                 sources=["./src/pycimg.pyx"],
                 include_dirs=include_dirs + ["./src",
                         "./thirdparty/half/include",
-                        "./thirdparty/CImg-2.0.4",
-                        "./thirdparty/zlib",
-                        "./thirdparty/libpng",
-                        "./thirdparty/libjpeg-turbo",
-                        "./thirdparty/libtiff/libtiff"],
+                        "./thirdparty/CImg-2.0.4"],
                 library_dirs=library_dirs,
                 libraries=libraries,
                 language="c++",

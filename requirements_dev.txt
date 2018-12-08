@@ -6,3 +6,4 @@ coverage>=4.4.1
 coveralls>=1.2.0
 sphinx_rtd_theme>=0.2.4
 twine
+conan

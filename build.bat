@@ -2,46 +2,9 @@ set PYTHON_EXE=%PYTHON%/python.exe
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 
-:: Build zlib
-pushd .\thirdparty\zlib
-md build
-pushd build
-cmake -g "Visual Studio 14 2015 Win64" -A x64 -DCMAKE_C_FLAGS="/MD" -DCMAKE_BUILD_TYPE=Release ..
-msbuild zlib.sln /p:Configuration=Release /p:Platform="x64"
-copy zconf.h ..
-popd
-popd
+%PYTHON_EXE% -m pip install -r requirements_dev.txt
 
-:: Build libjpeg-turbo
-pushd .\thirdparty\libjpeg-turbo
-md build
-pushd build
-cmake -g "Visual Studio 14 2015 Win64" -A x64 -DCMAKE_C_FLAGS="/MD" -DCMAKE_BUILD_TYPE=Release .. -DNASM="C:\yasm\yasm.exe"
-msbuild libjpeg-turbo.sln /p:Configuration=Release /p:Platform="x64"
-copy jconfig.h ..
-popd
-popd
-
-:: Build libpng
-pushd .\thirdparty\libpng
-md build
-pushd build
-cmake -g "Visual Studio 14 2015 Win64" -A x64 -DCMAKE_C_FLAGS="/MD" -DCMAKE_BUILD_TYPE=Release -DZLIB_LIBRARY=..\..\zlib\build\Release\zlibstatic.lib -DZLIB_INCLUDE_DIR=..\..\zlib ..
-msbuild libpng.sln /p:Configuration=Release /p:Platform="x64"
-copy pnglibconf.h ..
-popd
-popd
-
-:: Build libtiff
-pushd .\thirdparty\libtiff
-pushd build
-cmake -g "Visual Studio 14 2015 Win64" -A x64 -DCMAKE_C_FLAGS="/MD" -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DZLIB_LIBRARY=%cd%\..\..\zlib\build\Release\zlibstatic.lib -DZLIB_INCLUDE_DIR=%cd%\..\..\zlib ..
-msbuild tiff.sln /p:Configuration=Release /p:Platform="x64"
-copy libtiff\tiffconf.h ..\libtiff
-dir ..\libtiff
-dir .\libtiff
-popd
-popd
+conan install .
 
 :: Generate .pyx files
 %PYTHON_EXE% generate.py 

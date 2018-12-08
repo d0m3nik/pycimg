@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Build thirdparty
-./build_thirdparty.sh
 
 mkdir test-results
 mkdir cover
@@ -14,6 +12,8 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
 
   $PIP install --quiet -r requirements_dev.txt
   $PIP install auditwheel
+
+  conan install .
 
   # Generate .pyx files
   $PYTHON generate.py 

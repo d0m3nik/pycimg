@@ -4,4 +4,11 @@ _build
 *.swp
 *.so
 *.py[cod]
+src/pycimg.cpp
+src/pycimg_*.pyx
+conanbuildinfo*
+conaninfo*
+test-results/
+cover/
+dist/
 

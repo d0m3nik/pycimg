@@ -1,0 +1,7 @@
+[requires]
+libtiff/4.0.9@bincrafters/stable
+libpng/1.6.34@bincrafters/stable
+libjpeg-turbo/1.5.2@bincrafters/stable
+
+[generators]
+json
