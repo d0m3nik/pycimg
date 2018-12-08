@@ -4,7 +4,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
 
 %PYTHON_EXE% -m pip install -r requirements_dev.txt
 
-%PYTHON%/bin/conan.exe install .
+%PYTHON%/Scripts/conan.exe install .
 
 :: Generate .pyx files
 %PYTHON_EXE% generate.py 
