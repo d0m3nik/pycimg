@@ -1,32 +1,20 @@
+language: python
+
 matrix:
   include:
-  - os: linux
-    dist: trusty
-    language: generic
-    sudo: required
-    services:
-    - docker
-    env: DOCKER_IMAGE=d0m3nik/cython-primary:0.0.7
-  - os: osx
-    osx_image: xcode9
-    language: generic
-    sudo: required
-    env: PYTHON_VERSION=py34
-  - os: osx
-    osx_image: xcode9
-    language: generic
-    sudo: required
-    env: PYTHON_VERSION=py35
-  - os: osx
-    osx_image: xcode9
-    language: generic
-    sudo: required
-    env: PYTHON_VERSION=py36
+    - sudo: required
+      services:
+        - docker
+      env: PIP=pip
+    - os: osx
+      language: generic
+      env: PIP=pip2
+
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker pull $DOCKER_IMAGE; fi
+    - CIBW_BEFORE_BUILD=pip install requirements_dev.txt && conan install . --build missing
+
 script:
-  - "./build_travis.sh"
-  - ls dist/
+  - $PIP install cibuildwheel==0.10.0
+  - cibuildwheel --output-dir wheelhouse
