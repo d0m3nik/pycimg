@@ -15,7 +15,7 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
 
   CONAN="$PY_VER/bin/conan"
 
-  $CONAN install .
+  $CONAN install . --build missing
 
   # Generate .pyx files
   $PYTHON generate.py 
