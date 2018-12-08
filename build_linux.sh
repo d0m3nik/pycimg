@@ -13,7 +13,9 @@ for PY_VER in `ls -d /opt/python/cp* | grep -E "cp34|35|36.*"`; do
   $PIP install --quiet -r requirements_dev.txt
   $PIP install auditwheel
 
-  conan install .
+  CONAN="$PY_VER/bin/conan"
+
+  $CONAN install .
 
   # Generate .pyx files
   $PYTHON generate.py 
