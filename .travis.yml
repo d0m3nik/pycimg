@@ -17,7 +17,8 @@ env:
     
 script:
   - $PIP install cibuildwheel==0.10.0
-  - $PIP install cython
+  - $PIP install cython conan
+  - conan install .
     #  - export CIBW_BEFORE_BUILD="echo before build executed."
     #"pip install requirements_dev.txt && conan install . --build missing"
   - cibuildwheel --output-dir wheelhouse
