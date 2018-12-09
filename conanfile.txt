@@ -1,5 +1,7 @@
-[requires]
+[build_requires]
 cmake_installer/3.12.2@conan/stable
+
+[requires]
 libtiff/4.0.9@bincrafters/stable
 libpng/1.6.34@bincrafters/stable
 libjpeg-turbo/1.5.2@bincrafters/stable
