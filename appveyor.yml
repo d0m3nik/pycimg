@@ -4,8 +4,8 @@ environment:
     CIBW_BEFORE_BUILD: "pip install requirements_dev.txt && conan install ."
 
 build_script:
+  - pip install cython
   - pip install cibuildwheel==0.10.0
-  - echo %CIBW_BEFORE_BUILD%
   - cibuildwheel --output-dir wheelhouse
 
 artifacts:
