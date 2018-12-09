@@ -13,9 +13,10 @@ matrix:
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
+    - CIBW_BEFORE_BUILD="pip install cython"
     
 script:
   - $PIP install cibuildwheel==0.10.0
-  - export CIBW_BEFORE_BUILD="echo before build executed."
+    #  - export CIBW_BEFORE_BUILD="echo before build executed."
     #"pip install requirements_dev.txt && conan install . --build missing"
   - cibuildwheel --output-dir wheelhouse
