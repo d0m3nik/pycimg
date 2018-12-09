@@ -1,6 +1,6 @@
 environment:
   TWINE_USERNAME: d0m3nik
-  CIBW_BEFORE_BUILD: pip install requirements_dev.txt && conan install .
+  CIBW_BEFORE_BUILD: "pip install requirements_dev.txt && conan install ."
 
 build_script:
   - pip install cibuildwheel==0.10.0
