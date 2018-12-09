@@ -35,7 +35,7 @@ if 'linux' in sys.platform:
     libraries = ["pthread", "X11"] #, ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
 
 elif 'darwin' in sys.platform:
-    extra_compile_args = ["-std=c++11", "-stdlib=libc++", "-fPIC"]
+    extra_compile_args = ["-std=c++11", "-fPIC"] #"-stdlib=libc++", 
     extra_link_args = ["-std=c++11"]
     include_dirs = ["/usr/X11R6/include"]
     library_dirs = ["/usr/X11R6/lib"]
@@ -46,6 +46,7 @@ elif sys.platform == 'win32':
     extra_compile_args = ["/MD"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     libraries = ["gdi32", "user32", "shell32"]
+    include_dirs = ["./thirdparty/msinttypes"]
 
 else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(sys.platform))
