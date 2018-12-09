@@ -51,12 +51,15 @@ else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(sys.platform))
 
 
-with open('conanbuildinfo.json', 'r') as f:
-    bi = json.loads(f.read())
-    for d in bi['dependencies']:
-        include_dirs.extend(d['include_paths'])
-        library_dirs.extend(d['lib_paths'])
-        libraries.extend(d['libs'])
+if os.path.exists('conanbuildinfo.json'):
+    with open('conanbuildinfo.json', 'r') as f:
+        bi = json.loads(f.read())
+        for d in bi['dependencies']:
+            include_dirs.extend(d['include_paths'])
+            library_dirs.extend(d['lib_paths'])
+            libraries.extend(d['libs'])
+else:
+    print('Not using conan packages.')
                 
 ext = Extension("pycimg.pycimg", 
                 sources=["./src/pycimg.pyx"],
