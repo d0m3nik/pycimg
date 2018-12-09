@@ -19,6 +19,7 @@ script:
   - $PIP install cibuildwheel==0.10.0
   - $PIP install cython
   - pwd
+  - ls
   - $PYTHON generate.py
     #  - export CIBW_BEFORE_BUILD="echo before build executed."
     #"pip install requirements_dev.txt && conan install . --build missing"
