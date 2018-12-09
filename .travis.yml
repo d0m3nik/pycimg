@@ -14,6 +14,7 @@ env:
   global: 
     - TWINE_USERNAME=d0m3nik
     - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && conan install . --build missing"
+    - CIBW_SKIP="cp27-*"
     
 script:
   - $PIP install cibuildwheel==0.10.0
