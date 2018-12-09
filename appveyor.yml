@@ -5,6 +5,7 @@ environment:
 
 build_script:
   - pip install cibuildwheel==0.10.0
+  - echo %CIBW_BEFORE_BUILD%
   - cibuildwheel --output-dir wheelhouse
 
 artifacts:
