@@ -13,11 +13,12 @@ matrix:
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
-    - CIBW_BEFORE_BUILD="pip install requirements_dev.txt && conan install . --build missing"
+    - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && conan install . --build missing"
     
 script:
   - $PIP install cibuildwheel==0.10.0
   - $PIP install cython
+  - pwd
   - $PYTHON generate.py
     #  - export CIBW_BEFORE_BUILD="echo before build executed."
     #"pip install requirements_dev.txt && conan install . --build missing"
