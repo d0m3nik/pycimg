@@ -13,7 +13,7 @@ matrix:
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
-    - CIBW_BEFORE_BUILD="yum install -y cmake && pip install -r requirements_dev.txt && conan install . --build missing"
+    - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && conan install . --build missing"
     - CIBW_SKIP: "cp27-* *-win32 *-manylinux1_i686"
     
 script:
