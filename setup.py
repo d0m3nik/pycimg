@@ -35,7 +35,7 @@ if 'linux' in sys.platform:
     libraries = ["pthread", "X11"] #, ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
 
 elif 'darwin' in sys.platform:
-    extra_compile_args = ["-std=c++11", "-fPIC"] #"-stdlib=libc++", 
+    extra_compile_args = ["-std=c++11", "-fPIC", "-stdlib=libc++"]
     extra_link_args = ["-std=c++11"]
     include_dirs = ["/usr/X11R6/include"]
     library_dirs = ["/usr/X11R6/lib"]
