@@ -1,6 +1,11 @@
 import sys
 import platform
 import subprocess
+import struct
+
+is64bit = 8*struct.calcsize('P') == 64
+
+arch_build = 'x86_64' if is64bit else "x86"
 
 if sys.platform == 'win32':
     compiler = platform.python_compiler()
@@ -17,4 +22,4 @@ if sys.platform == 'win32':
         compiler_version = '12'
     elif '1900' in compiler:
         compiler_version = '14'
-    subprocess.call(['conan', 'install',  '.', '-s', 'compiler.version=%s' % compiler_version, '--build=missing'])
+    subprocess.call(['conan', 'install', '.', '-s', 'compiler.version=%s' % compiler_version, '--build=missing', '-s', 'arch_build=%s' % arch_build])

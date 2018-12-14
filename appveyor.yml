@@ -2,7 +2,9 @@ environment:
   global:
     TWINE_USERNAME: d0m3nik
     CIBW_BEFORE_BUILD: "pip install -r requirements_dev.txt && python install_conan_packages.py"
-    CIBW_SKIP: "cp27-* *-win32 *-manylinux1_i686"
+#    CIBW_SKIP: "*-win32 *-manylinux1_i686"
+    CIBW_TEST_REQUIRES: nose
+    CIBW_TEST_COMMAND: "nosetests {project}\\test"
 
 build_script:
   - pip install cython
