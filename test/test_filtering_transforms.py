@@ -106,7 +106,7 @@ class TestFilteringTransforms(unittest.TestCase):
                                       [0.26966834, 0.62711906, 0.62711906, 0.26966834],
                                       [0.26966834, 0.62711906, 0.62711906, 0.26966834],
                                       [0, 0, 0, 0]]))
-        self.assertEqual(img, img_expected)
+        self.assertTrue(np.allclose(img.asarray(), img_expected.asarray()))
 
 
     def test_vanvliet(self):
