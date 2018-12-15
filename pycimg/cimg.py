@@ -224,13 +224,13 @@ class CImg:
         index, is_slice = self._check_index(index)
         if is_slice:
             cls = type(self)
-            return cls(self.asarray()[index])
+            return cls(self.asarray()[tuple(index)])
         else:
             return self.asarray()[index]
 
     def __setitem__(self, index, value):
         index, is_slice = self._check_index(index)
-        self.asarray()[index] = value
+        self.asarray()[tuple(index)] = value
 
     def __add__(self, other):
         return CImg(self.asarray() + (other.asarray() if isinstance(other, CImg) else other))
