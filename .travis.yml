@@ -18,10 +18,15 @@ env:
     - CIBW_MANYLINUX1_X86_64_IMAGE: d0m3nik/manylinux1_x86_64_cmake:0.0.1
     - CIBW_MANYLINUX1_I686_IMAGE: d0m3nik/manylinux1_i686_cmake:0.0.1
     - CIBW_TEST_REQUIRES: nose
-    - CIBW_TEST_COMMAND: "nosetests {project}\\test"
+    - CIBW_TEST_COMMAND: "nosetests {project}/test"
  
 script:
   - $PIP install cibuildwheel==0.10.0
   - $PIP install cython
   - python generate.py
   - cibuildwheel --output-dir wheelhouse
+  - |
+    if [[ $TRAVIS_TAG ]]; then
+      python -m pip install twine
+      python -m twine upload wheelhouse/*.whl
+    fi
