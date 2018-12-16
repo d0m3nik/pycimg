@@ -36,7 +36,7 @@ if 'linux' in sys.platform:
 
 elif 'darwin' in sys.platform:
     extra_compile_args = ["-std=c++11", "-fPIC", "-stdlib=libc++", "-mmacosx-version-min=10.7"]
-    extra_link_args = ["-std=c++11", "-macosx-version-min=10.7"]
+    extra_link_args = ["-std=c++11"]
     include_dirs = ["/usr/X11R6/include"]
     library_dirs = ["/usr/X11R6/lib"]
     libraries = ["pthread", "X11"]
