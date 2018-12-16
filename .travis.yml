@@ -14,12 +14,14 @@ env:
   global: 
     - TWINE_USERNAME=d0m3nik
     - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && conan install . --build missing"
-    - CIBW_SKIP: "cp27-* *-win32 *-manylinux1_i686"
-    
+    - CIBW_SKIP: "cp27-*"
+    - CIBW_MANYLINUX1_X86_64_IMAGE: d0m3nik/manylinux1_x86_64_cmake
+    - CIBW_MANYLINUX1_I686_IMAGE: d0m3nik/manylinux1_i686_cmake
+    - CIBW_TEST_REQUIRES: nose
+    - CIBW_TEST_COMMAND: "nosetests {project}\\test"
+ 
 script:
   - $PIP install cibuildwheel==0.10.0
   - $PIP install cython
   - python generate.py
-    #  - export CIBW_BEFORE_BUILD="echo before build executed."
-    #"pip install requirements_dev.txt && conan install . --build missing"
   - cibuildwheel --output-dir wheelhouse

@@ -32,11 +32,11 @@ include_dirs = []
 if 'linux' in sys.platform:
     extra_compile_args = ["-std=c++11", "-fPIC"]
     extra_link_args = ["-std=c++11"]
-    libraries = ["pthread", "X11"] #, ":libz.a", ":libjpeg.a", ":libpng.a", ":libtiff.a"]
+    libraries = ["pthread", "X11"]
 
 elif 'darwin' in sys.platform:
-    extra_compile_args = ["-std=c++11", "-fPIC", "-stdlib=libc++"]
-    extra_link_args = ["-std=c++11"]
+    extra_compile_args = ["-std=c++11", "-fPIC", "-stdlib=libc++", "-mmacosx-version-min=10.7"]
+    extra_link_args = ["-std=c++11", "-macosx-version-min=10.7"]
     include_dirs = ["/usr/X11R6/include"]
     library_dirs = ["/usr/X11R6/lib"]
     libraries = ["pthread", "X11"]
@@ -81,13 +81,15 @@ setup(name="pycimg",
       author="Dominik Brugger",
       license="GPL-3.0",
       classifiers=[
-              "Development Status :: 4 - Beta",
+              "Development Status :: 5 - Production/Stable",
               "Intended Audience :: Developers",
               "Topic :: Software Development :: Libraries",
               "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
               "Programming Language :: Python :: 3",
+              "Programming Language :: Python :: 3.4",
               "Programming Language :: Python :: 3.5",
-              "Programming Language :: Python :: 3.6"
+              "Programming Language :: Python :: 3.6",
+              "Programming Language :: Python :: 3.7"
               ],
       keywords="image processing library",
       install_requires=["numpy"],
