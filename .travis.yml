@@ -5,7 +5,27 @@ matrix:
     - sudo: required
       services:
         - docker
-      env: PIP=pip
+      env:
+        - PIP=pip
+        - CIBW_BUILD="cp34-*"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - CIBW_BUILD="cp35-*"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - CIBW_BUILD="cp36-*"
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - CIBW_BUILD="cp37-*"
     - os: osx
       language: generic
       env: PIP=pip2
@@ -19,11 +39,6 @@ env:
     - CIBW_MANYLINUX1_I686_IMAGE: d0m3nik/manylinux1_i686_cmake:0.0.1
     - CIBW_TEST_REQUIRES: nose
     - CIBW_TEST_COMMAND: 'nosetests {project}/test'
-  matrix:
-    - CIBW_BUILD="cp34-*"
-    - CIBW_BUILD="cp35-*"
-    - CIBW_BUILD="cp36-*"
-    - CIBW_BUILD="cp37-*"
  
 script:
   - $PIP install cibuildwheel==0.10.0
