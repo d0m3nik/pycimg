@@ -1,3 +1,6 @@
+cache:
+  - C:\Users\appveyor\.conan\data
+
 environment:
   global:
     TWINE_USERNAME: d0m3nik
@@ -5,6 +8,11 @@ environment:
     CIBW_SKIP: "cp27-*"
     CIBW_TEST_REQUIRES: nose
     CIBW_TEST_COMMAND: "nosetests {project}\\test"
+  matrix:
+    - CIBW_BUILD: "cp34-*"
+    - CIBW_BUILD: "cp35-*"
+    - CIBW_BUILD: "cp36-*"
+    - CIBW_BUILD: "cp37-*"
 
 build_script:
   - pip install cython
@@ -20,12 +28,6 @@ artifacts:
 # init:
 #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
-
-
-    #test_script:
-    #  - mkdir test-results
-    #  - mkdir cover
-    #  - "%PYTHON%\\python.exe setup.py nosetests"
 
 on_success:
   # Deploy to PyPI on tag
