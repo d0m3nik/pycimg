@@ -72,8 +72,7 @@ TODO
 - [] Add more unit tests
 - [] Colorspace methods
 - [] Add tutorial
-- [] Add support for different Mac OS X versions
-- [] Support python2.7, 3.4, 3.5, 3.6
+- [] Support python2.7
 
 .. _CImg: http://www.cimg.eu
 .. _numpy: http://www.numpy.org/
