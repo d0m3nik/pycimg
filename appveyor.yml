@@ -36,7 +36,7 @@ on_success:
     (
     "%PYTHON%\\python.exe" -m pip install twine
     &&
-    "%PYTHON%\\python.exe" -m twine upload wheelhouse/*.whl
+    "%PYTHON%\\python.exe" -m twine upload wheelhouse\\*.whl
     )
 
 # vvv Enable for debugging on appveyor build worker vvv
