@@ -12,12 +12,6 @@ matrix:
         - docker
       env:
         - PIP=pip
-        - CIBW_BUILD="cp34-*"
-    - sudo: required
-      services:
-        - docker
-      env:
-        - PIP=pip
         - CIBW_BUILD="cp35-*"
     - sudo: required
       services:
@@ -36,7 +30,7 @@ matrix:
         - docker
       env:
         - PIP=pip
-        - CIBW_BUILD="cp37-*"
+        - CIBW_BUILD="cp38-*"
     - os: osx
       language: generic
       env: PIP=pip2
