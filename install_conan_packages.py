@@ -26,3 +26,5 @@ if sys.platform == 'win32':
         compiler_version = '15'
 
     subprocess.call(['conan', 'install', '.', '-s', 'compiler.version=%s' % compiler_version, '--build=missing', '-s', 'arch=%s' % arch])
+else:
+    subprocess.call(['conan', 'install', '.', '-s', '--build=missing', '-s', 'arch=%s' % arch])
