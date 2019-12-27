@@ -27,4 +27,4 @@ if sys.platform == 'win32':
 
     subprocess.call(['conan', 'install', '.', '-s', 'compiler.version=%s' % compiler_version, '--build=missing', '-s', 'arch=%s' % arch])
 else:
-    subprocess.call(['conan', 'install', '.', '-s', '--build=missing', '-s', 'arch=%s' % arch])
+    subprocess.call(['conan', 'install', '.', '--build=missing', '-s', 'arch=%s' % arch])
