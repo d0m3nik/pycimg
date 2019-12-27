@@ -38,7 +38,8 @@ matrix:
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
-    - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && conan install . --build missing"
+    - CIBW_BEFORE_BUILD_LINUX="yum install -y libffi-devel openssl-devel &&  pip install -r requirements_dev.txt && conan install . --build missing"
+    - CIBW_BEFORE_BUILD_MACOS="pip install -r requirements_dev.txt && conan install . --build missing"
     - CIBW_SKIP="cp27-*"
     - CIBW_MANYLINUX1_X86_64_IMAGE=manylinux2014
     - CIBW_MANYLINUX1_I686_IMAGE=manylinux2014
