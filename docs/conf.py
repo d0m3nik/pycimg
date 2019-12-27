@@ -62,7 +62,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pycimg'
-copyright = '2017, Dominik Brugger'
+copyright = '2019, Dominik Brugger'
 author = 'Dominik Brugger'
 
 # The version info for the project you're documenting, acts as replacement for

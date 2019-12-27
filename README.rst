@@ -1,9 +1,6 @@
 .. image:: https://travis-ci.org/d0m3nik/pycimg.svg?branch=master
   :target: https://travis-ci.org/d0m3nik/pycimg
   :alt: Travis Status
-.. image:: https://ci.appveyor.com/api/projects/status/github/d0m3nik/pycimg?branch=master&svg=true
-  :target: https://ci.appveyor.com/project/d0m3nik/pycimg
-  :alt: AppVeyor Status
 .. image:: https://coveralls.io/repos/github/d0m3nik/pycimg/badge.svg?branch=HEAD
   :target: https://coveralls.io/github/d0m3nik/pycimg?branch=HEAD
   :alt: Coverage Status
@@ -72,7 +69,6 @@ TODO
 - [] Add more unit tests
 - [] Colorspace methods
 - [] Add tutorial
-- [] Support python2.7
 
 .. _CImg: http://www.cimg.eu
 .. _numpy: http://www.numpy.org/
