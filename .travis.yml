@@ -32,23 +32,25 @@ matrix:
         - PIP=pip
         - CIBW_BUILD="cp38-*"
     - os: osx
-      language: generic
-      env: PIP=pip2
+      language: shell
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.8.0
+        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
-    - CIBW_BEFORE_BUILD_LINUX="yum install -y libffi-devel openssl-devel &&  pip install -r requirements_dev.txt && python install_conan_packages.py"
-    - CIBW_BEFORE_BUILD_MACOS="pip install -r requirements_dev.txt && conan install . --build missing"
-    - CIBW_SKIP="cp27-*"
+    - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && python install_conan_packages.py"
+    - CIBW_SKIP="cp27-* *-win32 *-manylinux_i686"
     - CIBW_MANYLINUX1_X86_64_IMAGE=manylinux2014
-    - CIBW_MANYLINUX1_I686_IMAGE=manylinux2014
     - CIBW_TEST_REQUIRES=nose
     - CIBW_TEST_COMMAND="nosetests {project}/test"
  
 script:
-  - $PIP install cibuildwheel==1.1.0
-  - $PIP install cython
+  - python -m pip install cibuildwheel==1.1.0
+  - python -m pip install cython
   - python generate.py
   - cibuildwheel --output-dir wheelhouse
   - |
