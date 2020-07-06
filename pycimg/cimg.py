@@ -1,7 +1,7 @@
 import numbers
 import os.path
 import numpy as np
-from .pycimg import CImg_int8, CImg_int16, CImg_int32 
+from .pycimg import CImg_int8, CImg_int16, CImg_int32
 from .pycimg import CImg_uint8, CImg_uint16, CImg_uint32
 from .pycimg import CImg_float32, CImg_float64
 
@@ -193,7 +193,7 @@ class CImg:
             index = list(index)
             # Case 1: indices are a mix of integers and slices
             if any(map(lambda t: isinstance(t, slice), index)):
-                # Expand integers to slices 
+                # Expand integers to slices
                 slice_index = []
                 for idx in index:
                     if isinstance(idx, numbers.Integral):
@@ -1108,6 +1108,19 @@ class CImg:
         self._cimg.rotate(angle, interpolation, boundary_conditions)
         return self
 
+    def warp(self, warp, mode, interpolation=1, boundary_conditions=DIRICHLET):
+        """ Warp an image given a warping field
+
+            Args:
+                warp (CImg): warping field
+                mode (int) : Type of warping
+                             Can be {0=backward-absolute | 1=backward-relative | 2=forward-absolute |  3=forward-relative}.
+                interpolation (int): Type of interpolation.
+                               Can be { 0=nearest | 1=linear | 2=cubic | 3=mirror }.
+                boundary_conditions (int): Boundary conditions.
+        """
+        self._cimg.warp(warp._cimg, mode, interpolation, boundary_conditions)
+
     def crop(self, x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions=DIRICHLET):
         """ Crop image region.
 
@@ -1144,7 +1157,7 @@ class CImg:
             Args:
                 img (CImg): Image to append with instance image.
                 axis (str): Appending axis. Can be { 'x' | 'y' | 'z' | 'c' }.
-                align (float): Append alignment in [0,1]. 
+                align (float): Append alignment in [0,1].
         """
         self._cimg.append(img._cimg, axis, align)
         return self
@@ -1192,7 +1205,7 @@ class CImg:
             Args:
                 kernel (CImg):	Structuring element.
                 boundary_conditions (bool): Boundary conditions.
-                is_real (bool): Do the erosion in real (a.k.a 'non-flat') 
+                is_real (bool): Do the erosion in real (a.k.a 'non-flat')
                                 mode (true) rather than binary mode (false).
         """
         self._cimg.erode(kernel._cimg, boundary_conditions, is_real)
@@ -1204,7 +1217,7 @@ class CImg:
             Args:
                 kernel (CImg):	Structuring element.
                 boundary_conditions (bool): Boundary conditions.
-                is_real (bool): Do the erosion in real (a.k.a 'non-flat') 
+                is_real (bool): Do the erosion in real (a.k.a 'non-flat')
                                 mode (true) rather than binary mode (false).
         """
         self._cimg.dilate(kernel._cimg, boundary_conditions, is_real)
@@ -1407,7 +1420,7 @@ class CImg:
         self._cimg.draw_circle(x0, y0, radius, color, opacity)
         return self
 
-    def draw_text(self, x0, y0, text, foreground_color, 
+    def draw_text(self, x0, y0, text, foreground_color,
                   background_color, opacity=1, font_height=13):
         """ Draw a text string.
 
@@ -1418,8 +1431,8 @@ class CImg:
                 foreground_color (list): List of color value with spectrum() entries.
                 background_color (list): List of color value with spectrum() entries.
                 opacity (float): Drawing opacity.
-                font_height (int): Height of the text font 
-                    (exact match for 13,23,53,103, interpolated otherwise). 
+                font_height (int): Height of the text font
+                    (exact match for 13,23,53,103, interpolated otherwise).
         """
         fc = self._check_color(foreground_color)
         bc = self._check_color(background_color)
@@ -1431,17 +1444,17 @@ class CImg:
 
             Args:
                 title (str): Title of window.
-        
+
         """
         self._cimg.display(title)
 
     def display_graph(self, plot_type=SEGMENTS, vertex_type=1,
                       labelx="", xmin=0, xmax=0,
                       labely="", ymin=0, ymax=0):
-        """ Display 1d graph in an interactive window. 
-        
+        """ Display 1d graph in an interactive window.
+
             Args:
-                plot_type (int): Plot type. 
+                plot_type (int): Plot type.
                                  Can be POINTS | SEGMENTS | SPLINES | BARS.
                 vertex_type (int): Vertex type.
                 labelx (str): Title for the horizontal axis.
@@ -1449,8 +1462,8 @@ class CImg:
                 xmax (int): Maximum value along the X-axis.
                 labely (str): Title for the vertical axis.
                 ymin (int): Minimum value along the X-axis.
-                ymax (int): Maximum value along the X-axis. 
+                ymax (int): Maximum value along the X-axis.
         """
-        self._cimg.display_graph(plot_type, vertex_type, 
+        self._cimg.display_graph(plot_type, vertex_type,
                                  labelx, xmin, xmax,
                                  labely, ymin, ymax)
