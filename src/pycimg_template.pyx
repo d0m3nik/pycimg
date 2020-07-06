@@ -24,14 +24,14 @@ cdef class CImg_{T}:
         cdef char* fn = byte_string
         cdef unsigned int bits_per_pixel = 0
         self._cimg.load_png(fn, &bits_per_pixel)
-        return bits_per_pixel 
+        return bits_per_pixel
 
     def load_tiff(self, filename, first_frame,
                   last_frame, step_frame):
         byte_string = filename.encode('UTF-8')
         cdef char* fn = byte_string
         cdef float voxel_size = 0.0
-        self._cimg.load_tiff(fn, first_frame, 
+        self._cimg.load_tiff(fn, first_frame,
                              last_frame, step_frame,
                              &voxel_size, NULL)
         # TODO description out param
@@ -70,8 +70,8 @@ cdef class CImg_{T}:
         cdef char* fn = byte_string
         byte_string = description.encode('UTF-8')
         cdef char* _description = byte_string
-        cdef float _voxel_size = voxel_size 
-        self._cimg.save_tiff(fn, compression_type, &_voxel_size, 
+        cdef float _voxel_size = voxel_size
+        self._cimg.save_tiff(fn, compression_type, &_voxel_size,
                              _description, use_bigtiff)
 
     def save_cimg(self, filename, is_compressed):
@@ -90,7 +90,7 @@ cdef class CImg_{T}:
         save_float16[{T}](self._cimg, fn)
 
     ############################################################################
-    # Equality 
+    # Equality
     ############################################################################
     def _equal(self, img):
         cdef CImg_{T} _img = img
@@ -357,12 +357,12 @@ cdef class CImg_{T}:
         return self
 
     def index(self, colormap, dithering, map_indexes):
-        cdef CImg_{T} _colormap = colormap 
+        cdef CImg_{T} _colormap = colormap
         self._cimg.index(_colormap._cimg, dithering, map_indexes)
         return self
 
     def map(self, colormap, boundary_conditions):
-        cdef CImg_{T} _colormap = colormap 
+        cdef CImg_{T} _colormap = colormap
         self._cimg.map(_colormap._cimg, boundary_conditions)
         return self
 
@@ -418,17 +418,22 @@ cdef class CImg_{T}:
     def unroll(self, axis):
         byte_string = axis.encode('UTF-8')
         cdef char* _axis = byte_string
-        self._cimg.unroll(_axis[0]) 
+        self._cimg.unroll(_axis[0])
         return self
 
     def rotate(self, angle, interpolation, boundary_conditions):
         self._cimg.rotate(angle, interpolation, boundary_conditions)
         return self
- 
+
+    def warp(self, warp, mode, interpolation, boundary_conditions):
+        cdef CImg_{T} _warp = warp
+        self._cimg.warp(_warp._cimg, mode, interpolation, boundary_conditions)
+        return self
+
     def crop(self, x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions):
         self._cimg.crop(x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions)
         return self
- 
+
     def autocrop(self, color, axes):
         byte_string = axes.encode('UTF-8')
         cdef char* _axes = byte_string
@@ -448,7 +453,7 @@ cdef class CImg_{T}:
 
 
     ############################################################################
-    # Filtering / Transforms 
+    # Filtering / Transforms
     ############################################################################
     def correlate(self, kernel, boundary_conditions, is_normalized):
         cdef CImg_{T} _kernel = kernel
@@ -480,7 +485,7 @@ cdef class CImg_{T}:
         cdef CImg_{T} _priority = priority
         self._cimg.watershed(_priority._cimg, is_high_connectivity)
         return self
-        
+
     def deriche(self, sigma, order, axis, boundary_conditions):
         byte_string = axis.encode('UTF-8')
         cdef char* _axis = byte_string
@@ -496,7 +501,7 @@ cdef class CImg_{T}:
     def blur(self, sigma, boundary_conditions, is_gaussian):
         self._cimg.blur(sigma, boundary_conditions, is_gaussian)
         return self
-        
+
     def boxfilter(self, boxsize, order, axis, boundary_conditions, nb_iter):
         byte_string = axis.encode('UTF-8')
         cdef char* _axis = byte_string
@@ -514,7 +519,7 @@ cdef class CImg_{T}:
     def sharpen(self, amplitude, sharpen_type, edge, alpha, sigma):
         self._cimg.sharpen(amplitude, sharpen_type, edge, alpha, sigma)
         return self
-             
+
     ############################################################################
     # Drawing functions
     ############################################################################
@@ -537,21 +542,21 @@ cdef class CImg_{T}:
     def draw_circle(self, x0, y0, radius, color, opacity):
         cdef vector[{T}] _color = color
         self._cimg.draw_circle(x0, y0, radius, _color.data(), opacity)
-    
-    def draw_text(self, x0, y0, text, foreground_color, 
+
+    def draw_text(self, x0, y0, text, foreground_color,
                   background_color, opacity, font_height):
         cdef vector[{T}] _fc = foreground_color
         cdef vector[{T}] _bc = background_color
         byte_string = text.encode('UTF-8')
         cdef char* _text = byte_string
-        self._cimg.draw_text(x0, y0, _text, _fc.data(), _bc.data(), 
+        self._cimg.draw_text(x0, y0, _text, _fc.data(), _bc.data(),
                              opacity, font_height)
 
     def display(self, title):
         byte_string = title.encode('UTF-8')
         cdef char* _title = byte_string
         self._cimg.display(_title)
-    
+
     def display_graph(self, plot_type, vertex_type,
                       labelx, xmin, xmax,
                       labely, ymin, ymax):
