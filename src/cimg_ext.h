@@ -1,7 +1,8 @@
 #define cimg_use_zlib 1
 #define cimg_use_jpeg 1
-#define cimg_use_png  1 
-#define cimg_use_tiff 1 
+#define cimg_use_png  1
+#define cimg_use_tiff 1
+#define cimg_use_openmp
 #include <png.h>
 #include <CImg.h>
 #include <half.hpp>
@@ -31,4 +32,4 @@ void save_float16(CImg<T> const& img, const char* filename)
   img_half.save_cimg(filename);
 }
 
-} // namespace cimg_library 
+} // namespace cimg_library
