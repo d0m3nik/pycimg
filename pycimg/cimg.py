@@ -1121,6 +1121,17 @@ class CImg:
         """
         self._cimg.warp(warp._cimg, mode, interpolation, boundary_conditions)
 
+    def apply_geometric_transform(self, s, M, t):
+        """ Apply a geometric transform
+
+            Args:
+                s (float): scale
+                M (CImg) : 3x3 matrix CImg(3,3)
+                t (CImg) : 1x3 shift vector (CImg(3,1))
+        """
+        self._cimg.apply_geometric_transform(s, M._cimg, t._cimg)
+        return self
+
     def crop(self, x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions=DIRICHLET):
         """ Crop image region.
 

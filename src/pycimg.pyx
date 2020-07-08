@@ -308,6 +308,8 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
     # with half precision floats
     void save_float16[T](const CImg[T]& im, const char* filename)
 
+    # Utility function to transform an image by s Mp + t
+    CImg[T] apply_geometric_transform[T](const CImg[T]& src, const float s, const CImg[T]& M, const CImg[T]& t)
 
 # The following files are generated from pycimg_template.pyx
 # by the generate.py script

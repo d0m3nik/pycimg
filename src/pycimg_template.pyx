@@ -430,6 +430,12 @@ cdef class CImg_{T}:
         self._cimg.warp(_warp._cimg, mode, interpolation, boundary_conditions)
         return self
 
+    def apply_geometric_transform(self, s, M, t):
+        cdef CImg_{T} _M = M
+        cdef CImg_{T} _t = t
+        self._cimg = apply_geometric_transform[{T}](self._cimg, s, _M._cimg, _t._cimg)
+        return self
+
     def crop(self, x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions):
         self._cimg.crop(x0, y0, z0, c0, x1, y1, z1, c1, boundary_conditions)
         return self
