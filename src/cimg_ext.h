@@ -2,7 +2,7 @@
 #define cimg_use_jpeg 1
 #define cimg_use_png  1
 #define cimg_use_tiff 1
-#define cimg_use_openmp
+#define cimg_use_openmp 1
 #include <png.h>
 #include <CImg.h>
 #include <half.hpp>
