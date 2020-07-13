@@ -106,12 +106,12 @@ class TestIO(unittest.TestCase):
         self.assertTrue( np.allclose(im2.asarray(), im.asarray()) )
         os.remove(filename)
         # save/load half float
-        filename = self._get_testfilename() + '.cimg'  
-        im.save_cimg_float16(filename)
-        im3 = CImg()
-        im3.load_cimg_float16(filename)
-        self.assertTrue( np.allclose(im2.asarray(), im.asarray()) )
-        os.remove(filename)
+        #filename = self._get_testfilename() + '.cimg'  
+        #im.save_cimg_float16(filename)
+        #im3 = CImg()
+        #im3.load_cimg_float16(filename)
+        #self.assertTrue( np.allclose(im2.asarray(), im.asarray()) )
+        #os.remove(filename)
 
 if __name__ == '__main__':
     unittest.main() 
