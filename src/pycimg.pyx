@@ -1,5 +1,5 @@
 from libcpp cimport bool
-from libc.stdint cimport int8_t, int16_t, int32_t 
+from libc.stdint cimport int8_t, int16_t, int32_t
 from libc.stdint cimport uint8_t, uint16_t, uint32_t
 import numpy as np
 
@@ -40,8 +40,8 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                         const unsigned int step_frame,
                         float* const voxel_size,
                         CImg* const description) except +
-        CImg& load_cimg(const char* const filename, 
-                        const char axis, 
+        CImg& load_cimg(const char* const filename,
+                        const char axis,
                         const float align) except +
 
         const CImg& save(const char* const filename,
@@ -57,7 +57,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                         const float* const voxel_size,
                         const char* const description,
                         const bool use_bigtiff) except +
-        CImg& save_cimg(const char* const filename, 
+        CImg& save_cimg(const char* const filename,
                         const bool is_compressed) except +
 
         # Operators
@@ -65,7 +65,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         bool operator==(const CImg& img)
         bool operator!=(const CImg& img)
 
-        const CImg& display(const char* const title) except + 
+        const CImg& display(const char* const title) except +
         const CImg& display_graph(CImgDisplay& disp,
                                   const unsigned int plot_type,
                                   const unsigned int vertex_type,
@@ -83,7 +83,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         int spectrum() const
         unsigned long size() const
         T* data()
-        T linear_atX(const float fx, const int y, const int z, const int c) 
+        T linear_atX(const float fx, const int y, const int z, const int c)
         T linear_atXY(const float fx, const float fy, const int z, const int c)
         T linear_atXYZ(const float fx, const float fy, const float fz, const int c)
         T linear_atXYZC(const float fx, const float fy, const float fy, const float fc)
@@ -119,10 +119,10 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                              T& mean)
         double variance_noise(const unsigned int variance_method)
         double MSE(const CImg& img)
-        double PSNR(const CImg& img, 
+        double PSNR(const CImg& img,
                     const double max_value)
         # eval ...
-        # Vector / Matrix Operations 
+        # Vector / Matrix Operations
         double magnitude(const int magnitude_type)
         double dot(const CImg& img)
 
@@ -142,7 +142,7 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& quantize(const unsigned int nb_levels,
                        const bool keep_range)
         CImg& threshold(const T& value,
-                        const bool soft_threshold, 
+                        const bool soft_threshold,
                         const bool strict_threshold)
         CImg& histogram(const unsigned int nb_levels,
                         const T& min_value,
@@ -151,15 +151,15 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                        const T& min_value,
                        const T& max_value)
         CImg& index(const CImg& colormap,
-                    const float dithering, 
+                    const float dithering,
                     const bool map_indexes)
-        CImg& map(const CImg& colormap, 
+        CImg& map(const CImg& colormap,
                   const unsigned int boundary_conditions)
         CImg& label(const bool is_high_connectivity,
                     const float tolerance)
 
         # Geometric / Spatial Manipulation
-        CImg& resize(const int size_x, 
+        CImg& resize(const int size_x,
                      const int size_y,
                      const int size_z,
                      const int size_c,
@@ -184,18 +184,23 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& rotate(const float angle,
                      const unsigned int interpolation,
                      const unsigned int boundary_conditions)
-        # TODO: warp
+
+        CImg& warp(const CImg& warp,
+		  const unsigned int mode,
+		  const unsigned int interpolation,
+		  const unsigned int boundary_conditions)
+
         CImg& crop(const int x0,
                    const int y0,
                    const int z0,
-                   const int c0, 
+                   const int c0,
                    const int x1,
                    const int y1,
                    const int z1,
-                   const int c1, 
+                   const int c1,
                    const unsigned int boundary_conditions)
-                     
-        CImg& autocrop(const T* const color, 
+
+        CImg& autocrop(const T* const color,
                        const char* const axes)
         # ...
         CImg& append(CImg& img,
@@ -225,16 +230,16 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
         CImg& watershed(const CImg& priority,
                         const bool is_high_connectivity) except +
 
-        CImg& deriche(const float sigma, 
-                      const unsigned int order, 
-                      const char axis, 
+        CImg& deriche(const float sigma,
+                      const unsigned int order,
+                      const char axis,
                       const bool boundary_conditions)
 
-        CImg& vanvliet(const float sigma, 
+        CImg& vanvliet(const float sigma,
                        const unsigned int order,
                        const char axis,
                        const bool boundary_conditions)
-                 
+
         CImg& blur(const float sigma,
                    const bool boundary_conditions,
                    const bool is_gaussian)
@@ -244,13 +249,13 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                         const char axis,
                         const bool boundary_conditions,
                         const unsigned int nb_iter)
- 
-        CImg& blur_box(const float boxsize, 
+
+        CImg& blur_box(const float boxsize,
                        const bool boundary_conditions)
 
         CImg& blur_median(const unsigned int n,
                           const float threshold)
-             
+
         CImg& sharpen(const float amplitude,
                       const bool sharpen_type,
                       const float edge,
@@ -258,23 +263,23 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
                       const float sigma)
 
         # Drawing functions
-        CImg& draw_triangle(const int x0, 
+        CImg& draw_triangle(const int x0,
                             const int y0,
-                            const int x1, 
+                            const int x1,
                             const int y1,
-                            const int x2, 
+                            const int x2,
                             const int y2,
-                            const T* const color, 
+                            const T* const color,
                             const float opacity)
 
-        CImg& draw_rectangle(const int x0, 
+        CImg& draw_rectangle(const int x0,
                              const int y0,
-                             const int x1, 
+                             const int x1,
                              const int y1,
-                             const T* const color, 
+                             const T* const color,
                              const float opacity)
         # ...
-        CImg& draw_polygon(const CImg& points, 
+        CImg& draw_polygon(const CImg& points,
                            const T* const color,
                            const float opacity)
         # draw_ellipse
@@ -290,8 +295,8 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
 	        	const T* const foreground_color,
 	        	const T* const background_color,
 	        	const float opacity,
-	        	const unsigned int font_height) 	
-        
+	        	const unsigned int font_height)
+
     # Utility function for polygon drawing
     void draw_polygon[T](CImg[T]& img, CImg[uint32]& point, const T* const color, const float opacity)
 
@@ -303,6 +308,8 @@ cdef extern from "cimg_ext.h" namespace "cimg_library":
     # with half precision floats
     void save_float16[T](const CImg[T]& im, const char* filename)
 
+    # Utility function to transform an image by s Mp + t
+    CImg[T] apply_geometric_transform[T](const CImg[T]& src, const float s, const CImg[T]& M, const CImg[T]& t)
 
 # The following files are generated from pycimg_template.pyx
 # by the generate.py script

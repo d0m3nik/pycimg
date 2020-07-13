@@ -30,8 +30,8 @@ libraries = []
 include_dirs = []
 
 if 'linux' in sys.platform:
-    extra_compile_args = ["-std=c++11", "-fPIC"]
-    extra_link_args = ["-std=c++11"]
+    extra_compile_args = ["-fopenmp","-std=c++11", "-fPIC"]
+    extra_link_args = ["-std=c++11","-fopenmp",]
     libraries = ["pthread", "X11"]
 
 elif 'darwin' in sys.platform:
@@ -43,7 +43,7 @@ elif 'darwin' in sys.platform:
 
 elif sys.platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
-    extra_compile_args = ["/MD"]
+    extra_compile_args = ["/MD", "/openmp"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     libraries = ["gdi32", "user32", "shell32"]
     include_dirs = ["./thirdparty/msinttypes"]
@@ -61,12 +61,12 @@ if os.path.exists('conanbuildinfo.json'):
             libraries.extend(d['libs'])
 else:
     print('Not using conan packages.')
-                
-ext = Extension("pycimg.pycimg", 
+
+ext = Extension("pycimg.pycimg",
                 sources=["./src/pycimg.pyx"],
                 include_dirs=include_dirs + ["./src",
                         "./thirdparty/half/include",
-                        "./thirdparty/CImg-2.0.4"],
+                        "./thirdparty/CImg-2.9.2"],
                 library_dirs=library_dirs,
                 libraries=libraries,
                 language="c++",
