@@ -51,7 +51,7 @@ script:
   - python3 -m pip install cibuildwheel==1.5.2
   - python3 -m pip install cython
   - python3 generate.py
-  - cibuildwheel --output-dir wheelhouse
+  - python3 -m cibuildwheel --output-dir wheelhouse
   - |
     if [[ $TRAVIS_TAG ]]; then
       python3 -m pip install twine
