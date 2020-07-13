@@ -45,7 +45,7 @@ env:
     - CIBW_TEST_COMMAND="nosetests {project}/test"
  
 script:
-  - python -m pip install cibuildwheel==1.1.0
+  - python -m pip install cibuildwheel==1.5.2
   - python -m pip install cython
   - python generate.py
   - cibuildwheel --output-dir wheelhouse
