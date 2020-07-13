@@ -46,12 +46,12 @@ env:
     - CIBW_TEST_COMMAND="nosetests {project}/test"
  
 script:
-  - python -m pip install cibuildwheel==1.5.2
-  - python -m pip install cython
-  - python generate.py
+  - python3 -m pip install cibuildwheel==1.5.2
+  - python3 -m pip install cython
+  - python3 generate.py
   - cibuildwheel --output-dir wheelhouse
   - |
     if [[ $TRAVIS_TAG ]]; then
-      python -m pip install twine
-      python -m twine upload wheelhouse/*.whl
+      python3 -m pip install twine
+      python3 -m twine upload wheelhouse/*.whl
     fi
