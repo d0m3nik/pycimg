@@ -2,7 +2,9 @@
 #define cimg_use_jpeg 1
 #define cimg_use_png  1
 #define cimg_use_tiff 1
+#ifndef __APPLE__
 #define cimg_use_openmp 1
+#endif
 #include <png.h>
 #include <CImg.h>
 #include <half.hpp>

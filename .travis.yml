@@ -34,11 +34,12 @@ matrix:
       before_install:
         - choco install python --version 3.8.0
         - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
+        # make sure it's on PATH as 'python3'
+        ln -s /c/Python38/python.exe /c/Python38/python3.exe
 
 env:
   global: 
     - TWINE_USERNAME=d0m3nik
-    - CIBW_BEFORE_ALL_MACOS="brew install libomp"
     - CIBW_BEFORE_ALL_LINUX="yum install -y epel-release && yum install -y cmake3 && ln -s /usr/bin/cmake3 /usr/bin/cmake"
     - CIBW_BEFORE_BUILD="pip install -r requirements_dev.txt && python install_conan_packages.py"
     - CIBW_SKIP="cp27-* *-win32 *-manylinux_i686"
