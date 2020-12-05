@@ -1,0 +1,74 @@
+{
+ "options": [
+  [
+   "libjpeg-turbo:SIMD",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:arithmetic_decoder",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:arithmetic_encoder",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:enable12bit",
+   "False"
+  ],
+  [
+   "libjpeg-turbo:fPIC",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:java",
+   "False"
+  ],
+  [
+   "libjpeg-turbo:libjpeg7_compatibility",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:libjpeg8_compatibility",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:mem_src_dst",
+   "True"
+  ],
+  [
+   "libjpeg-turbo:shared",
+   "False"
+  ],
+  [
+   "libjpeg-turbo:turbojpeg",
+   "True"
+  ],
+  [
+   "libpng:fPIC",
+   "True"
+  ],
+  [
+   "libpng:shared",
+   "False"
+  ],
+  [
+   "libtiff:fPIC",
+   "True"
+  ],
+  [
+   "libtiff:shared",
+   "False"
+  ],
+  [
+   "zlib:shared",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": null,
+  "version": null,
+  "user": null,
+  "channel": null
+ }
+}

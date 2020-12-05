@@ -1,4 +1,7 @@
 __pycache__/
+*.egg-info
+env
+old
 build
 _build
 *.swp
