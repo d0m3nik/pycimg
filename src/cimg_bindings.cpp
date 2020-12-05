@@ -9,7 +9,27 @@ using namespace cimg_library;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(cimg_bindings, m) {
+template <typename T>
+void declare(py::module &m, const std::string &typestr)
+{
+    using Class = CImg<T>;
+    std::string pyclass_name = std::string("CImg_") + typestr;
+    py::class_<Class>(m, pyclass_name.c_str()) //, py::buffer_protocol())
+        .def(py::init<>())
+        .def("load", &Class::load)
+        .def("width", &Class::width)
+        .def("height", &Class::height)
+        .def("display",
+             (const Class &(Class::*)(const char *const, const bool, unsigned int *const, const bool) const)(&Class::display),
+             "Display image",
+             py::arg("title") = "",
+             py::arg("display_info") = true,
+             py::arg("XYZ") = 0,
+             py::arg("exit_on_anykey") = false);
+}
+
+PYBIND11_MODULE(cimg_bindings, m)
+{
     m.doc() = R"pbdoc(
         Pybind11 example plugin
         -----------------------
@@ -23,19 +43,8 @@ PYBIND11_MODULE(cimg_bindings, m) {
            subtract
     )pbdoc";
 
-    py::class_<CImg<float>>(m, "CImg_float")
-        .def(py::init<>())
-        .def("load", &CImg<float>::load)
-        .def("width", &CImg<float>::width)
-        .def("height", &CImg<float>::height)
-        .def("display", 
-            (const CImg<float>& (CImg<float>::*)(const char *const, const bool, unsigned int *const, const bool) const)(&CImg<float>::display),
-            "Display image", 
-            py::arg("title") = "", 
-            py::arg("display_info") = true, 
-            py::arg("XYZ") = 0, 
-            py::arg("exit_on_anykey") = false 
-            );
+    declare<float>(m, "float32");
+    declare<int>(m, "int32");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
