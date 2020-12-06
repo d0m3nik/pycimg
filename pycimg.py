@@ -83,5 +83,35 @@ class CImg:
         elif len(args) > 1:
             raise RuntimeError("More than one argument not supported")
 
+    def asarray(self, copy=False):
+        return np.array(self._cimg, copy=copy)
+
+    def fromarray(self, arr):
+        ndim = len(arr.shape)
+        if ndim > 4:
+            raise RuntimeError('Cannot convert from array with %d > 4 dimensions' % ndim)
+        x = 1
+        y = 1
+        z = 1
+        c = 1
+        shape = list(reversed(arr.shape))
+        if len(shape) == 1:
+            x = shape[0]
+        elif len(shape) == 2:
+            x, y = shape
+        elif len(shape) == 3:
+            x, y, z = shape
+        elif len(shape) == 4:
+            x, y, z, c = shape
+        self.resize(x, y, z, c, interpolation_type=-1,
+                boundary_conditions=0,
+                centering_x=0,
+                centering_y=0,
+                centering_z=0,
+                centering_c=0
+                )
+        a = self.asarray()
+        a[:] = arr[:]
+
     def __getattr__(self, name):
         return getattr(self._cimg, name)
