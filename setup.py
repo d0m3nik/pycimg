@@ -29,15 +29,55 @@ long_description = read('README.rst')
 
 version = find_version("pycimg.py")
 
-os.environ['CC'] = 'clang -I /usr/X11R6/include -L /usr/X11R6/lib'
-include_dirs = ['./thirdparty/CImg-2.9.4']
+extra_compile_args = []
+extra_link_args = []
+library_dirs = []
+libraries = []
+include_dirs = []
+
+if 'linux' in sys.platform:
+    extra_compile_args = ["-fopenmp","-std=c++11", "-fPIC"]
+    extra_link_args = ["-std=c++11","-fopenmp",]
+    libraries = ["pthread", "X11"]
+
+elif 'darwin' in sys.platform:
+    # Newer versions of MacOS X come with an incomplete XLib.h
+    os.environ['CC'] = 'clang -I /usr/X11R6/include -L /usr/X11R6/lib'
+    extra_compile_args = ["-std=c++11", "-fPIC", "-stdlib=libc++", "-mmacosx-version-min=10.7"]
+    extra_link_args = ["-std=c++11"]
+    include_dirs = ["/usr/X11R6/include"]
+    library_dirs = ["/usr/X11R6/lib"]
+    libraries = ["pthread", "X11"]
+
+elif sys.platform == 'win32':
+#    extra_compile_args = ["-Zi", "/Od"]
+    extra_compile_args = ["/MD", "/openmp"]
+    extra_link_args = ["/NODEFAULTLIB:libcmt"]
+    libraries = ["gdi32", "user32", "shell32"]
+    include_dirs = ["./thirdparty/msinttypes"]
+
+else:
+    raise RuntimeError("pycimg is not yet supported on platform '{}'".format(sys.platform))
+
+
+if os.path.exists('conanbuildinfo.json'):
+    with open('conanbuildinfo.json', 'r') as f:
+        bi = json.loads(f.read())
+        for d in bi['dependencies']:
+            include_dirs.extend(d['include_paths'])
+            library_dirs.extend(d['lib_paths'])
+            libraries.extend(d['libs'])
+else:
+    print('Not using conan packages.')
 
 ext_modules = [
     Pybind11Extension("cimg_bindings",
         ["src/cimg_bindings.cpp"],
-        include_dirs = include_dirs + ['/usr/X11R6/include'],
-        library_dirs = ['/usr/X11R6/lib'],
-        libraries = ['pthread', 'X11'],
+        include_dirs = include_dirs + ['./thirdparty/CImg-2.9.4'],
+        library_dirs = library_dirs,
+        libraries = libraries,
+        extra_compile_args = extra_compile_args,
+        extra_link_args = extra_link_args,
         # Example: passing in the version to the compiled code
         define_macros = [('VERSION_INFO', version)]
         ),

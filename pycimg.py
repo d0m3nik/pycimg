@@ -1,7 +1,7 @@
 __version__ = "0.0.6"
 import numpy as np
 
-from cimg_bindings import CImg_float32, CImg_int32
+from cimg_bindings import CImg_float32, CImg_uint8
 
 # Supported numeric pixel type
 int8 = np.int8
@@ -12,6 +12,64 @@ uint16 = np.uint16
 uint32 = np.uint32
 float32 = np.float32
 float64 = np.float64
+
+# Interpolation type
+NONE_RAW = -1
+NONE = 0
+NEAREST = 1
+MOVING_AVERAGE = 2
+LINEAR = 3
+GRID = 4
+CUBIC = 5
+LANCZOS = 6
+
+# Boundary condition type
+DIRICHLET = 0
+NEUMANN = 1
+PERIODIC = 2
+MIRROR = 3
+
+# Variance method
+SECOND_MOMENT = 0
+BEST_UNBIASED = 1
+LEAST_MEDIAN_SQ = 2
+LEAST_TRIMMED_SQ = 3
+
+# Norm type
+LINF_NORM = -1
+L0_NORM = 0
+L1_NORM = 1
+L2_NORM = 2
+
+# Rounding type
+R_BACKWARD = -1
+R_NEAREST = 0
+R_FORWARD = 1
+
+# Noise type
+GAUSSIAN = 0
+UNIFORM = 1
+SALT_AND_PEPPER = 2
+POISSON = 3
+RICIAN = 4
+
+# Compression type
+C_NONE = 0
+C_LZW = 1
+C_JPEG = 2
+
+# Filter order
+SMOOTH_FILTER = 0
+FIRST_DERIV = 1
+SECOND_DERIV = 2
+THIRD_DERIV = 3
+
+# Plot type
+POINTS = 0
+SEGMENTS = 1
+SPLINES = 2
+BARS = 3
+
 
 class CImg:
     """ CImg is a wrapper class for the CImg library: """
@@ -69,9 +127,9 @@ class CImg:
             if isinstance(args[0], str):
                 self.load(args[0])
             elif isinstance(args[0], np.ndarray):
-                self._cimg.fromarray(args[0])
+                self.fromarray(args[0])
             elif isinstance(args[0], CImg):
-                self._cimg.fromarray(args[0].asarray())
+                self.fromarray(args[0].asarray())
             elif isinstance(args[0], tuple):
                 shape = [max(1, sz) for sz in args[0]]
                 self.resize(*shape, interpolation_type=NONE_RAW)
@@ -112,6 +170,11 @@ class CImg:
                 )
         a = self.asarray()
         a[:] = arr[:]
+
+    @property
+    def shape(self):
+        """ Return shape of image data. """
+        return (self.spectrum(), self.depth(), self.height(), self.width())
 
     def __getattr__(self, name):
         return getattr(self._cimg, name)
