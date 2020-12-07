@@ -105,6 +105,7 @@ setup(
     keywords="image processing library", 
     packages=find_packages(exclude=['tests', 'docs']),
     ext_modules=ext_modules,
+    install_requires=["numpy"],
     extras_require={"test": "pytest"},
     cmdclass={"build_ext": build_ext},
     zip_safe=False
