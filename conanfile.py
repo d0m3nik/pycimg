@@ -10,4 +10,4 @@ class PyCimgConan(ConanFile):
         if self.settings.os == "Linux" and self.settings.arch == "x86":
             self.requires('libjpeg/9c@bincrafters/stable')
         else:
-            self.requires('libjpeg-turbo/1.5.2@bincrafters/stable')
+            self.requires('libjpeg-turbo/2.0.2@bincrafters/stable')
