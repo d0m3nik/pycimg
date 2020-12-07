@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-     - [feature_pybind, master]
+     - feature_pybind
   release:
     types:
       - published
