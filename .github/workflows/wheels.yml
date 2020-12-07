@@ -57,7 +57,7 @@ jobs:
     - name: Build wheel
       run: python -m cibuildwheel --output-dir wheelhouse
       env:
-        CIBW_BEFORE_ALL_LINUX: yum install -y epel-release && yum install -y cmake3 && ln -s /usr/bin/cmake3 /usr/bin/cmake
+        CIBW_BEFORE_ALL_LINUX: pip install cmake && ln -s \$(which cmake) /usr/local/bin/cmake
         CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz
         CIBW_BEFORE_BUILD: pip install -r requirements.txt && python install_conan_packages.py
         CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014

@@ -38,10 +38,10 @@ def test_size():
 
 def test_dtypes():
     """ Test construction for different data types. """
-    dtypes = [pycimg.uint8, pycimg.uint16, pycimg.uint32,
-              pycimg.int8, pycimg.int16, pycimg.int32,
-              pycimg.float32, pycimg.float64
-            ]
+    dtypes = [pycimg.uint8, pycimg.float32]#pycimg.uint16, pycimg.uint32,
+             # pycimg.int8, pycimg.int16, pycimg.int32,
+             # pycimg.float32, pycimg.float64
+            #]
     for dtype in dtypes:
         im = CImg((2,3), dtype=dtype)
         assert im.size() == 6
