@@ -194,7 +194,7 @@ class CImg:
     @property
     def shape(self):
         """ Return shape of image data. """
-        return (self.spectrum(), self.depth(), self.height(), self.width())
+        return (self.spectrum, self.depth, self.height, self.width)
 
     @property
     def size(self):
