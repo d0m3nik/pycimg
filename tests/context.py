@@ -1,7 +1,6 @@
 import os
 import sys
-import pycimg
-from pycimg import CImg
+from pycimg import *
 
 def get_test_image(ext=None):
     if ext == None:

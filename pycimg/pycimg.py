@@ -1,7 +1,7 @@
-__version__ = "0.0.6"
+
 import numpy as np
 
-from cimg_bindings import CImg_float32, CImg_uint8
+from .cimg_bindings import CImg_float32, CImg_uint8
 
 # Supported numeric pixel type
 int8 = np.int8
@@ -172,9 +172,34 @@ class CImg:
         a[:] = arr[:]
 
     @property
+    def width(self):
+        """ Return width of image. """
+        return self._cimg.width()
+
+    @property
+    def height(self):
+        """ Return height of image. """
+        return self._cimg.height()
+
+    @property
+    def depth(self):
+        """ Return depth of image. """
+        return self._cimg.depth()
+
+    @property
+    def spectrum(self):
+        """ Return spectrum (number of channels) of image. """
+        return self._cimg.spectrum()
+
+    @property
     def shape(self):
         """ Return shape of image data. """
         return (self.spectrum(), self.depth(), self.height(), self.width())
+
+    @property
+    def size(self):
+        """ Return the total number of pixel values in the image. """
+        return self._cimg.size()
 
     def __getattr__(self, name):
         return getattr(self._cimg, name)

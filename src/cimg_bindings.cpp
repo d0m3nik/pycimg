@@ -31,13 +31,13 @@ void declare(py::module &m, const std::string &typestr)
     cl.def("load_bmp", (Class &(Class::*)(const char* const))&Class::load_bmp);
     cl.def("load_jpeg", (Class &(Class::*)(const char* const))&Class::load_jpeg);
     cl.def("load_png", 
-           (Class &(Class::*)(const char* const, unsigned int *const))&Class::load_png,
+           (Class& (Class::*)(const char* const, unsigned int *const))&Class::load_png,
            "Load png image.",
            py::arg("filename"),
            py::arg("bits_per_pixel") = 0
            );
     cl.def("load_tiff", 
-           (Class &(Class::*)(const char* const, const unsigned int, const unsigned int, const unsigned int, float* const, CImg<char>* const))&Class::load_tiff,
+           (Class& (Class::*)(const char* const, const unsigned int, const unsigned int, const unsigned int, float* const, CImg<char>* const))&Class::load_tiff,
            "Load tiff image.",
            py::arg("filename"),
            py::arg("first_frame") = 0,
@@ -55,20 +55,20 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("number") = -1,
            py::arg("digits") = 6
            );
-    cl.def("save_bmp", (const Class &(Class::*)(const char* const) const)&Class::save_bmp);
+    cl.def("save_bmp", (const Class& (Class::*)(const char* const) const)&Class::save_bmp);
     cl.def("save_jpeg", 
-           (const Class &(Class::*)(const char* const, const unsigned int) const)&Class::save_jpeg,
+           (const Class& (Class::*)(const char* const, const unsigned int) const)&Class::save_jpeg,
            "Save image as jpeg.",
            py::arg("filename"),
            py::arg("quality") = 100
           );
     cl.def("save_png", 
-           (const Class &(Class::*)(const char* const, const unsigned int) const)&Class::save_png,
+           (const Class& (Class::*)(const char* const, const unsigned int) const)&Class::save_png,
            "Save image as png.",
            py::arg("filename"),
            py::arg("bytes_per_pixel") = 0
           );
-    cl.def("save_tiff", (const Class &(Class::*)(const char* const) const)&Class::save_tiff);
+    cl.def("save_tiff", (const Class& (Class::*)(const char* const) const)&Class::save_tiff);
 
     // Instance characteristics
     cl.def("spectrum", &Class::spectrum);
@@ -92,7 +92,7 @@ void declare(py::module &m, const std::string &typestr)
             );
         });
     cl.def("display",
-           (const Class &(Class::*)(const char *const, const bool, unsigned int *const, const bool) const)(&Class::display),
+           (const Class& (Class::*)(const char *const, const bool, unsigned int *const, const bool) const)(&Class::display),
            "Display image",
            py::arg("title") = "",
            py::arg("display_info") = true,
@@ -101,7 +101,7 @@ void declare(py::module &m, const std::string &typestr)
           );
     
     cl.def("resize",
-           (Class &(Class::*)(const int, const int, const int, const int, const int, const unsigned int, const float, const float, const float, const float))(&Class::resize),
+           (Class& (Class::*)(const int, const int, const int, const int, const int, const unsigned int, const float, const float, const float, const float))(&Class::resize),
            "Resize image",
            py::arg("size_x"),
            py::arg("size_y") = -100,
@@ -114,6 +114,15 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("centering_z") = 0.0f,
            py::arg("centering_c") = 0.0f
           );
+        
+    cl.def("linear_atXY",
+           (float (Class::*)(const float, const float, const int, const int) const)(&Class::linear_atXY),
+           "Return pixel value, using linear interpolation and Dirichlet boundary conditions for the X and Y-coordinates.",
+           py::arg("fx"),
+           py::arg("fy"),
+           py::arg("z") = 0,
+           py::arg("c") = 0
+    );
     
     cl.def("rand", &Class::rand);
 }

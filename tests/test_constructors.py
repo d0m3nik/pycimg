@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from context import pycimg, CImg, get_test_image
+from context import * #int8, float32,  CImg, get_test_image
 
 
 def test_noarg():
@@ -38,7 +38,7 @@ def test_size():
 
 def test_dtypes():
     """ Test construction for different data types. """
-    dtypes = [pycimg.uint8, pycimg.float32]#pycimg.uint16, pycimg.uint32,
+    dtypes = [uint8, float32]#pycimg.uint16, pycimg.uint32,
              # pycimg.int8, pycimg.int16, pycimg.int32,
              # pycimg.float32, pycimg.float64
             #]

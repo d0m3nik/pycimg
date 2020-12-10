@@ -27,7 +27,7 @@ def find_version(*file_paths):
 # Get the long description from the README file
 long_description = read('README.rst')
 
-version = find_version("pycimg.py")
+version = find_version("pycimg", "__init__.py")
 
 extra_compile_args = []
 extra_link_args = []
@@ -71,7 +71,7 @@ else:
     print('Not using conan packages.')
 
 ext_modules = [
-    Pybind11Extension("cimg_bindings",
+    Pybind11Extension("pycimg.cimg_bindings",
         ["src/cimg_bindings.cpp"],
         include_dirs = include_dirs + ['./thirdparty/CImg-2.9.4'],
         library_dirs = library_dirs,
