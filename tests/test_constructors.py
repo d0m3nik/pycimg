@@ -44,7 +44,7 @@ def test_dtypes():
             #]
     for dtype in dtypes:
         im = CImg((2,3), dtype=dtype)
-        assert im.size() == 6
+        assert im.size == 6
 
     with pytest.raises(RuntimeError):
         CImg(dtype=1)
