@@ -40,12 +40,17 @@ jobs:
         run: |
           choco install vcpython27 -f -y
 
+      - name: Fix zlib Build MacOS
+        if: runner.os == "macOS"
+        run: |
+          python -m pip install conan && echo "CFLAGS=-DHAVE_UNISTD_H" >> ~/.conan/profiles/default
+
       - name: Build wheels
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BEFORE_ALL_LINUX: pip install cmake && ln -s $(which cmake) /usr/local/bin/cmake
-          CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz
+          CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz 
           CIBW_BEFORE_BUILD: pip install -r requirements.txt && python install_conan_packages.py
           CIBW_SKIP: cp27-* pp* *-win32 *-manylinux_i686 *aarch64 *ppc64* *s390*
 
