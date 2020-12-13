@@ -103,26 +103,26 @@ class CImg:
             Raises:
                 RuntimeError: For unsupported data types.
         """
-        dtype = kwargs.get('dtype', float32)
+        self.dtype = kwargs.get('dtype', float32)
 
-        if dtype == np.int8:
+        if self.dtype == np.int8:
             self._cimg = CImg_int8()
-        elif dtype == np.int16:
+        elif self.dtype == np.int16:
             self._cimg = CImg_int16()
-        elif dtype == np.int32:
+        elif self.dtype == np.int32:
             self._cimg = CImg_int32()
-        elif dtype == np.uint8:
+        elif self.dtype == np.uint8:
             self._cimg = CImg_uint8()
-        elif dtype == np.uint16:
+        elif self.dtype == np.uint16:
             self._cimg = CImg_uint16()
-        elif dtype == np.uint32:
+        elif self.dtype == np.uint32:
             self._cimg = CImg_uint32()
-        elif dtype == np.float32:
+        elif self.dtype == np.float32:
             self._cimg = CImg_float32()
-        elif dtype == np.float64:
+        elif self.dtype == np.float64:
             self._cimg = CImg_float64()
         else:
-            raise RuntimeError("Unknown data type '{}'".format(dtype))
+            raise RuntimeError("Unknown data type '{}'".format(self.dtype))
         if len(args) == 1:
             if isinstance(args[0], str):
                 self.load(args[0])
@@ -143,33 +143,6 @@ class CImg:
 
     def asarray(self, copy=False):
         return np.array(self._cimg, copy=copy)
-
-    def fromarray(self, arr):
-        ndim = len(arr.shape)
-        if ndim > 4:
-            raise RuntimeError('Cannot convert from array with %d > 4 dimensions' % ndim)
-        x = 1
-        y = 1
-        z = 1
-        c = 1
-        shape = list(reversed(arr.shape))
-        if len(shape) == 1:
-            x = shape[0]
-        elif len(shape) == 2:
-            x, y = shape
-        elif len(shape) == 3:
-            x, y, z = shape
-        elif len(shape) == 4:
-            x, y, z, c = shape
-        self.resize(x, y, z, c, interpolation_type=-1,
-                boundary_conditions=0,
-                centering_x=0,
-                centering_y=0,
-                centering_z=0,
-                centering_c=0
-                )
-        a = self.asarray()
-        a[:] = arr[:]
 
     @property
     def width(self):
@@ -200,6 +173,35 @@ class CImg:
     def size(self):
         """ Return the total number of pixel values in the image. """
         return self._cimg.size()
+
+    def __eq__(self, img):
+        return np.all( self.asarray() == img.asarray() )
+
+    def __neq__(self, img):
+        return not self.__eq__(img)
+
+    def isempty(self):
+        return self.width == 0 and  \
+               self.height == 0 and \
+               self.depth == 0 and  \
+               self.spectrum == 0
+
+    def __repr__(self):
+        if self.isempty():
+            return 'CImg()'
+        return 'CImg(' + repr(self.asarray()) + ')'
+
+    def __str__(self):
+        if self.isempty():
+            arr = None
+        else:
+            arr = self.asarray()
+        return "%s %5d\n%s %5d\n%s %5d\n%s %5d\n%s\n%s" % \
+                ("height:  ", self.height,
+                 "width:   ", self.width,
+                 "depth:   ", self.depth,
+                 "spectrum:", self.spectrum,
+                 "data:    ", arr) 
 
     def __getattr__(self, name):
         return getattr(self._cimg, name)

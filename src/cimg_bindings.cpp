@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 #define cimg_use_zlib 1
 #define cimg_use_jpeg 1
@@ -16,15 +17,106 @@ using namespace cimg_library;
 
 namespace py = pybind11;
 
+/*
+// type caster: CImg <-> NumPy-array
+namespace pybind11 { namespace detail {
+template <typename T> struct type_caster<CImg<T>>
+{
+    public:
+    PYBIND11_TYPE_CASTER(CImg<T>, _("CImg<T>"));
+
+    // Conversion part 1 (Python -> C++)
+    bool load(py::handle src, bool convert)
+    {
+        if (!convert && !py::array_t<T>::check_(src))
+            return false;
+
+        auto buf = py::array_t<T, py::array::c_style | py::array::forcecast>::ensure(src);
+        if (!buf)
+          return false;
+
+        auto dims = buf.ndim();
+        if (dims < 1 || dims > 4)
+          return false;
+
+        auto shape = buf.shape();
+        if(dims == 1)
+        {
+            value = CImg<T>(buf.data(), shape[0]);
+        }
+        else if(dims == 2)
+        {
+            value = CImg<T>(buf.data(), shape[1], shape[0]);
+        }
+        else if(dims == 3)
+        {
+            value = CImg<T>(buf.data(), shape[2], shape[1], shape[0]);
+        }
+        else if(dims == 4)
+        {
+            value = CImg<T>(buf.data(), shape[3], shape[2], shape[1], shape[0]);
+        }
+          
+        return true;
+      }
+
+      //Conversion part 2 (C++ -> Python)
+      static py::handle cast(const CImg<T> &c, py::return_value_policy policy, py::handle parent)
+      {
+          py::array a(
+              { c.spectrum(), c.depth(), c.height(), c.width() },
+              { sizeof(T) * c.depth() * c.height() * c.width(),
+                sizeof(T) * c.height() * c.width(),
+                sizeof(T) * c.width(),                
+                sizeof(T) },
+               c.data());
+          return a.release();
+      }
+  };
+}}
+*/
+
+template <typename T>
+CImg<T> fromarray(py::array_t<T, py::array::c_style | py::array::forcecast> a)
+{
+    auto dims = a.ndim();
+    if (dims < 1)
+        throw std::runtime_error("Array should have at least 1 dimension.");
+    if (dims > 4)
+        throw std::runtime_error("Array should have less than 4 dimensions.");
+
+    auto shape = a.shape();
+    if (dims == 1)
+    {
+        return CImg<T>(a.data(), shape[0]);
+    }
+    else if (dims == 2)
+    {
+        return CImg<T>(a.data(), shape[1], shape[0]);
+    }
+    else if (dims == 3)
+    {
+        return CImg<T>(a.data(), shape[2], shape[1], shape[0]);
+    }
+    return CImg<T>(a.data(), shape[3], shape[2], shape[1], shape[0]);
+}
+
 template <typename T>
 void declare(py::module &m, const std::string &typestr)
 {
+    using pyarray = py::array_t<T, py::array::c_style | py::array::forcecast>;
+
     using Class = CImg<T>;
     std::string pyclass_name = std::string("CImg_") + typestr;
     py::class_<Class> cl(m, pyclass_name.c_str(), py::buffer_protocol());
 
+
     // Constructor
     cl.def(py::init<>());
+
+    cl.def("fromarray",
+           [](Class& im, pyarray a) { im = fromarray<T>(a); },
+           "Create CImg from array.");
 
     // Load
     cl.def("load", &Class::load);
@@ -37,14 +129,15 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("bits_per_pixel") = 0
            );
     cl.def("load_tiff", 
-           (Class& (Class::*)(const char* const, const unsigned int, const unsigned int, const unsigned int, float* const, CImg<char>* const))&Class::load_tiff,
+           [](Class& im,  const char* const filename, const unsigned int first_frame, const unsigned int last_frame, const unsigned int step_frame)
+           {
+               return im.load_tiff(filename, first_frame, last_frame, step_frame);
+           },
            "Load tiff image.",
            py::arg("filename"),
            py::arg("first_frame") = 0,
            py::arg("last_frame") = ~0U,
-           py::arg("step_frame") = 1,
-           py::arg("voxel_size") = 0,
-           py::arg("description") = 0
+           py::arg("step_frame") = 1
            );
 
     // Save
@@ -91,6 +184,7 @@ void declare(py::module &m, const std::string &typestr)
                   sizeof(T) }
             );
         });
+
     cl.def("display",
            (const Class& (Class::*)(const char *const, const bool, unsigned int *const, const bool) const)(&Class::display),
            "Display image",
@@ -125,6 +219,93 @@ void declare(py::module &m, const std::string &typestr)
     );
     
     cl.def("rand", &Class::rand);
+
+    // Drawing
+    cl.def("draw_rectangle",
+           [](Class& im, const int x0, const int y0, const int x1, const int y1, pyarray color, const float opacity)
+           {
+                if(color.size() != im.spectrum())
+                    throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
+                return im.draw_rectangle(x0, y0, x1, y1, color.data(), opacity);
+           }, 
+           "Draw a filled 2D rectangle.",
+           py::arg("x0"),
+           py::arg("y0"),
+           py::arg("x1"),
+           py::arg("y1"),
+           py::arg("color"),
+           py::arg("opacity") = 1
+    );
+
+    cl.def("draw_polygon",
+           [](Class& im, pyarray points, pyarray color, const float opacity)
+           {
+                if(color.size() != im.spectrum())
+                    throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
+                return im.draw_polygon(fromarray<T>(points), color.data(), opacity);
+           }, 
+           "Draw a filled 2D polygon.",
+           py::arg("points"),
+           py::arg("color"),
+           py::arg("opacity") = 1
+    );
+
+    cl.def("draw_circle",
+        [](Class& im, const int x0, const int y0, const int radius, pyarray color, const float opacity)
+        {
+            if(color.size() != im.spectrum())
+                throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
+            return im.draw_circle(x0, y0, radius, color.data(), opacity);
+        },
+        "Draw a filled 2D circle.",
+        py::arg("x0"),
+        py::arg("y0"),
+        py::arg("radius"),
+        py::arg("color"),
+        py::arg("opacity") = 1
+    );
+
+    cl.def("draw_triangle",
+           [](Class& im, const int x0, const int y0, const int x1, const int y1, const int x2, const int y2, pyarray color, const float opacity)
+           {
+               if(color.size() != im.spectrum())
+                   throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
+               return im.draw_triangle(x0, y0, x1, y1, x2, y2, color.data(), opacity);
+           },
+           "Draw a filled 2D triangle.",
+           py::arg("x0"),
+           py::arg("y0"),
+           py::arg("x1"),
+           py::arg("y1"),
+           py::arg("x2"),
+           py::arg("y2"),
+           py::arg("color"),
+           py::arg("opacity") = 1
+    );
+
+    cl.def("draw_text",
+           [](Class& im, const int x0, const int y0, const char* const text, pyarray foreground_color, pyarray background_color, const float opacity, const unsigned int font_height)
+           {
+               if(foreground_color.size() != im.spectrum() || background_color.size() != im.spectrum())
+                   throw std::runtime_error("Colors needs to have " + std::to_string(im.spectrum()) + " elements.");
+               return im.draw_text(x0, y0, text, foreground_color.data(), background_color.data(), opacity, font_height);
+           },
+           "Draw a text string.",
+           py::arg("x0"),
+           py::arg("y0"),
+           py::arg("text"),
+           py::arg("foreground_color"),
+           py::arg("background_color"),
+           py::arg("opacity") = 1,
+           py::arg("font_height") = 13
+    );
+
+
+    cl.def("fill",
+           (Class& (Class::*)(const T&))(&Class::fill),
+           "Fill all pixel values with specified value.",
+           py::arg("val")
+    );
 }
 
 PYBIND11_MODULE(cimg_bindings, m)

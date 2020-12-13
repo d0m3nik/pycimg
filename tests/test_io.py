@@ -4,13 +4,13 @@ import os
 
 import numpy as np
 import pytest
-from context import pycimg, CImg, get_test_image
+from context import *
 
 def _check_image_dimensions(im):
-    assert im.width() == 1200
-    assert im.height() == 797
-    assert im.depth() == 1
-    assert im.spectrum() == 3
+    assert im.width == 1200
+    assert im.height == 797
+    assert im.depth == 1
+    assert im.spectrum == 3
 
 def _get_testfilename():
         return datetime.now().isoformat().replace(':','_')
@@ -78,7 +78,7 @@ def test_save_jpeg():
 
 def test_save_png():
     """ Test save png. """
-    img = CImg((100, 100), dtype=pycimg.uint8)
+    img = CImg((100, 100), dtype=uint8)
     img.rand(0, 255)
     filename = _get_testfilename() + '.png'
     img.save_png(filename)
@@ -87,10 +87,10 @@ def test_save_png():
 
 def test_save_tiff():
     """ Test save tiff. """
-    img = CImg((100, 100), dtype=pycimg.uint8)
+    img = CImg((100, 100), dtype=uint8)
     img.rand(0, 255)
     filename = _get_testfilename() + '.tiff'
-    img.save_tiff(filename, compression_type=pycimg.C_LZW, voxel_size=0, description="Test tiff")
+    img.save_tiff(filename)
     assert os.path.isfile(filename)
     os.remove(filename)
 

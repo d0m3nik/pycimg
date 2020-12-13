@@ -54,7 +54,6 @@ elif sys.platform == 'win32':
     extra_compile_args = ["/MD", "/openmp"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     libraries = ["gdi32", "user32", "shell32"]
-   # include_dirs = ["./thirdparty/msinttypes"]
 
 else:
     raise RuntimeError("pycimg is not yet supported on platform '{}'".format(sys.platform))
