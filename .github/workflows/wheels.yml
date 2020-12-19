@@ -49,12 +49,12 @@ jobs:
           CIBW_BEFORE_BUILD: pip install -r requirements.txt && python install_conan_packages.py
           CIBW_SKIP: cp27-* pp* *-win32 *-manylinux_i686 *aarch64 *ppc64* *s390*
 
-       - name: Start SSH via Ngrok
-         if: ${{ failure() }}
-         run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
-         env:
-           NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-           USER_PASS: ${{ secrets.USER_PASS }}
+      - name: Start SSH via Ngrok
+        if: ${{ failure() }}
+        run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
+        env:
+          NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+          USER_PASS: ${{ secrets.USER_PASS }}
 
       - uses: actions/upload-artifact@v2
         with:
