@@ -43,8 +43,8 @@ if 'linux' in sys.platform:
 elif 'darwin' in sys.platform:
     # Newer versions of MacOS X come with an incomplete XLib.h
     os.environ['CC'] = 'clang -I/usr/X11R6/include -L/usr/X11R6/lib'
-    extra_compile_args = ["-std=c++11", "-fPIC", "-stdlib=libc++"]
-    extra_link_args = ["-std=c++11"]
+    extra_compile_args = ["-arch x86_64", "-std=c++11", "-fPIC", "-stdlib=libc++"]
+    extra_link_args = ["-arch x86_64", "-std=c++11"]
     include_dirs = ["/usr/X11R6/include"]
     library_dirs = ["/usr/X11R6/lib"]
     libraries = ["pthread", "X11"]
