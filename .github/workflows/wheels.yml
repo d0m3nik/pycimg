@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest] #[ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -39,6 +39,11 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           choco install vcpython27 -f -y
+
+      - name: Symlink g++-4.2 on MacOS
+        if: runner.os == 'macOS'
+        run: |
+          ln -s /usr/bin/g++ /usr/local/bin/g++-4.2
 
       - name: Build wheels
         run: |
