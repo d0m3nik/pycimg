@@ -224,7 +224,99 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("c") = 0
     );
     
+    // Value manipulation
+    cl.def("fill",
+           (Class& (Class::*)(const T&))(&Class::fill),
+           "Fill all pixel values with specified value.",
+           py::arg("val")
+    );
+    cl.def("invert_endianness", &Class::invert_endianness);
     cl.def("rand", &Class::rand);
+    cl.def("round", 
+           (Class& (Class::*)(const double, const int))&Class::round,
+           "Round pixel values.",
+           py::arg("y") = 1,
+           py::arg("rounding_type") = 0
+    );
+    cl.def("noise", 
+           (Class& (Class::*)(const double, const unsigned int))&Class::noise,
+           "Add random noise to pixel values.",
+           py::arg("sigma"),
+           py::arg("noise_type") = 0
+    );
+    cl.def("normalize", 
+           (Class& (Class::*)(const T&, const T&, const float))&Class::normalize,
+           "Linearly normalize pixel values.",
+           py::arg("min_value"),
+           py::arg("max_value"),
+           py::arg("constant_case_ratio") = 0
+    );
+    cl.def("norm", 
+           (Class& (Class::*)(const int))&Class::norm,
+           "Compute Lp-norm of each multi-valued pixel of the image instance.",
+           py::arg("norm_type") = 1
+    );
+    cl.def("cut", 
+           (Class& (Class::*)(const T&, const T&))&Class::cut,
+           "Cut pixel values in specified range.",
+           py::arg("min_value"),
+           py::arg("max_value")
+    );
+    cl.def("quantize", 
+           (Class& (Class::*)(const unsigned int, const bool))&Class::quantize,
+           "Uniformly quantize pixel values.",
+           py::arg("nb_levels"),
+           py::arg("keep_range") = true
+    );
+    cl.def("threshold", 
+           (Class& (Class::*)(const T&, const bool, const bool))&Class::threshold,
+           "Threshold pixel values.",
+           py::arg("value"),
+           py::arg("soft_threshold") = false,
+           py::arg("strict_threshold") = false
+    );
+    cl.def("histogram", 
+           (Class& (Class::*)(const unsigned int, const T&, const T&))&Class::histogram,
+           "Compute the histogram of pixel values.",
+           py::arg("nb_levels"),
+           py::arg("min_value"),
+           py::arg("max_value")
+    );
+    cl.def("equalize", 
+           (Class& (Class::*)(const unsigned int, const T&, const T&))&Class::equalize,
+           "Equalize histogram of pixel values.",
+           py::arg("nb_levels"),
+           py::arg("min_value"),
+           py::arg("max_value")
+    );
+    cl.def("label", 
+           (Class& (Class::*)(const bool, const float, const bool))&Class::label,
+           "Label connected components.",
+           py::arg("is_high_connectivity") = false,
+           py::arg("tolerance") = 0,
+           py::arg("is_L2_norm") = true
+    );
+    cl.def("min_max", 
+           [](Class& im)
+           {
+               T max_val;
+               T min_val = im.min_max(max_val);
+               return std::pair<T,T>{min_val, max_val};
+           }, 
+           "Return minimum and maximum value."
+    );
+    cl.def("max_min", 
+           [](Class& im)
+           {
+               T min_val;
+               T max_val = im.max_min(min_val);
+               return std::pair<T,T>{max_val, min_val};
+           }, 
+           "Return maximum and minimum value."
+    );
+
+    // Filtering transforms
+
 
     // Drawing
     cl.def("draw_rectangle",
@@ -307,11 +399,7 @@ void declare(py::module &m, const std::string &typestr)
     );
 
 
-    cl.def("fill",
-           (Class& (Class::*)(const T&))(&Class::fill),
-           "Fill all pixel values with specified value.",
-           py::arg("val")
-    );
+
 }
 
 PYBIND11_MODULE(cimg_bindings, m)
@@ -331,6 +419,7 @@ PYBIND11_MODULE(cimg_bindings, m)
 
     declare<float>(m, "float32");
     declare<uint8_t>(m, "uint8");
+    declare<uint16_t>(m, "uint16");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

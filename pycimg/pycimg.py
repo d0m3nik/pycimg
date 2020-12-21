@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from .cimg_bindings import CImg_float32, CImg_uint8
+from .cimg_bindings import CImg_float32, CImg_uint8, CImg_uint16
 
 # Supported numeric pixel type
 int8 = np.int8
