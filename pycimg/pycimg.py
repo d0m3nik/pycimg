@@ -174,17 +174,57 @@ class CImg:
         """ Return the total number of pixel values in the image. """
         return self._cimg.size()
 
-    def __eq__(self, img):
-        return np.all( self.asarray() == img.asarray() )
-
-    def __neq__(self, img):
-        return not self.__eq__(img)
-
     def isempty(self):
         return self.width == 0 and  \
                self.height == 0 and \
                self.depth == 0 and  \
                self.spectrum == 0
+
+    def __eq__(self, img):
+        return self._cimg == img._cimg
+
+    def __neq__(self, img):
+        return self._cimg != img._cimg
+
+    def __add__(self, other):
+        return CImg(self.asarray() + (other.asarray() if isinstance(other, CImg) else other))
+
+    def __sub__(self, other):
+        return CImg(self.asarray() - (other.asarray() if isinstance(other, CImg) else other))
+
+    def __mul__(self, other):
+        return CImg(self.asarray() * (other.asarray() if isinstance(other, CImg) else other))
+
+    def __truediv__(self, other):
+        return CImg(self.asarray() / (other.asarray() if isinstance(other, CImg) else other))
+
+    def __floordiv__(self, other):
+        return CImg(self.asarray() // (other.asarray() if isinstance(other, CImg) else other))
+
+    def __iadd__(self, other):
+        a = self.asarray()
+        a += (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __isub__(self, other):
+        a = self.asarray()
+        a -= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __imul__(self, other):
+        a = self.asarray()
+        a *= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __itruediv__(self, other):
+        a = self.asarray()
+        a /= (other.asarray() if isinstance(other, CImg) else other)
+        return self
+
+    def __ifloordiv__(self, other):
+        a = self.asarray()
+        a //= (other.asarray() if isinstance(other, CImg) else other)
+        return self
 
     def __repr__(self):
         if self.isempty():
@@ -202,6 +242,9 @@ class CImg:
                  "depth:   ", self.depth,
                  "spectrum:", self.spectrum,
                  "data:    ", arr) 
+
+    def append(self, img, axis='x', align=0):
+        self._cimg.append(img._cimg, axis, align)
 
     def __getattr__(self, name):
         return getattr(self._cimg, name)

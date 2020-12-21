@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <pybind11/operators.h>
 
 #define cimg_use_zlib 1
 #define cimg_use_jpeg 1
@@ -17,64 +18,6 @@ using namespace cimg_library;
 
 namespace py = pybind11;
 
-/*
-// type caster: CImg <-> NumPy-array
-namespace pybind11 { namespace detail {
-template <typename T> struct type_caster<CImg<T>>
-{
-    public:
-    PYBIND11_TYPE_CASTER(CImg<T>, _("CImg<T>"));
-
-    // Conversion part 1 (Python -> C++)
-    bool load(py::handle src, bool convert)
-    {
-        if (!convert && !py::array_t<T>::check_(src))
-            return false;
-
-        auto buf = py::array_t<T, py::array::c_style | py::array::forcecast>::ensure(src);
-        if (!buf)
-          return false;
-
-        auto dims = buf.ndim();
-        if (dims < 1 || dims > 4)
-          return false;
-
-        auto shape = buf.shape();
-        if(dims == 1)
-        {
-            value = CImg<T>(buf.data(), shape[0]);
-        }
-        else if(dims == 2)
-        {
-            value = CImg<T>(buf.data(), shape[1], shape[0]);
-        }
-        else if(dims == 3)
-        {
-            value = CImg<T>(buf.data(), shape[2], shape[1], shape[0]);
-        }
-        else if(dims == 4)
-        {
-            value = CImg<T>(buf.data(), shape[3], shape[2], shape[1], shape[0]);
-        }
-          
-        return true;
-      }
-
-      //Conversion part 2 (C++ -> Python)
-      static py::handle cast(const CImg<T> &c, py::return_value_policy policy, py::handle parent)
-      {
-          py::array a(
-              { c.spectrum(), c.depth(), c.height(), c.width() },
-              { sizeof(T) * c.depth() * c.height() * c.width(),
-                sizeof(T) * c.height() * c.width(),
-                sizeof(T) * c.width(),                
-                sizeof(T) },
-               c.data());
-          return a.release();
-      }
-  };
-}}
-*/
 
 template <typename T>
 CImg<T> fromarray(py::array_t<T, py::array::c_style | py::array::forcecast> a)
@@ -117,6 +60,10 @@ void declare(py::module &m, const std::string &typestr)
     cl.def("fromarray",
            [](Class& im, pyarray a) { im = fromarray<T>(a); },
            "Create CImg from array.");
+
+    // Operators
+    cl.def(py::self == py::self);
+    cl.def(py::self != py::self);
 
     // Load
     cl.def("load", &Class::load);
@@ -208,7 +155,66 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("centering_z") = 0.0f,
            py::arg("centering_c") = 0.0f
           );
-        
+    cl.def("resize_halfXY", &Class::resize_halfXY);
+    cl.def("resize_doubleXY", &Class::resize_doubleXY);
+    cl.def("resize_tripleXY", &Class::resize_tripleXY);
+    cl.def("mirror", 
+           (Class& (Class::*)(const char* const))&Class::mirror,
+           "Mirror image content along specified axes.",
+           py::arg("axes")
+          );
+    cl.def("shift",
+           (Class& (Class::*)(const int, const int, const int, const int, const unsigned int))&Class::shift,
+           "Shift image content.",
+           py::arg("delta_x"),
+           py::arg("delta_y") = 0,
+           py::arg("delta_z") = 0,
+           py::arg("delta_c") = 0,
+           py::arg("boundary_conditions") = 0
+    );
+    cl.def("permute_axes", &Class::permute_axes);
+    cl.def("unroll", &Class::unroll);
+    cl.def("rotate",
+           (Class& (Class::*)(const float, const unsigned int, const unsigned int))&Class::rotate,
+           "Rotate image with arbitrary angle.",
+           py::arg("angle"),
+           py::arg("interpolation") = 1,
+           py::arg("boundary_conditions") = 0
+    );
+    cl.def("crop",
+           (Class& (Class::*)(const int, const int, const int, const int, const int, const int, const int, const int, const unsigned int))&Class::crop,
+           "Crop image region.",
+           py::arg("x0"),
+           py::arg("y0"),
+           py::arg("z0"),
+           py::arg("c0"),
+           py::arg("x1"),
+           py::arg("y1"),
+           py::arg("z1"),
+           py::arg("c1"),
+           py::arg("boundary_conditions") = 0
+    );
+    cl.def("autocrop",
+           [](Class& im, pyarray color, const char* const axes)
+           {
+                if(color.size() == 0)
+                    return im.autocrop(nullptr, axes);
+                if(color.size() != im.spectrum())
+                    throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
+                return im.autocrop(color.data(), axes);
+           }, 
+           "Autocrop image region, regarding the specified background color.",
+           py::arg("color") = pyarray(),
+           py::arg("axes") = "czyx"
+    );
+    cl.def("append",
+           (Class& (Class::*)(const Class&, const char, const float))&Class::append,
+           "Append two images along specified axis.",
+           py::arg("img"),
+           py::arg("axis") = 'x',
+           py::arg("align") = 0
+    );
+
     cl.def("linear_atXY",
            (float (Class::*)(const float, const float, const int, const int) const)(&Class::linear_atXY),
            "Return pixel value, using linear interpolation and Dirichlet boundary conditions for the X and Y-coordinates.",
