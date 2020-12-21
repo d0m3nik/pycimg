@@ -48,6 +48,7 @@ template <typename T>
 void declare(py::module &m, const std::string &typestr)
 {
     using pyarray = py::array_t<T, py::array::c_style | py::array::forcecast>;
+    using pyarray_float = py::array_t<float, py::array::c_style | py::array::forcecast>;
 
     using Class = CImg<T>;
     using Tfloat = typename CImg<T>::Tfloat;
@@ -109,7 +110,18 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("filename"),
            py::arg("bytes_per_pixel") = 0
           );
-    cl.def("save_tiff", (const Class& (Class::*)(const char* const) const)&Class::save_tiff);
+    cl.def("save_tiff", 
+           [](const Class& im, const char* const filename, const unsigned int compression_type, pyarray_float voxel_size, const char* const description, bool use_bigtiff)
+           {
+               return im.save_tiff(filename, compression_type, voxel_size.size() == 0 ? 0 : voxel_size.data(), description, use_bigtiff);
+           },
+           "Save image as a TIFF file.",
+           py::arg("filename"),
+           py::arg("compression_type") = 0,
+           py::arg("voxel_size") = pyarray_float(),
+           py::arg("description") = "",
+           py::arg("use_bigtiff") = true
+           );
 
     // Instance characteristics
     cl.def("spectrum", &Class::spectrum);

@@ -1,6 +1,11 @@
 __pycache__/
 *.egg-info
 env
+*.png
+conan.lock
+*.tiff
+.DS_Store
+graph_info.json
 old
 build
 _build
