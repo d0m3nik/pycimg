@@ -243,8 +243,17 @@ class CImg:
                  "spectrum:", self.spectrum,
                  "data:    ", arr) 
 
-    def append(self, img, axis='x', align=0):
-        self._cimg.append(img._cimg, axis, align)
-
-    def __getattr__(self, name):
-        return getattr(self._cimg, name)
+    def __getattr__(self, attr):
+        if hasattr(self._cimg, attr):
+            def wrapper(*args, **kwargs):
+                # Unwrap CImg arguments
+                cargs = [arg._cimg if isinstance(arg, CImg) else arg for arg in args]
+                cargs = []
+                for arg in args:
+                    if isinstance(arg, CImg):
+                        cargs.append(arg._cimg)
+                    else:
+                        cargs.append(arg)
+                return getattr(self._cimg, attr)(*cargs, **kwargs)
+            return wrapper
+        raise AttributeError(attr)

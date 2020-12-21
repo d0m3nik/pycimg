@@ -9,7 +9,7 @@
 #ifndef __APPLE__
 #define cimg_use_openmp 1
 #endif
-#include "CImg.h"
+#include <CImg.h>
 
 using namespace cimg_library;
 
@@ -50,6 +50,7 @@ void declare(py::module &m, const std::string &typestr)
     using pyarray = py::array_t<T, py::array::c_style | py::array::forcecast>;
 
     using Class = CImg<T>;
+    using Tfloat = typename CImg<T>::Tfloat;
     std::string pyclass_name = std::string("CImg_") + typestr;
     py::class_<Class> cl(m, pyclass_name.c_str(), py::buffer_protocol());
 
@@ -216,7 +217,7 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("linear_atXY",
-           (float (Class::*)(const float, const float, const int, const int) const)(&Class::linear_atXY),
+           (Tfloat (Class::*)(const float, const float, const int, const int) const)(&Class::linear_atXY),
            "Return pixel value, using linear interpolation and Dirichlet boundary conditions for the X and Y-coordinates.",
            py::arg("fx"),
            py::arg("fy"),
@@ -290,7 +291,7 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("max_value")
     );
     cl.def("label", 
-           (Class& (Class::*)(const bool, const float, const bool))&Class::label,
+           (Class& (Class::*)(const bool, const Tfloat, const bool))&Class::label,
            "Label connected components.",
            py::arg("is_high_connectivity") = false,
            py::arg("tolerance") = 0,
@@ -316,7 +317,168 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     // Filtering transforms
-
+    cl.def("correlate",
+           (Class& (Class::*)(const Class& kernel, 
+                              const unsigned int, 
+                              const bool, 
+                              const unsigned int, 
+                              const unsigned int, 
+                              const unsigned int, 
+                              const unsigned int, 
+                              const unsigned int,
+                              const unsigned int,
+                              const unsigned,
+                              const unsigned int,
+                              const unsigned int,
+                              const unsigned int,
+                              const float,
+                              const float,
+                              const float,
+                              const float,
+                              const float,
+                              const float
+                              ))&Class::correlate,
+           "Correlate image by a kernel.",
+           py::arg("kernel"),
+           py::arg("boundary_conditions") = 1,
+           py::arg("is_normalized") = false,
+           py::arg("channel_mode") = 1,
+           py::arg("xcenter") = ~0U,
+           py::arg("ycenter") = ~0U,
+           py::arg("zcenter") = ~0U,
+           py::arg("xstart") = 0,
+           py::arg("ystart") = 0,
+           py::arg("zstart") = 0,
+           py::arg("xend") = ~0U,
+           py::arg("yend") = ~0U,
+           py::arg("zend") = ~0U,
+           py::arg("xstride") = 1,
+           py::arg("ystride") = 1,
+           py::arg("zstride") = 1,
+           py::arg("xdilation") = 1,
+           py::arg("ydilation") = 1,
+           py::arg("zdilation") = 1
+    );
+    cl.def("convolve",
+           (Class& (Class::*)(const Class& kernel, 
+                              const unsigned int, 
+                              const bool, 
+                              const unsigned int, 
+                              const unsigned int, 
+                              const unsigned int, 
+                              const unsigned int, 
+                              const unsigned int,
+                              const unsigned int,
+                              const unsigned,
+                              const unsigned int,
+                              const unsigned int,
+                              const unsigned int,
+                              const float,
+                              const float,
+                              const float,
+                              const float,
+                              const float,
+                              const float
+                              ))&Class::convolve,
+           "Convolve image by a kernel.",
+           py::arg("kernel"),
+           py::arg("boundary_conditions") = 1,
+           py::arg("is_normalized") = false,
+           py::arg("channel_mode") = 1,
+           py::arg("xcenter") = ~0U,
+           py::arg("ycenter") = ~0U,
+           py::arg("zcenter") = ~0U,
+           py::arg("xstart") = 0,
+           py::arg("ystart") = 0,
+           py::arg("zstart") = 0,
+           py::arg("xend") = ~0U,
+           py::arg("yend") = ~0U,
+           py::arg("zend") = ~0U,
+           py::arg("xstride") = 1,
+           py::arg("ystride") = 1,
+           py::arg("zstride") = 1,
+           py::arg("xdilation") = 1,
+           py::arg("ydilation") = 1,
+           py::arg("zdilation") = 1
+    );
+    cl.def("cumulate",
+           (Class& (Class::*)(const char* const))&Class::cumulate,
+           "Cumulate image values, along specified axes.",
+           py::arg("axes")
+    );
+    cl.def("erode",
+           (Class& (Class::*)(const Class&, const bool, const bool))&Class::erode,
+           "Erode image by a structuring element.",
+           py::arg("kernel"),
+           py::arg("boundary_conditions") = true,
+           py::arg("is_real") = false
+    );
+    cl.def("dilate",
+           (Class& (Class::*)(const Class&, const bool, const bool))&Class::dilate,
+           "Dilate image by a structuring element.",
+           py::arg("kernel"),
+           py::arg("boundary_conditions") = true,
+           py::arg("is_real") = false
+    );
+    cl.def("watershed",
+           (Class& (Class::*)(const Class&, const bool))&Class::watershed,
+           "Compute watershed transform.",
+           py::arg("priority"),
+           py::arg("is_high_connectivity") = false
+    );
+    cl.def("deriche",
+           (Class& (Class::*)(const float, const unsigned int, const char, const bool))&Class::deriche,
+           "Apply recursive Deriche filter.",
+           py::arg("sigma"),
+           py::arg("order") = 0,
+           py::arg("axis") = 'x',
+           py::arg("boundary_conditions") = true
+    );
+    cl.def("vanvliet",
+           (Class& (Class::*)(const float, const unsigned int, const char, const bool))&Class::vanvliet,
+           "Van Vliet recursive Gaussian filter.",
+           py::arg("sigma"),
+           py::arg("order") = 0,
+           py::arg("axis") = 'x',
+           py::arg("boundary_conditions") = true
+    );
+    cl.def("blur",
+           (Class& (Class::*)(const float, const bool, const bool))&Class::blur,
+           "Blur image isotropically.",
+           py::arg("sigma"),
+           py::arg("boundary_conditions") = true,
+           py::arg("is_gaussian") = false
+    );
+    cl.def("boxfilter",
+           (Class& (Class::*)(const float, const int, const char, const bool, const unsigned int))&Class::boxfilter,
+           "Apply box filter",
+           py::arg("boxsize"),
+           py::arg("order"),
+           py::arg("axis") = 'x',
+           py::arg("boundary_conditions") = true,
+           py::arg("nb_iter") = 1 
+    );
+    cl.def("blur_box",
+           (Class& (Class::*)(const float, const bool))&Class::blur_box,
+           "Blur image with a box filter.",
+           py::arg("boxsize"),
+           py::arg("boundary_conditions") = true
+    );
+    cl.def("blur_median",
+           (Class& (Class::*)(const unsigned int, const float))&Class::blur_median,
+           "Blur image with the median filter.",
+           py::arg("n"),
+           py::arg("threshold") = 0
+    );
+    cl.def("sharpen",
+           (Class& (Class::*)(const float, const bool, const float, const float, const float))&Class::sharpen,
+           "Sharpen image.",
+           py::arg("amplitude"),
+           py::arg("sharpen_type") = false,
+           py::arg("edge") = 1,
+           py::arg("alpha") = 0,
+           py::arg("sigma") = 0
+    ); 
 
     // Drawing
     cl.def("draw_rectangle",
