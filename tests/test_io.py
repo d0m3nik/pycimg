@@ -4,7 +4,7 @@ import os
 
 import numpy as np
 import pytest
-from context import *
+from .context import *
 
 def _check_image_dimensions(im):
     assert im.width == 1200
