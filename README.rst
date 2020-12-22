@@ -1,5 +1,5 @@
 .. image:: https://github.com/d0m3nik/pycimg/workflows/.github/workflows/wheels.yml/badge.svg
-  :target: https://github.com/d0m3nik/pycimg
+  :target: https://github.com/d0m3nik/pycimg/actions
   :alt: Build Status
 .. image:: https://codecov.io/gh/d0m3nik/pycimg/branch/feature_pybind/graph/badge.svg?token=FGVRN9LTIK
   :target: https://codecov.io/gh/d0m3nik/pycimg
