@@ -591,9 +591,11 @@ PYBIND11_MODULE(cimg_bindings, m)
            subtract
     )pbdoc";
 
-    declare<float>(m, "float32");
     declare<uint8_t>(m, "uint8");
     declare<uint16_t>(m, "uint16");
+    declare<uint32_t>(m, "uint32");
+    declare<float>(m, "float32");
+    declare<double>(m, "float64");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

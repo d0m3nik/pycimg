@@ -1,7 +1,16 @@
 import numpy as np
 import pytest
-from context import * #int8, float32,  CImg, get_test_image
+from context import *
 
+def test_invalid_first_arg():
+    """ Test invalid first argument. """
+    with pytest.raises(RuntimeError):
+        _ = CImg(1.0)
+
+def test_invalid_num_args():
+    """ Test invalid number of arguments.  """
+    with pytest.raises(RuntimeError):
+        _ = CImg(10, 20)
 
 def test_noarg():
     """ Test construction of empty image. """
@@ -38,10 +47,7 @@ def test_size():
 
 def test_dtypes():
     """ Test construction for different data types. """
-    dtypes = [uint8, float32]#pycimg.uint16, pycimg.uint32,
-             # pycimg.int8, pycimg.int16, pycimg.int32,
-             # pycimg.float32, pycimg.float64
-            #]
+    dtypes = [uint8, uint16, uint32, float32, float64]
     for dtype in dtypes:
         im = CImg((2,3), dtype=dtype)
         assert im.size == 6
@@ -50,12 +56,12 @@ def test_dtypes():
         CImg(dtype=1)
         CImg(dict())
 
-    def test_from_cimg():
-        """ Test construction from other CImg. """
-        img_a = CImg(np.array([[1, 2, 3], [4, 5, 6]]))
-        img_b = CImg(img_a)
-        self.assertEqual(img_a, img_b)
-        img_a[0,0] = 5
-        self.assertNotEqual(img_a, img_b)
+def test_from_cimg():
+    """ Test construction from other CImg. """
+    img_a = CImg(np.array([[1, 2, 3], [4, 5, 6]]))
+    img_b = CImg(img_a)
+    assert img_a == img_b
+    img_a[0,0] = 5
+    assert img_a != img_b
 
             

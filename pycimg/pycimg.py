@@ -1,12 +1,9 @@
-
+import numbers
 import numpy as np
 
-from .cimg_bindings import CImg_float32, CImg_uint8, CImg_uint16
+from .cimg_bindings import CImg_uint8, CImg_uint16, CImg_uint32, CImg_float32, CImg_float64
 
 # Supported numeric pixel type
-int8 = np.int8
-int16 = np.int16
-int32 = np.int32
 uint8 = np.uint8
 uint16 = np.uint16
 uint32 = np.uint32
@@ -105,13 +102,7 @@ class CImg:
         """
         self.dtype = kwargs.get('dtype', float32)
 
-        if self.dtype == np.int8:
-            self._cimg = CImg_int8()
-        elif self.dtype == np.int16:
-            self._cimg = CImg_int16()
-        elif self.dtype == np.int32:
-            self._cimg = CImg_int32()
-        elif self.dtype == np.uint8:
+        if self.dtype == np.uint8:
             self._cimg = CImg_uint8()
         elif self.dtype == np.uint16:
             self._cimg = CImg_uint16()
@@ -257,3 +248,58 @@ class CImg:
                 return getattr(self._cimg, attr)(*cargs, **kwargs)
             return wrapper
         raise AttributeError(attr)
+
+    def _check_index(self, index):
+        cls = type(self)
+        def raiseError():
+            msg = 'only integers and slices (`:`) are valid indices'
+            raise IndexError(msg.format(cls=cls))
+
+        # Handle special case of single index
+        if isinstance(index, numbers.Integral):
+            index = tuple([index])
+        if isinstance(index, tuple):
+            # Check number of indices
+            if len(index) > 4:
+                raise IndexError('Image has < 5 dimensions.')
+            index = list(index)
+            # Case 1: indices are a mix of integers and slices
+            if any(map(lambda t: isinstance(t, slice), index)):
+                # Expand integers to slices
+                slice_index = []
+                for idx in index:
+                    if isinstance(idx, numbers.Integral):
+                        slice_index.append(slice(idx, idx+1, None))
+                    elif isinstance(idx, slice):
+                        slice_index.append(idx)
+                    else:
+                        raiseError()
+                index = slice_index
+                # Expand slices to cover all dimensions
+                while len(index) < 4:
+                    index.append(slice(None, None, None))
+                index = list(reversed(index))
+                return (index, True)
+            # Case 2: all indices are integers
+            elif all(map(lambda t: isinstance(t, numbers.Integral), index)):
+                # Expand indices to cover all dimensions
+                while len(index) < 4:
+                    index.append(0)
+                index = tuple(reversed(index))
+                return (index, False)
+            else:
+                raiseError()
+        else:
+            raiseError()
+
+    def __getitem__(self, index):
+        index, is_slice = self._check_index(index)
+        if is_slice:
+            cls = type(self)
+            return cls(self.asarray()[tuple(index)])
+        else:
+            return self.asarray()[index]
+
+    def __setitem__(self, index, value):
+        index, is_slice = self._check_index(index)
+        self.asarray()[tuple(index)] = value

@@ -11,8 +11,8 @@ on:
       - published
 
 env:
-  CIBW_TEST_REQUIRES: pytest
-  CIBW_TEST_COMMAND: pytest {project}/tests
+  CIBW_TEST_REQUIRES: pytest pytest-cov
+  CIBW_TEST_COMMAND: pytest --cov-report term-missing --cov-report xml:{project}/coverage.xml --cov={project}/pycimg {project}/tests
 
 jobs:
   build_wheels:
@@ -21,8 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest] #[ubuntu-latest, windows-latest, macos-latest]
-
+        os: [macos-latest] #[ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
 
@@ -59,6 +58,13 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
+      
+      - name: Upload codecov
+        if: runner.os == 'macOS'
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
 
   build_sdist:
     name: Build source distribution

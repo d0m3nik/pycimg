@@ -3,74 +3,113 @@ import numpy as np
 import pytest
 from context import * 
 
-#def test_getitem():
-#    """ Test __getitem__. """
-#    img = CImg(np.array([[1, 2, 3, 4],
-#                         [5, 6, 7, 8], 
-#                         [9, 10, 11, 12]]))
-#
-#    # 1. All slices
-#    img2 = img[1:,:]
-#    img_expected = CImg(np.array([[2, 3, 4],
-#                                  [6, 7, 8],
-#                                  [10, 11, 12]]))
-#    self.assertEqual(type(img2).__name__, 'CImg')
-#    self.assertEqual(img2, img_expected)
-#
-#    # 2. All integers
-#    self.assertEqual(img[0,1], 5)
-#    self.assertEqual(img[3,1], 8)
-#    # Out of bounds
-#    with self.assertRaises(IndexError):
-#        value = img[0,3]
-#
-#    # 3. Mixed integers / slices
-#    img2 = img[0,:2]
-#    img_expected = CImg(np.array([[1],
-#                                  [5]]))
-#    self.assertEqual(img2, img_expected)
-#    img2 = img[0:2,1]
-#    img_expected = CImg(np.array([[5, 6]]))
-#    self.assertEqual(img2, img_expected)
-#
-#    # Invalid index types
-#    with self.assertRaises(IndexError):
-#        v = img[0.1]
-#    with self.assertRaises(IndexError):
-#        v = img[:,0.1]
-#
-#def test_setitem(self):
-#    """ Test __setitem__. """
-#    # 1. All slices
-#    img = CImg(np.array([[1, 2, 3, 4],
-#                         [5, 6, 7, 8], 
-#                         [9, 10, 11, 12]]))
-#    img[2:4,1:3] = np.array([[1,2],[3,4]])
-#    img_expected = CImg(np.array([[1, 2, 3, 4],
-#                                  [5, 6, 1, 2], 
-#                                  [9, 10, 3, 4]]))
-#    self.assertEqual(img, img_expected)
-#
-#    # 2. All Integers
-#    img = CImg(np.array([[1, 2, 3, 4],
-#                         [5, 6, 7, 8], 
-#                         [9, 10, 11, 12]]))
-#    img[2,1] = 0
-#    img_expected = CImg(np.array([[1, 2, 3, 4],
-#                                  [5, 6, 0, 8], 
-#                                  [9, 10, 11, 12]]))
-#    self.assertEqual(img, img_expected)
-#
-#    # 3. Mixed integers / slices 
-#    img = CImg(np.array([[1, 2, 3, 4],
-#                         [5, 6, 7, 8], 
-#                         [9, 10, 11, 12]]))
-#    img[:,1] = 0
-#    img_expected = CImg(np.array([[1, 2, 3, 4],
-#                         [0, 0, 0, 0], 
-#                         [9, 10, 11, 12]]))
-#    self.assertEqual(img, img_expected)
+def test_getitem():
+    """ Test __getitem__. """
+    img = CImg(np.array([0]))
+    assert img[0] == 0
 
+    img = CImg(np.array([[1, 2, 3, 4],
+                         [5, 6, 7, 8], 
+                         [9, 10, 11, 12]]))
+
+    # 1. All slices
+    img2 = img[1:,:]
+    img_expected = CImg(np.array([[2, 3, 4],
+                                  [6, 7, 8],
+                                  [10, 11, 12]]))
+    assert type(img2).__name__ == 'CImg'
+    assert img2 == img_expected
+
+    # 2. All integers
+    assert img[0,1] == 5
+    assert img[3,1] == 8
+    # Out of bounds
+    with pytest.raises(IndexError):
+        _ = img[0,3]
+
+    # 3. Mixed integers / slices
+    img2 = img[0,:2]
+    img_expected = CImg(np.array([[1],
+                                  [5]]))
+    assert img2 == img_expected
+    img2 = img[0:2,1]
+    img_expected = CImg(np.array([[5, 6]]))
+    assert img2 == img_expected
+
+    # Invalid index types
+    with pytest.raises(IndexError):
+        _ = img[0.1]
+    with pytest.raises(IndexError):
+        _ = img[:, 0.1]
+    with pytest.raises(IndexError):
+        _ = img[1, 2, 3, 4, 5]
+
+def test_setitem():
+    """ Test __setitem__. """
+    # 1. All slices
+    img = CImg(np.array([[1, 2, 3, 4],
+                         [5, 6, 7, 8], 
+                         [9, 10, 11, 12]]))
+    img[2:4,1:3] = np.array([[1,2],[3,4]])
+    img_expected = CImg(np.array([[1, 2, 3, 4],
+                                  [5, 6, 1, 2], 
+                                  [9, 10, 3, 4]]))
+    assert img == img_expected
+
+    # 2. All Integers
+    img = CImg(np.array([[1, 2, 3, 4],
+                         [5, 6, 7, 8], 
+                         [9, 10, 11, 12]]))
+    img[2,1] = 0
+    img_expected = CImg(np.array([[1, 2, 3, 4],
+                                  [5, 6, 0, 8], 
+                                  [9, 10, 11, 12]]))
+    assert img == img_expected
+
+    # 3. Mixed integers / slices 
+    img = CImg(np.array([[1, 2, 3, 4],
+                         [5, 6, 7, 8], 
+                         [9, 10, 11, 12]]))
+    img[:,1] = 0
+    img_expected = CImg(np.array([[1, 2, 3, 4],
+                         [0, 0, 0, 0], 
+                         [9, 10, 11, 12]]))
+    assert img == img_expected
+
+def test_neq():
+    """ Test __neq__. """
+    a = CImg(np.array([[1, 2, 3],
+                       [4, 5, 6]]))
+    b = CImg(np.array([[1, 1, 1],
+                       [2, 3, 2]]))
+    assert a.__neq__(b)
+
+def test_repr():
+    """ Test __repr__."""
+    from numpy import array
+    a = CImg(np.array([[1, 2, 3],
+                       [4, 5, 6]]))
+    b = eval(repr(a))
+    assert a == b
+    a = CImg()
+    b = eval(repr(a))
+    assert a == b
+
+def test_getattr():
+    """ Test __getattr__."""
+    im = CImg()
+    with pytest.raises(AttributeError):
+        im.nonexistent()
+
+def test_str():
+    """ Test __str__."""
+    a = CImg((2, 2))
+    s = str(a)
+    assert s == 'height:       2\nwidth:        2\ndepth:        1\nspectrum:     1\ndata:    \n[[[[0. 0.]\n   [0. 0.]]]]'
+    b = CImg()
+    s = str(b)
+    assert s == 'height:       0\nwidth:        0\ndepth:        0\nspectrum:     0\ndata:    \nNone'
+ 
 def test_add():
     """ Test __add__. """
 
