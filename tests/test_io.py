@@ -85,14 +85,14 @@ def test_save_png():
     assert os.path.isfile(filename)
     os.remove(filename)
 
-def test_save_tiff():
-    """ Test save tiff. """
-    img = CImg((100, 100), dtype=uint8)
-    img.rand(0, 255)
-    filename = _get_testfilename() + '.tiff'
-    img.save_tiff(filename)
-    assert os.path.isfile(filename)
-    os.remove(filename)
+#def test_save_tiff():
+#    """ Test save tiff. """
+#    img = CImg((100, 100), dtype=uint8)
+#    img.rand(0, 255)
+#    filename = _get_testfilename() + '.tiff'
+#    img.save_tiff(filename)
+#    assert os.path.isfile(filename)
+#    os.remove(filename)
 
 def test_save_load():
     """ Test save/load half float. """
