@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from .context import * 
+from context import * 
 
 
 def test_linear_atXY():

@@ -8,6 +8,7 @@
 #define cimg_use_tiff 1
 #ifndef __APPLE__
 #define cimg_use_openmp 1
+#define cimg_verbosity 1
 #endif
 #include <CImg.h>
 

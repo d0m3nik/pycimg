@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import pytest
-from .context import *
+from context import *
 
 
 def test_resize():

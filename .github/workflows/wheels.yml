@@ -13,7 +13,7 @@ on:
 env:
   CIBW_TEST_REQUIRES: pytest pytest-cov
   #CIBW_TEST_COMMAND: pytest --cov-report term-missing --cov-report xml:{project}/coverage.xml --cov={project}/pycimg {project}/tests
-  CIBW_TEST_COMMAND: pytest {project}/tests/test_constructors.py
+  CIBW_TEST_COMMAND: pytest {project}/tests
 
 jobs:
   build_wheels:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest] #[ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
 
