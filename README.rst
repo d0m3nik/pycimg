@@ -1,8 +1,8 @@
-.. image:: https://travis-ci.org/d0m3nik/pycimg.svg?branch=master
-  :target: https://travis-ci.org/d0m3nik/pycimg
-  :alt: Travis Status
-.. image:: https://coveralls.io/repos/github/d0m3nik/pycimg/badge.svg?branch=HEAD
-  :target: https://coveralls.io/github/d0m3nik/pycimg?branch=HEAD
+.. image:: https://github.com/d0m3nik/pycimg/workflows/.github/workflows/wheels.yml/badge.svg
+  :target: https://github.com/d0m3nik/pycimg/actions
+  :alt: Build Status
+.. image:: https://codecov.io/gh/d0m3nik/pycimg/branch/feature_pybind/graph/badge.svg?token=FGVRN9LTIK
+  :target: https://codecov.io/gh/d0m3nik/pycimg
   :alt: Coverage Status
 .. image:: https://readthedocs.org/projects/pycimg/badge/?version=latest
   :target: http://pycimg.readthedocs.io/en/latest/?badge=latest
