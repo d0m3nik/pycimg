@@ -94,6 +94,7 @@ jobs:
       - name: Install requirements
         run: |
           pip install -r requirements.txt
+          python install_conan_packages.py
           pip install -e .
       
       - name: Run coverage test
