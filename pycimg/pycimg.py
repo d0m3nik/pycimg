@@ -246,6 +246,8 @@ class CImg:
                     else:
                         cargs.append(arg)
                 return getattr(self._cimg, attr)(*cargs, **kwargs)
+            wrapper.__doc__ = getattr(self._cimg, attr).__doc__
+            wrapper.__name__ = attr
             return wrapper
         raise AttributeError(attr)
 
