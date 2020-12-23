@@ -1,3 +1,4 @@
+import functools
 import numbers
 import numpy as np
 
@@ -127,6 +128,8 @@ class CImg:
             elif isinstance(args[0], int):
                 sz = max(1, args[0])
                 self.resize(sz, interpolation_type=NONE_RAW)
+            elif isinstance(args[0], list) and all(map(lambda t: isinstance(t, numbers.Number), args[0])): 
+                self.fromarray(np.array(args[0]))
             else:
                 raise RuntimeError("Type of first argument not supported")
         elif len(args) > 1:
@@ -236,6 +239,8 @@ class CImg:
 
     def __getattr__(self, attr):
         if hasattr(self._cimg, attr):
+            func = getattr(self._cimg, attr)
+            @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 # Unwrap CImg arguments
                 cargs = [arg._cimg if isinstance(arg, CImg) else arg for arg in args]
@@ -245,9 +250,16 @@ class CImg:
                         cargs.append(arg._cimg)
                     else:
                         cargs.append(arg)
-                return getattr(self._cimg, attr)(*cargs, **kwargs)
-            wrapper.__doc__ = getattr(self._cimg, attr).__doc__
-            wrapper.__name__ = attr
+                r = func(*cargs, **kwargs)
+                if isinstance(r, CImg_uint8)   or \
+                   isinstance(r, CImg_uint16)  or \
+                   isinstance(r, CImg_uint32)  or \
+                   isinstance(r, CImg_float32) or \
+                   isinstance(r, CImg_float64):
+                    self._cimg = r
+                    return self
+                else:
+                    return r 
             return wrapper
         raise AttributeError(attr)
 

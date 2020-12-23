@@ -43,6 +43,9 @@ def test_getitem():
         _ = img[:, 0.1]
     with pytest.raises(IndexError):
         _ = img[1, 2, 3, 4, 5]
+    with pytest.raises(IndexError):
+        _ = img[1.0, 0.2]
+
 
 def test_setitem():
     """ Test __setitem__. """

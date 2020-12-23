@@ -63,13 +63,6 @@ License
 -------
 The project is licensed under the GPL3 license.
 
-TODO
-----
-- [] Test package with tox
-- [] Add more unit tests
-- [] Colorspace methods
-- [] Add tutorial
-
 .. _CImg: http://www.cimg.eu
 .. _numpy: http://www.numpy.org/
 .. _jpeg: https://github.com/libjpeg-turbo/libjpeg-turbo

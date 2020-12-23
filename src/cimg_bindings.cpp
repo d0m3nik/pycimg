@@ -53,6 +53,7 @@ void declare(py::module &m, const std::string &typestr)
 
     using Class = CImg<T>;
     using Tfloat = typename CImg<T>::Tfloat;
+    using ulongT = typename CImg<T>::ulongT;
     std::string pyclass_name = std::string("CImg_") + typestr;
     py::class_<Class> cl(m, pyclass_name.c_str(), py::buffer_protocol());
 
@@ -157,7 +158,30 @@ void declare(py::module &m, const std::string &typestr)
     
     cl.def("resize",
            (Class& (Class::*)(const int, const int, const int, const int, const int, const unsigned int, const float, const float, const float, const float))(&Class::resize),
-           "Resize image",
+           R"doc(
+            Resize image to new dimensions.
+
+            Args:
+                size_x (int): Number of columns (new size along the X-axis).
+                size_y (int): Number of rows (new size along the Y-axis).
+                size_z (int): Number of slices (new size along the Z-axis).
+                size_c (int): Number of vector-channels (new size along the C-axis).
+                interpolation_type (int):  Method of interpolation:
+                    NONE_RAW = no interpolation: raw memory resizing.
+                    NONE = no interpolation: additional space is filled according to boundary_conditions.
+                    NEAREST = nearest-neighbor interpolation.
+                    MOVING_AVERAGE = moving average interpolation.
+                    LINEAR = linear interpolation.
+                    GRID = grid interpolation.
+                    CUBIC = cubic interpolation.
+                    LANCZOS = lanczos interpolation.
+                boundary_conditions (int): Type of boundary conditions used if
+                                     necessary. Can be: DIRICHLET | NEUMANN | PERIODIC | MIRROR
+                centering_x (int): Set centering type (only if interpolation_type=NONE).
+                centering_y (int): Set centering type (only if interpolation_type=NONE).
+                centering_z (int): Set centering type (only if interpolation_type=NONE).
+                centering_c (int): Set centering type (only if interpolation_type=NONE).
+                  )doc",
            py::arg("size_x"),
            py::arg("size_y") = -100,
            py::arg("size_z") = -100,
@@ -573,12 +597,55 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("font_height") = 13
     );
 
-
+    // Mathematical 
+    cl.def("sqr", (Class& (Class::*)())&Class::sqr, "Compute the square value of each pixel value.");
+    cl.def("sqrt", (Class& (Class::*)())&Class::sqrt, "Compute the square root of each pixel value.");
+    cl.def("exp", (Class& (Class::*)())&Class::exp, "Compute the exponential of each pixel value.");
+    cl.def("log", (Class& (Class::*)())&Class::log, "Compute the logarithm of each pixel value.");
+    cl.def("log2", (Class& (Class::*)())&Class::log2, "Compute the base-2 logarithm of each pixel value.");
+    cl.def("log10", (Class& (Class::*)())&Class::log10, "Compute the base-10 logarithm of each pixel value.");
+    cl.def("abs", (Class& (Class::*)())&Class::abs, "Compute the absolute value of each pixel value.");
+    cl.def("sign", (Class& (Class::*)())&Class::sign, "Compute the sign of each pixel value.");
+    cl.def("cos", (Class& (Class::*)())&Class::cos, "Compute the cosine of each pixel value.");
+    cl.def("sin", (Class& (Class::*)())&Class::sin, "Compute the sine of each pixel value.");
+    cl.def("sinc", (Class& (Class::*)())&Class::sinc, "Compute the sinc of each pixel value.");
+    cl.def("tan", (Class& (Class::*)())&Class::tan, "Compute the tangent of each pixel value.");
+    cl.def("sinh", (Class& (Class::*)())&Class::sinh, "Compute the hyperbolic sine of each pixel value.");
+    cl.def("tanh", (Class& (Class::*)())&Class::tanh, "Compute the hyperbolic tangent of each pixel value.");
+    cl.def("acos", (Class& (Class::*)())&Class::acos, "Compute the arccosine of each pixel value.");
+    cl.def("asin", (Class& (Class::*)())&Class::asin, "Compute the arcsine of each pixel value.");
+    cl.def("atan", (Class& (Class::*)())&Class::atan, "Compute the arctangent of each pixel value.");
+    cl.def("atan2", (Class& (Class::*)(const Class&))&Class::atan2, "Compute the arctangent2 of each pixel value.");
+    cl.def("mul", (Class& (Class::*)(const Class&))&Class::mul, "In-place pointwise multiplication.");
+    cl.def("div", (Class& (Class::*)(const Class&))&Class::div, "In-place pointwise division.");
+    cl.def("pow", (Class& (Class::*)(const double))&Class::pow, "Raise each pixel value to a specified power.");
+    cl.def("kth_smallest", (T (Class::*)(const ulongT) const)&Class::kth_smallest, "Return the kth smallest pixel value.");
+    cl.def("variance", 
+           (double (Class::*)(const unsigned int) const)&Class::variance, 
+           "Return the variance of the pixel values.",
+           py::arg("variance_method") = 1
+    );
+    cl.def("variance_mean", 
+           [](Class& im, const unsigned int variance_method)
+           {
+                  std::pair<double,double> var_mean;
+                  var_mean.first = im.variance_mean(variance_method, var_mean.second);
+                  return var_mean;
+           },
+           "Return the variance as well as the average of the pixel values.",
+           py::arg("variance_method") = 1
+    );
+    cl.def("mse", (double (Class::*)(const Class&) const)&Class::MSE, "Compute the MSE (Mean-Squared Error) between two images.");
+    cl.def("magnitude", (double (Class::*)(const int) const)&Class::magnitude, "Compute norm of the image, viewed as a matrix.");
+    cl.def("dot", (double (Class::*)(const Class&) const)&Class::dot, "Compute the dot product between instance and argument, viewed as matrices.");
 
 }
 
 PYBIND11_MODULE(cimg_bindings, m)
 {
+    py::options options;
+    options.disable_function_signatures();
+
     m.doc() = R"pbdoc(
         Pybind11 example plugin
         -----------------------
