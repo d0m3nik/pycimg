@@ -16,18 +16,10 @@ def read(*parts):
     with codecs.open(os.path.join(here, *parts), 'r') as fp:
         return fp.read()
 
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
-
 # Get the long description from the README file
 long_description = read('README.rst')
 
-version = find_version("pycimg", "__init__.py")
+__version__ = "0.0.6" 
 
 extra_compile_args = []
 extra_link_args = []
@@ -78,13 +70,13 @@ ext_modules = [
         extra_compile_args = extra_compile_args,
         extra_link_args = extra_link_args,
         # Example: passing in the version to the compiled code
-        define_macros = [('VERSION_INFO', version)]
+        define_macros = [('VERSION_INFO', __version__)]
         ),
 ]
 
 setup(
     name="pycimg",
-    version=version,
+    version=__version__,
     description="Python extension for the CImg library.",
     long_description=long_description,
     author="Dominik Brugger",
