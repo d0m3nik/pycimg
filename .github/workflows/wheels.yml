@@ -97,7 +97,7 @@ jobs:
           pip install -e .
       
       - name: Run coverage test
-        run:  pytest --cov-report term-missing -cov-report xml:coverage.xml --cov pycimg tests/
+        run:  pytest --cov-report term-missing --cov-report xml:coverage.xml --cov pycimg tests/
 
       - name: Upload codecov
         uses: codecov/codecov-action@v1
