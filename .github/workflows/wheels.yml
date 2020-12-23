@@ -13,7 +13,7 @@ on:
 env:
   CIBW_TEST_REQUIRES: pytest pytest-cov
   #CIBW_TEST_COMMAND: pytest --cov-report term-missing --cov-report xml:{project}/coverage.xml --cov={project}/pycimg {project}/tests
-  CIBW_TEST_COMMAND: pytest {project}/tests
+  CIBW_TEST_COMMAND: pytest {project}/tests/test_constructors.py
 
 jobs:
   build_wheels:

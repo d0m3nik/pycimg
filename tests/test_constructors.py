@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from .context import *
+from context import *
 
 def test_invalid_first_arg():
     """ Test invalid first argument. """

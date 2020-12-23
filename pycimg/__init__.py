@@ -1,2 +1,2 @@
 __version__ = "0.0.6" 
-from .cimg import *
+from .pycimg import *
