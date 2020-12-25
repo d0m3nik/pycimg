@@ -30,9 +30,10 @@ jobs:
       - name: Run python-semantic-release
         run: |
           pip install python-semantic-release
+          semantic-release version -D branch=feature_pybind -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ 
           git config --global user.email "d0m3nik@users.noreply.github.com"
           git config --global user.name "Dominik Brugger"
-          semantic-release publish -D branch=feature_pybind -D build_command= -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ -D upload_to_pypi=False -D upload_to_release=False 
+          git push
           
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
