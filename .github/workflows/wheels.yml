@@ -30,10 +30,7 @@ jobs:
       - name: Run python-semantic-release
         run: |
           pip install python-semantic-release
-          semantic-release version -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__
-          git config --global user.name 'semantic-release'
-          git config --global user.email 'semantic-release@github.com'
-          git push
+          semantic-release publish -D build_command= -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__
 
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
