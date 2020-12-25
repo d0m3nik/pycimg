@@ -1,5 +1,6 @@
 from context import * 
 import numpy as np
+import math
 
 def test_sqr():
     arr = np.random.randn(10, 5)
@@ -45,12 +46,12 @@ def test_sign():
     assert np.allclose( np.sign(arr), img.sign().asarray() )
 
 def test_cos():
-    arr = np.ones((10, 5))
+    arr  = np.linspace(-3, 3, 10)
     img = CImg(arr)
     assert np.allclose( np.cos(arr), img.cos().asarray() )
 
 def test_sin():
-    arr = np.random.randn(10, 5)
+    arr  = np.linspace(-3, 3, 10)
     img = CImg(arr)
     assert np.allclose( np.sin(arr), img.sin().asarray() )
 
@@ -65,17 +66,17 @@ def test_tan():
     assert np.allclose( np.tan(arr), img.tan().asarray() )
 
 def test_sinh():
-    arr = np.random.randn(10, 5)
+    arr = np.linspace(-1, 1, 100)
     img = CImg(arr)
     assert np.allclose( np.sinh(arr), img.sinh().asarray() )
 
 def test_tanh():
-    arr = np.random.randn(10, 5)
+    arr = np.linspace(-1, 1, 100)
     img = CImg(arr)
     assert np.allclose( np.tanh(arr), img.tanh().asarray() )
 
 def test_acos():
-    arr = -np.ones((10, 5))
+    arr = [-0.99, -0.5, 0, 0.5, 0.99]
     img = CImg(arr)
     assert np.allclose( np.arccos(arr), img.acos().asarray() )
 
@@ -85,7 +86,7 @@ def test_asin():
     assert np.allclose( np.arcsin(arr), img.asin().asarray() )
 
 def test_atan():
-    arr = np.random.randn(10, 5)
+    arr = [-0.99, -0.5, 0, 0.5, 0.99]
     img = CImg(arr)
     assert np.allclose( np.arctan(arr), img.atan().asarray() )
 
