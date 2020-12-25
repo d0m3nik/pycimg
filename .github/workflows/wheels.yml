@@ -30,7 +30,7 @@ jobs:
       - name: Run python-semantic-release
         run: |
           pip install python-semantic-release
-          semantic-release publish -D build_command= -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__
+          semantic-release publish -D branch=feature_pybind -D build_command= -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__
 
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
