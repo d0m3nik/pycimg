@@ -34,6 +34,7 @@ jobs:
           git config --global user.name "Dominik Brugger"
           semantic-release version -D branch=feature_pybind -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ 
           git push
+          git push --tags
           
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -145,5 +146,5 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
-          password: ${{ secrets.pypi_password }}
-          # To test: repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
