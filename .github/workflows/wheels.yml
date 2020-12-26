@@ -19,7 +19,6 @@ jobs:
   semantic_release:
     name: Run semantic release
     runs-on: ubuntu-latest
-    if: github.event_name != 'release' || github.event.action != 'published'
     steps:
       - uses: actions/checkout@v2
 
@@ -34,6 +33,10 @@ jobs:
           git config --global user.email "d0m3nik@users.noreply.github.com"
           git config --global user.name "Dominik Brugger"
           semantic-release version -D branch=feature_pybind -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ 
+          
+      - name: Push version
+        if: github.event_name != 'release' || github.event.action != 'published'
+        run: |
           git push
           git push --tags
           
