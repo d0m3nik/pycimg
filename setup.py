@@ -19,7 +19,7 @@ def read(*parts):
 # Get the long description from the README file
 long_description = read('README.rst')
 
-__version__ = "0.0.11" 
+__version__ = "0.0.12" 
 
 extra_compile_args = []
 extra_link_args = []
