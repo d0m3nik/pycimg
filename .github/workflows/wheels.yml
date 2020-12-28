@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-     - feature_pybind
+     - master 
   release:
     types:
       - published
@@ -32,7 +32,7 @@ jobs:
           pip install python-semantic-release
           git config --global user.email "d0m3nik@users.noreply.github.com"
           git config --global user.name "Dominik Brugger"
-          semantic-release version -D branch=feature_pybind -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ 
+          semantic-release version -D branch=master -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ 
 
       - name: Push version
         if: github.event_name != 'release' || github.event.action != 'published'
@@ -150,5 +150,6 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@master
         with:
           user: __token__
-          password: ${{ secrets.TEST_PYPI_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.PYPI_TOKEN }}
+          #password: ${{ secrets.TEST_PYPI_TOKEN }}
+          #repository_url: https://test.pypi.org/legacy/
