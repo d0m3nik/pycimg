@@ -136,6 +136,11 @@ class CImg:
             raise RuntimeError("More than one argument not supported")
 
     def asarray(self, copy=False):
+        """ Returns image data as a numpy array.
+            
+            Args:
+              copy (bool) - If true copy image data. Default: False.
+        """
         return np.array(self._cimg, copy=copy)
 
     @property

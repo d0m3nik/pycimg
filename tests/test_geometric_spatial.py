@@ -4,6 +4,55 @@ import pytest
 from context import *
 
 
+def test_linear_atX():
+    """ Test linear_atX interpolation. """
+    img = CImg(np.array([0, 1, 2]))
+    assert img.linear_atX(0.5) == 0.5
+    assert img.linear_atX(1.5) == 1.5
+
+
+def test_linear_atXY():
+    """ Test linear_atXY interpolation. """
+    img = CImg(np.array([
+        [0, 1, 2],
+        [3, 4, 5]
+    ]))
+    assert img.linear_atXY(0.5, 0.5) == 2.0
+    assert img.linear_atXY(1.5, 0.5) == 3.0
+
+
+def test_linear_atXYZ():
+    """ Test linear_atXYZ interpolation. """
+    img = CImg(np.array([
+       [
+        [0, 1, 2],
+        [3, 4, 5]
+       ],
+       [
+        [6, 7, 8],
+        [9, 10, 11]
+       ]
+    ]))
+    assert img.linear_atXYZ(0.5, 0.5, 0.5) == 5.0
+    assert img.linear_atXYZ(1.5, 0.5, 0.5) == 6.0
+
+
+def test_linear_atXYZC():
+    """ Test linear_atXYZC interpolation. """
+    img = CImg(np.array([
+       [
+        [0, 1, 2],
+        [3, 4, 5]
+       ],
+       [
+        [0, 1, 2],
+        [3, 4, 5]
+       ]
+    ]))
+    assert img.linear_atXYZC(0.5, 0.5, 0.5, 0.5) == 2.0
+    assert img.linear_atXYZC(1.5, 0.5, 0.5, 0.5) == 3.0
+
+
 def test_resize():
    """ Test resize. """
    img = CImg()
@@ -188,4 +237,43 @@ def test_append():
        [0, 1, 0, 0],
        [0, 1, 0, 0]
    ]))
+   assert img == img_expected
+
+def test_apply_geometric_transform():
+   """ Test apply_geometric_transform. """
+   img = CImg(np.array([[ 
+       [0, 1],
+       [1, 1]
+      ],
+      [
+       [0, 1],
+       [1, 1]
+      ]
+   ])) 
+   M  = CImg(np.array([
+       [1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1]
+   ]))
+   t  = CImg(np.array([0, 0, 0]))
+
+   img_expected = CImg(img)
+   img.apply_geometric_transform(1.0 ,M, t)
+
+   assert img == img_expected
+   M  = CImg(np.array([
+       [-1, 0, 0],
+       [0, -1, 0],
+       [0, 0, 1]
+   ]))
+   img_expected = CImg(np.array([[ 
+       [0, 0],
+       [1, 1]
+      ],
+      [
+       [0, 0],
+       [1, 1]
+      ]
+   ])) 
+   img.apply_geometric_transform(1.0 ,M, t)
    assert img == img_expected

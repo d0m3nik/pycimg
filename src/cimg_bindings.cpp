@@ -20,6 +20,7 @@ using namespace cimg_library;
 namespace py = pybind11;
 
 
+// Helper function to create CImg<T> from a python array.
 template <typename T>
 CImg<T> fromarray(py::array_t<T, py::array::c_style | py::array::forcecast> a)
 {
@@ -45,6 +46,7 @@ CImg<T> fromarray(py::array_t<T, py::array::c_style | py::array::forcecast> a)
     return CImg<T>(a.data(), shape[3], shape[2], shape[1], shape[0]);
 }
 
+// Declare CImg class of pixel type T
 template <typename T>
 void declare(py::module &m, const std::string &typestr)
 {
@@ -69,68 +71,188 @@ void declare(py::module &m, const std::string &typestr)
     cl.def(py::self == py::self);
     cl.def(py::self != py::self);
 
-    // Load
-    cl.def("load", &Class::load);
-    cl.def("load_bmp", (Class &(Class::*)(const char* const))&Class::load_bmp);
-    cl.def("load_jpeg", (Class &(Class::*)(const char* const))&Class::load_jpeg);
+    // Load 
+    cl.def("load", 
+           &Class::load, 
+           R"doc(
+            Load image from a file.
+
+            Args:
+                filename (str): Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+           )doc"        
+    );
+
+    cl.def("load_bmp", 
+           (Class &(Class::*)(const char* const))&Class::load_bmp,
+           R"doc(
+            Load image from a BMP file.
+
+            Args:
+                filename (str): Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+           )doc"
+    );
+
+    cl.def("load_jpeg", 
+           (Class &(Class::*)(const char* const))&Class::load_jpeg,
+           R"doc(
+            Load image from a JPEG file.
+
+            Args:
+                filename (str): Filename of image.
+            Raises:
+                RuntimeError: If file does not exist.
+           )doc"
+    );
+
     cl.def("load_png", 
            (Class& (Class::*)(const char* const, unsigned int *const))&Class::load_png,
-           "Load png image.",
+           R"doc(
+              Load image from a PNG file.
+
+              Args:
+                  filename (str): Filename of image.
+              Returns:
+                  Bits per pixel
+              Raises:
+                  RuntimeError: If file does not exist.
+           )doc",
            py::arg("filename"),
            py::arg("bits_per_pixel") = 0
-           );
+    );
+
     cl.def("load_tiff", 
            [](Class& im,  const char* const filename, const unsigned int first_frame, const unsigned int last_frame, const unsigned int step_frame)
            {
                return im.load_tiff(filename, first_frame, last_frame, step_frame);
            },
-           "Load tiff image.",
+           R"doc(
+            Load image from a TIFF file.
+
+            Args:
+                filename (str): Filename of image.
+                first_frame: First frame to read (for multi-pages tiff).
+                last_frame: Last frame to read (for multi-pages tiff).
+                step_frame: Step value of frame reading.
+            Returns:
+                Voxel size, as stored in the filename.
+            Raises:
+                RuntimeError: If file does not exist.
+           )doc",
            py::arg("filename"),
            py::arg("first_frame") = 0,
            py::arg("last_frame") = ~0U,
            py::arg("step_frame") = 1
-           );
+    );
 
     // Save
     cl.def("save", 
            &Class::save,
-           "Save image.",
+           R"doc(
+              Save image as a file.
+
+              The used file format is defined by the file extension
+              in the filename.
+
+              Args:
+                  filename (str): Filneame of image.
+                  number: When positive, represents an index added to the filename.
+                          Otherwise, no number is added.
+                  digits: Number of digits used for adding the number to the filename.
+           )doc",
            py::arg("filename"),
            py::arg("number") = -1,
            py::arg("digits") = 6
-           );
-    cl.def("save_bmp", (const Class& (Class::*)(const char* const) const)&Class::save_bmp);
+    );
+
+    cl.def("save_bmp", 
+           (const Class& (Class::*)(const char* const) const)&Class::save_bmp,
+           R"doc(
+             Save image as a BMP file.
+
+             Args:
+                filename (str): Filename of image.
+           )doc"
+    );
+
     cl.def("save_jpeg", 
            (const Class& (Class::*)(const char* const, const unsigned int) const)&Class::save_jpeg,
-           "Save image as jpeg.",
+           R"doc(
+              Save image as a JPEG file.
+
+              Args:
+                  filename (str): Filename of image.
+                  quality: Image quality (in %).
+           )doc",
            py::arg("filename"),
            py::arg("quality") = 100
-          );
+    );
+
     cl.def("save_png", 
            (const Class& (Class::*)(const char* const, const unsigned int) const)&Class::save_png,
-           "Save image as png.",
+           R"doc(
+              Save image as a PNG file.
+
+              Args:
+                  filename (str): Filename of image.
+                  bytes_per_pixel: Force the number of bytes per pixels for
+                                   saving, when possible.
+           )doc",
            py::arg("filename"),
            py::arg("bytes_per_pixel") = 0
-          );
+    );
+
     cl.def("save_tiff", 
            [](const Class& im, const char* const filename, const unsigned int compression_type, pyarray_float voxel_size, const char* const description, bool use_bigtiff)
            {
                return im.save_tiff(filename, compression_type, voxel_size.size() == 0 ? 0 : voxel_size.data(), description, use_bigtiff);
            },
-           "Save image as a TIFF file.",
+           R"doc(
+              Save image as a TIFF file.
+
+              Args:
+                  filename (str): Filename of image.
+                  compression_type:    Type of data compression.
+                      Can be: C_NONE, C_LZW, C_JPEG.
+                  voxel_size: Voxel size, to be stored in the filename.
+                  description: Description, to be stored in the filename.
+                  use_bigtiff: Allow to save big tiff files (>4Gb).
+           )doc",
            py::arg("filename"),
            py::arg("compression_type") = 0,
            py::arg("voxel_size") = pyarray_float(),
            py::arg("description") = "",
            py::arg("use_bigtiff") = true
-           );
+     );
 
     // Instance characteristics
-    cl.def("spectrum", &Class::spectrum);
-    cl.def("depth", &Class::depth);
-    cl.def("height", &Class::height);
-    cl.def("width", &Class::width);
-    cl.def("size", &Class::size);
+    cl.def("spectrum", 
+           &Class::spectrum,
+           "Return spectrum (number of channels) of image."
+    );
+
+    cl.def("depth", 
+           &Class::depth,
+           "Return depth of image"
+    );
+
+    cl.def("height", 
+           &Class::height,
+           "Return height of image"
+    );
+
+    cl.def("width", 
+           &Class::width,
+           "Return width of image"
+    );
+
+    cl.def("size", 
+           &Class::size,
+           "Return the total number of pixel values in the image."
+    );
 
     // Buffer protocol
     cl.def_buffer([](Class &c) -> py::buffer_info {
@@ -149,12 +271,17 @@ void declare(py::module &m, const std::string &typestr)
 
     cl.def("display",
            (const Class& (Class::*)(const char *const, const bool, unsigned int *const, const bool) const)(&Class::display),
-           "Display image",
+           R"doc(
+              Display image into a CImgDisplay window.
+
+              Args:
+                  title (str): Title of window.
+           )doc",
            py::arg("title") = "",
            py::arg("display_info") = true,
            py::arg("XYZ") = 0,
            py::arg("exit_on_anykey") = false
-          );
+     );
     
     cl.def("resize",
            (Class& (Class::*)(const int, const int, const int, const int, const int, const unsigned int, const float, const float, const float, const float))(&Class::resize),
@@ -192,36 +319,115 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("centering_y") = 0.0f,
            py::arg("centering_z") = 0.0f,
            py::arg("centering_c") = 0.0f
-          );
-    cl.def("resize_halfXY", &Class::resize_halfXY);
-    cl.def("resize_doubleXY", &Class::resize_doubleXY);
-    cl.def("resize_tripleXY", &Class::resize_tripleXY);
+    );
+
+    cl.def("resize_halfXY",
+           &Class::resize_halfXY,
+           R"doc(
+              Resize image to half-size along XY axes, using an optimized filter.
+           )doc"
+    );
+
+    cl.def("resize_doubleXY",
+           &Class::resize_doubleXY,
+           R"doc(
+              Resize image to double-size, using the Scale2X algorithm.
+           )doc"
+     );
+
+    cl.def("resize_tripleXY",
+           &Class::resize_tripleXY,
+           R"doc(
+              Resize image to triple-size, using the Scale3X algorithm.
+           )doc"
+     );
+
     cl.def("mirror", 
            (Class& (Class::*)(const char* const))&Class::mirror,
-           "Mirror image content along specified axes.",
+           R"doc(
+              Mirror image content along specified axes.
+
+              Args:
+                  axes (str): Mirror axes as string, e.g. "x" or "xyz"
+           )doc",
            py::arg("axes")
-          );
+    );
+
     cl.def("shift",
            (Class& (Class::*)(const int, const int, const int, const int, const unsigned int))&Class::shift,
-           "Shift image content.",
+           R"doc(
+              Shift image content.
+
+              Args:
+                  delta_x (int): Amount of displacement along the X-axis.
+                  delta_y (int): Amount of displacement along the Y-axis.
+                  delta_z (int): Amount of displacement along the Z-axis.
+                  delta_c (int): Amount of displacement along the C-axis.
+                  boundary_conditions (int): Border condition.
+           )doc",
            py::arg("delta_x"),
            py::arg("delta_y") = 0,
            py::arg("delta_z") = 0,
            py::arg("delta_c") = 0,
            py::arg("boundary_conditions") = 0
     );
-    cl.def("permute_axes", &Class::permute_axes);
-    cl.def("unroll", &Class::unroll);
+
+    cl.def("permute_axes", 
+           &Class::permute_axes,
+           R"doc(
+              Permute axes order.
+
+              Args:
+                  order (str): Axes permutations as string of length 4.
+
+              Raises: RuntimeError if order is invalid.
+           )doc"
+    );
+
+    cl.def("unroll", 
+           &Class::unroll,
+           R"doc(
+              Unroll pixel values along specified axis.
+
+              Args:
+                  axis (str): 'x', 'y', 'z', or 'c'.
+
+              Raises: RuntimeError if axis is invalid.
+           )doc"
+    );
+
     cl.def("rotate",
            (Class& (Class::*)(const float, const unsigned int, const unsigned int))&Class::rotate,
-           "Rotate image with arbitrary angle.",
+           R"doc(
+              Rotate image with arbitrary angle.
+
+              Args:
+                  angle (float): Rotation angle, in degrees.
+                  interpolation (int): Type of interpolation.
+                                 Can be { 0=nearest | 1=linear | 2=cubic | 3=mirror }.
+                  boundary_conditions (int): Boundary conditions.
+           )doc",
            py::arg("angle"),
            py::arg("interpolation") = 1,
            py::arg("boundary_conditions") = 0
     );
+
     cl.def("crop",
            (Class& (Class::*)(const int, const int, const int, const int, const int, const int, const int, const int, const unsigned int))&Class::crop,
-           "Crop image region.",
+           R"doc(
+              Crop image region.
+
+              Args:
+                 x0 (int): X-coordinate of the upper-left crop rectangle corner.
+                 y0 (int): Y-coordinate of the upper-left crop rectangle corner.
+                 z0 (int): Z-coordinate of the upper-left crop rectangle corner.
+                 c0 (int): C-coordinate of the upper-left crop rectangle corner.
+                 x1 (int): X-coordinate of the lower-right crop rectangle corner.
+                 y1 (int): Y-coordinate of the lower-right crop rectangle corner.
+                 z1 (int): Z-coordinate of the lower-right crop rectangle corner.
+                 c1 (int): C-coordinate of the lower-right crop rectangle corner.
+                 boundary_conditions (int): boundary conditions.
+           )doc",
            py::arg("x0"),
            py::arg("y0"),
            py::arg("z0"),
@@ -232,6 +438,7 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("c1"),
            py::arg("boundary_conditions") = 0
     );
+
     cl.def("autocrop",
            [](Class& im, pyarray color, const char* const axes)
            {
@@ -241,99 +448,311 @@ void declare(py::module &m, const std::string &typestr)
                     throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
                 return im.autocrop(color.data(), axes);
            }, 
-           "Autocrop image region, regarding the specified background color.",
+           R"doc(
+              Autocrop image region, regarding the specified background color.
+
+              Args:
+                  color (int/list): Color used for the crop. If 0, color is guessed.
+                  axes (str): Axes used for crop.
+           )doc",
            py::arg("color") = pyarray(),
            py::arg("axes") = "czyx"
     );
+
     cl.def("append",
            (Class& (Class::*)(const Class&, const char, const float))&Class::append,
-           "Append two images along specified axis.",
+           R"doc(
+              Append two images along specified axis.
+
+              Args:
+                  img (CImg): Image to append with instance image.
+                  axis (str): Appending axis. Can be { 'x' | 'y' | 'z' | 'c' }.
+                  align (float): Append alignment in [0,1].
+           )doc",
            py::arg("img"),
            py::arg("axis") = 'x',
            py::arg("align") = 0
     );
+       
+    cl.def("linear_atX",
+           (Tfloat (Class::*)(const float, const  int, const int, const int) const)(&Class::linear_atX),
+           R"doc(
+              Return pixel value, using linear interpolation
+              and Neumann boundary conditions for the X-coordinate.
+
+              Args:
+                  fx (float): X-coordinate of the pixel value.
+                  y (int):    Y-coordinate of the pixel value
+                  z (int):    Z-coordinate of the pixel value.
+                  c (int):    C-coordinate of the pixel value.
+
+              Returns: a linearly-interpolated pixel value of the image
+                       instance located at (fx,y,z,c).
+           )doc",
+           py::arg("fx"),
+           py::arg("y") = 0,
+           py::arg("z") = 0,
+           py::arg("c") = 0
+    );
+
 
     cl.def("linear_atXY",
            (Tfloat (Class::*)(const float, const float, const int, const int) const)(&Class::linear_atXY),
-           "Return pixel value, using linear interpolation and Dirichlet boundary conditions for the X and Y-coordinates.",
+           R"doc(
+              Return pixel value, using linear interpolation
+              and Neumann boundary conditions for the X and Y-coordinates.
+
+              Args:
+                  fx (float): X-coordinate of the pixel value.
+                  fy (float): Y-coordinate of the pixel value.
+                  z (int):    Z-coordinate of the pixel value.
+                  c (int):    C-coordinate of the pixel value.
+
+              Returns: a linearly-interpolated pixel value of the image
+                       instance located at (fx,fy,z,c).
+           )doc",
            py::arg("fx"),
            py::arg("fy"),
            py::arg("z") = 0,
            py::arg("c") = 0
     );
+
+    cl.def("linear_atXYZ",
+           (Tfloat (Class::*)(const float, const float, const float, const int) const)(&Class::linear_atXYZ),
+           R"doc(
+              Return pixel value, using linear interpolation
+              and Neumann boundary conditions for the X, Y, and Z-coordinates.
+
+              Args:
+                  fx (float): X-coordinate of the pixel value.
+                  fy (float): Y-coordinate of the pixel value.
+                  fz (float): Z-coordinate of the pixel value.
+                  c (int):    C-coordinate of the pixel value.
+
+              Returns: a linearly-interpolated pixel value of the image
+                       instance located at (fx,fy,fz,c).
+           )doc",
+           py::arg("fx"),
+           py::arg("fy"),
+           py::arg("fz"),
+           py::arg("c") = 0
+    );
+   
+    cl.def("linear_atXYZC",
+           (Tfloat (Class::*)(const float, const float, const float, const float) const)(&Class::linear_atXYZC),
+           R"doc(
+              Return pixel value, using linear interpolation
+              and Neumann boundary conditions for the X, Y, Z, and C-coordinates.
+
+              Args:
+                  fx (float): X-coordinate of the pixel value.
+                  fy (float): Y-coordinate of the pixel value.
+                  fz (float): Z-coordinate of the pixel value.
+                  fc (float):    C-coordinate of the pixel value.
+
+              Returns: a linearly-interpolated pixel value of the image
+                       instance located at (fx,fy,fz,fc).
+           )doc",
+           py::arg("fx"),
+           py::arg("fy"),
+           py::arg("fz"),
+           py::arg("fc")
+    ); 
     
     // Value manipulation
     cl.def("fill",
            (Class& (Class::*)(const T&))(&Class::fill),
-           "Fill all pixel values with specified value.",
+           R"doc(
+              Fill all pixel values with specified value.
+
+              Args:
+                  val (float): Fill value.
+           )doc",
            py::arg("val")
     );
-    cl.def("invert_endianness", &Class::invert_endianness);
-    cl.def("rand", &Class::rand);
+
+    cl.def("invert_endianness", 
+           &Class::invert_endianness,
+           "Invert endianness of all pixel values."
+    );
+
+    cl.def("rand", 
+           &Class::rand,
+           R"doc(
+              Fill image with random values in specified range.
+
+              Args:
+                  val_min (float): Minimal authorized random value.
+                  val_max (float): Maximal authorized random value.
+            )doc",
+            py::arg("val_min"),
+            py::arg("val_max")
+    );
+
     cl.def("round", 
            (Class& (Class::*)(const double, const int))&Class::round,
-           "Round pixel values.",
+           R"doc(
+              Round pixel values.
+
+              Args:
+                  y (int): Rounding precision.
+                  rounding_type (int): Rounding type. Can be:
+                      R_BACKWARD, R_NEAREST, R_FORWARD
+           )doc",
            py::arg("y") = 1,
            py::arg("rounding_type") = 0
     );
+
     cl.def("noise", 
            (Class& (Class::*)(const double, const unsigned int))&Class::noise,
-           "Add random noise to pixel values.",
+           R"doc(
+              Add random noise to pixel values.
+
+              Args:
+                  sigma (float): Amplitude of the random additive noise.
+                                 If sigma<0, it stands for a percentage of
+                                 the global value range.
+
+                  noise_type (int): Type of additive noise (can be
+                                    GAUSSIAN,
+                                    UNIFORM,
+                                    SALT_AND_PEPPER,
+                                    POISSON or
+                                    RICIAN).
+           )doc",
            py::arg("sigma"),
            py::arg("noise_type") = 0
     );
+
+
     cl.def("normalize", 
            (Class& (Class::*)(const T&, const T&, const float))&Class::normalize,
-           "Linearly normalize pixel values.",
+           R"doc(
+              Linearly normalize pixel values.
+
+              Args:
+                  min_value (float): Minimum desired value of resulting image.
+                  max_value (float): Maximum desired value of resulting image.
+                  constant_case_ratio (float): in case of instance image having a constant value, 
+                                               tell what ratio of [min_value,max_value] is used to fill the normalized image 
+                                               (=0 for min_value, =1 for max_value, =0.5 for (min_value + max_value)/2).
+           )doc",
            py::arg("min_value"),
            py::arg("max_value"),
            py::arg("constant_case_ratio") = 0
     );
+
     cl.def("norm", 
            (Class& (Class::*)(const int))&Class::norm,
-           "Compute Lp-norm of each multi-valued pixel of the image instance.",
+           R"doc(
+              Compute Lp-norm of each multi-valued pixel of the
+              image instance.
+
+              Args:
+                  norm_type (int): Type of computed vector norm. Can be:
+                  LINF_NORM, L0_NORM, L1_NORM, L2_NORM, or value p>2
+           )doc",
            py::arg("norm_type") = 1
     );
+
     cl.def("cut", 
            (Class& (Class::*)(const T&, const T&))&Class::cut,
-           "Cut pixel values in specified range.",
+           R"doc(
+              Cut pixel values in specified range.
+
+              Args:
+                  min_value (float): Minimum desired value of resulting image.
+                  max_value (float): Maximum desired value of resulting image.
+           )doc",
            py::arg("min_value"),
            py::arg("max_value")
     );
+
     cl.def("quantize", 
            (Class& (Class::*)(const unsigned int, const bool))&Class::quantize,
-           "Uniformly quantize pixel values.",
+           R"doc(
+              Uniformly quantize pixel values.
+
+              Args:
+                  nb_levels (int): Number of quantization levels.
+                  keep_range (bool): Tells if resulting values keep the same
+                                     range as the original ones.
+           )doc",
            py::arg("nb_levels"),
            py::arg("keep_range") = true
     );
+
     cl.def("threshold", 
            (Class& (Class::*)(const T&, const bool, const bool))&Class::threshold,
-           "Threshold pixel values.",
+           R"doc(
+              Threshold pixel values.
+
+              Args:
+                  value (float): Threshold value.
+                  soft_threshold (bool): Tells if soft thresholding must be
+                                          applied (instead of hard one).
+                  strict_threshold (bool): Tells if threshold value is strict.
+           )doc",
            py::arg("value"),
            py::arg("soft_threshold") = false,
            py::arg("strict_threshold") = false
     );
+
     cl.def("histogram", 
            (Class& (Class::*)(const unsigned int, const T&, const T&))&Class::histogram,
-           "Compute the histogram of pixel values.",
+           R"doc(
+              Compute the histogram of pixel values.
+
+              Args:
+              nb_levels (int): Number of desired histogram levels.
+              min_value (float): Minimum pixel value considered for the
+                                   histogram computation. All pixel values
+                                   lower than min_value will not be counted.
+              max_value (float): Maximum pixel value considered for the
+                                   histogram computation. All pixel values
+                                   higher than max_value will not be counted.
+           )doc",
            py::arg("nb_levels"),
            py::arg("min_value"),
            py::arg("max_value")
     );
+
     cl.def("equalize", 
            (Class& (Class::*)(const unsigned int, const T&, const T&))&Class::equalize,
-           "Equalize histogram of pixel values.",
+           R"doc(
+              Equalize histogram of pixel values.
+
+              Args:
+                  nb_levels (int): Number of desired histogram levels.
+                  min_value (float): Minimum pixel value considered for the
+                                     histogram computation. All pixel values
+                                     lower than min_value will not be counted.
+                  max_value (float): Maximum pixel value considered for the
+                                     histogram computation. All pixel values
+                                     higher than max_value will not be counted.
+           )doc",
            py::arg("nb_levels"),
            py::arg("min_value"),
            py::arg("max_value")
     );
+
     cl.def("label", 
            (Class& (Class::*)(const bool, const Tfloat, const bool))&Class::label,
-           "Label connected components.",
+           R"doc(
+              Label connected components.
+
+              Args:
+                  is_high_connectivity (bool): Choose between 4(false)
+                  - or 8(true)-connectivity in 2d case, and between 6(false)
+                  - or 26(true)-connectivity in 3d case.
+                  tolerance (float): Tolerance used to determine if two neighboring
+                                     pixels belong to the same region.
+           )doc", 
            py::arg("is_high_connectivity") = false,
            py::arg("tolerance") = 0,
            py::arg("is_L2_norm") = true
     );
+
     cl.def("min_max", 
            [](Class& im)
            {
@@ -341,8 +760,9 @@ void declare(py::module &m, const std::string &typestr)
                T min_val = im.min_max(max_val);
                return std::pair<T,T>{min_val, max_val};
            }, 
-           "Return minimum and maximum value."
+           " Returns: tuple with minimum and maximum pixel value. "
     );
+
     cl.def("max_min", 
            [](Class& im)
            {
@@ -350,7 +770,7 @@ void declare(py::module &m, const std::string &typestr)
                T max_val = im.max_min(min_val);
                return std::pair<T,T>{max_val, min_val};
            }, 
-           "Return maximum and minimum value."
+           " Returns: tuple with maximum and minimum pixel value. "
     );
 
     // Filtering transforms
@@ -375,7 +795,15 @@ void declare(py::module &m, const std::string &typestr)
                               const float,
                               const float
                               ))&Class::correlate,
-           "Correlate image by a kernel.",
+           R"doc( 
+              Correlate image by a kernel.
+
+              Args:
+                  kernel (CImg): the correlation kernel.
+                  boundary_conditions (bool): boundary conditions can be
+                                              (False=dirichlet, True=neumann)
+                  is_normalized (bool): enable local normalization.
+           )doc",
            py::arg("kernel"),
            py::arg("boundary_conditions") = 1,
            py::arg("is_normalized") = false,
@@ -417,7 +845,15 @@ void declare(py::module &m, const std::string &typestr)
                               const float,
                               const float
                               ))&Class::convolve,
-           "Convolve image by a kernel.",
+           R"doc( 
+              Convolve image by a kernel.
+
+              Args:
+                  kernel (CImg): the correlation kernel.
+                  boundary_conditions (bool): boundary conditions can be
+                                      (False=dirichlet, True=neumann)
+                  is_normalized (bool): enable local normalization.
+           )doc",
            py::arg("kernel"),
            py::arg("boundary_conditions") = 1,
            py::arg("is_normalized") = false,
@@ -438,78 +874,189 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("ydilation") = 1,
            py::arg("zdilation") = 1
     );
+
     cl.def("cumulate",
            (Class& (Class::*)(const char* const))&Class::cumulate,
-           "Cumulate image values, along specified axes.",
+           R"doc(
+              Cumulate image values, optionally along specified axes.
+
+              Args:
+                  axes (str): Cumulation axes as string, e.g. "x" or "xyz".
+           )doc",
            py::arg("axes")
     );
+
     cl.def("erode",
            (Class& (Class::*)(const Class&, const bool, const bool))&Class::erode,
-           "Erode image by a structuring element.",
+           R"doc(
+              Erode image by a structuring element.
+
+              Args:
+                  kernel (CImg):	Structuring element.
+                  boundary_conditions (bool): Boundary conditions.
+                  is_real (bool): Do the erosion in real (a.k.a 'non-flat')
+                                  mode (true) rather than binary mode (false).
+           )doc",
            py::arg("kernel"),
            py::arg("boundary_conditions") = true,
            py::arg("is_real") = false
     );
+
     cl.def("dilate",
            (Class& (Class::*)(const Class&, const bool, const bool))&Class::dilate,
-           "Dilate image by a structuring element.",
+           R"doc(
+              Dilate image by a structuring element.
+
+              Args:
+                  kernel (CImg):	Structuring element.
+                  boundary_conditions (bool): Boundary conditions.
+                  is_real (bool): Do the erosion in real (a.k.a 'non-flat')
+                                  mode (true) rather than binary mode (false).
+           )doc",
            py::arg("kernel"),
            py::arg("boundary_conditions") = true,
            py::arg("is_real") = false
     );
+
     cl.def("watershed",
            (Class& (Class::*)(const Class&, const bool))&Class::watershed,
-           "Compute watershed transform.",
+           R"doc(
+              Compute watershed transform.
+
+              Args:
+                  priority (CImg): Priority map.
+                  is_high_connectivity (bool): Choose between 4(false)- or
+                                        8(true)-connectivity in 2d case,
+                                        and between 6(false)- or
+                                        26(true)-connectivity in 3d case.
+           )doc",
            py::arg("priority"),
            py::arg("is_high_connectivity") = false
     );
+
     cl.def("deriche",
            (Class& (Class::*)(const float, const unsigned int, const char, const bool))&Class::deriche,
-           "Apply recursive Deriche filter.",
+           R"doc(
+              Apply recursive Deriche filter.
+
+              Args:
+                  sigma (float): Standard deviation of the filter.
+                  order (int): Order of the filter. Can be:
+                         SMOOTH_FILTER, FIRST_DERIV, or SECOND_DERIV.
+                  axis (str): Axis along which the filter is computed. Can be:
+                        { 'x' | 'y' | 'z' | 'c' }.
+                  boundary_conditions (bool): Boundary conditions. Can be:
+                        { False=dirichlet | True=neumann }.
+           )doc",
            py::arg("sigma"),
            py::arg("order") = 0,
            py::arg("axis") = 'x',
            py::arg("boundary_conditions") = true
     );
+
     cl.def("vanvliet",
            (Class& (Class::*)(const float, const unsigned int, const char, const bool))&Class::vanvliet,
-           "Van Vliet recursive Gaussian filter.",
+           R"doc(
+              Van Vliet recursive Gaussian filter.
+
+              Args:
+                  sigma (float): Standard deviation of the Gaussian filter.
+                  order (int): Order of the filter. Can be:
+                         SMOOTH_FILTER, FIRST_DERIV, SECOND_DERIV, or THIRD_DERIV.
+                  axis (str): Axis along which the filter is computed. Can be:
+                        { 'x' | 'y' | 'z' | 'c' }.
+                  boundary_conditions (bool): Boundary conditions. Can be:
+                        { False=dirichlet | True=neumann }.
+           )doc",
            py::arg("sigma"),
            py::arg("order") = 0,
            py::arg("axis") = 'x',
            py::arg("boundary_conditions") = true
     );
+
     cl.def("blur",
            (Class& (Class::*)(const float, const bool, const bool))&Class::blur,
-           "Blur image isotropically.",
+           R"doc(
+              Blur image isotropically.
+
+              Note: The blur is computed as a 0-order Deriche filter.
+              This is not a gaussian blur. This is a recursive algorithm,
+              not depending on the values of the standard deviations.
+
+              Args:
+                  sigma (float): Standard deviation of the blur.
+                  boundary_conditions (bool): Boundary conditions. Can be
+                                       { False=dirichlet | True=neumann }.
+                  is_gaussian (bool): Tells if the blur uses a gaussian (True)
+                               or quasi-gaussian (False) kernel.
+           )doc",
            py::arg("sigma"),
            py::arg("boundary_conditions") = true,
            py::arg("is_gaussian") = false
     );
+
     cl.def("boxfilter",
            (Class& (Class::*)(const float, const int, const char, const bool, const unsigned int))&Class::boxfilter,
-           "Apply box filter",
+           R"doc(
+              Apply box filter to image.
+
+              Args:
+                  boxsize (float): Size of the box window (can be subpixel)
+                  order (int):   the order of the filter 0,1 or 2.
+                  axis (str):    Axis along which the filter is computed.
+                           Can be { 'x' | 'y' | 'z' | 'c' }.
+                  boundary_conditions (bool): Boundary conditions. Can be
+                                       { False=dirichlet | True=neumann }.
+                  nb_iter (int): Number of filter iterations.
+           )doc",
            py::arg("boxsize"),
            py::arg("order"),
            py::arg("axis") = 'x',
            py::arg("boundary_conditions") = true,
            py::arg("nb_iter") = 1 
     );
+
     cl.def("blur_box",
            (Class& (Class::*)(const float, const bool))&Class::blur_box,
-           "Blur image with a box filter.",
+           R"doc(
+              Blur image with a box filter.
+
+              Args:
+                  boxsize (int): Size of the box window (can be subpixel).
+                  boundary_conditions (bool): Boundary conditions. Can be
+                                       { False=dirichlet | True=neumann }.
+           )doc",
            py::arg("boxsize"),
            py::arg("boundary_conditions") = true
     );
+
     cl.def("blur_median",
            (Class& (Class::*)(const unsigned int, const float))&Class::blur_median,
-           "Blur image with the median filter.",
+           R"doc(
+              Blur image with the median filter.
+
+              Args:
+                  n (int): Size of the median filter.
+                  threshold (float): Threshold used to discard pixels too far
+                             from the current pixel value in the median computation.
+           )doc",
            py::arg("n"),
            py::arg("threshold") = 0
     );
+
     cl.def("sharpen",
            (Class& (Class::*)(const float, const bool, const float, const float, const float))&Class::sharpen,
-           "Sharpen image.",
+           R"doc(
+              Sharpen image.
+
+              Args:
+                  amplitude (float): Sharpening amplitude
+                  sharpen_type (bool): Select sharpening method. Can be
+                                { False=inverse diffusion | True=shock filters }.
+                  edge (int): Edge threshold (shock filters only).
+                  alpha (float): Gradient smoothness (shock filters only).
+                  sigma (float): Tensor smoothness (shock filters only).
+           )doc",
            py::arg("amplitude"),
            py::arg("sharpen_type") = false,
            py::arg("edge") = 1,
@@ -525,7 +1072,20 @@ void declare(py::module &m, const std::string &typestr)
                     throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
                 return im.draw_rectangle(x0, y0, x1, y1, color.data(), opacity);
            }, 
-           "Draw a filled 2D rectangle.",
+           R"doc(
+              Draw a filled 2d rectangle.
+
+              Args:
+                  x0 (int): X-coordinate of the upper-left rectangle corner.
+                  y0 (int): Y-coordinate of the upper-left rectangle corner.
+                  x1 (int): X-coordinate of the lower-right rectangle corner.
+                  y1 (int): Y-coordinate of the lower-right rectangle corner.
+                  color (list): List of color value with spectrum() entries.
+                  opacity (float): Drawing opacity.
+
+              Raises:
+                  RuntimeError: If list of color values does not have spectrum() entries.
+           )doc",
            py::arg("x0"),
            py::arg("y0"),
            py::arg("x1"),
@@ -541,7 +1101,17 @@ void declare(py::module &m, const std::string &typestr)
                     throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
                 return im.draw_polygon(fromarray<T>(points), color.data(), opacity);
            }, 
-           "Draw a filled 2D polygon.",
+           R"doc(
+              Draw filled 2d polygon.
+
+              Args:
+                  points (ndarray): (n x 2) numpy array of polygon vertices
+                  color (list): List of color value with spectrum() entries.
+                  opacity (float): Drawing opacity.
+
+              Raises:
+                  RuntimeError: If list of color values does not have spectrum() entries.
+           )doc",
            py::arg("points"),
            py::arg("color"),
            py::arg("opacity") = 1
@@ -554,7 +1124,19 @@ void declare(py::module &m, const std::string &typestr)
                 throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
             return im.draw_circle(x0, y0, radius, color.data(), opacity);
         },
-        "Draw a filled 2D circle.",
+        R"doc(
+              Draw a filled 2d circle.
+
+              Args:
+                  x0 (int):  X-coordinate of the circle center.
+                  y0 (int):  Y-coordinate of the circle center.
+                  radius (float):  Circle radius.
+                  color (list): List of color value with spectrum() entries.
+                  opacity (float): Drawing opacity.
+
+              Raises:
+                  RuntimeError: If list of color values does not have spectrum() entries.
+        )doc",
         py::arg("x0"),
         py::arg("y0"),
         py::arg("radius"),
@@ -569,7 +1151,22 @@ void declare(py::module &m, const std::string &typestr)
                    throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
                return im.draw_triangle(x0, y0, x1, y1, x2, y2, color.data(), opacity);
            },
-           "Draw a filled 2D triangle.",
+           R"doc(
+              Draw a filled 2d triangle.
+
+              Args:
+                  x0 (int): X-coordinate of the first vertex.
+                  y0 (int): Y-coordinate of the first vertex.
+                  x1 (int): X-coordinate of the second vertex.
+                  y1 (int): Y-coordinate of the second vertex.
+                  x2 (int): X-coordinate of the third vertex.
+                  y2 (int): Y-coordinate of the third vertex.
+                  color (list): List of color value with spectrum() entries.
+                  opacity (float): Drawing opacity.
+
+              Raises:
+                  RuntimeError: If list of color values does not have spectrum() entries.
+           )doc",
            py::arg("x0"),
            py::arg("y0"),
            py::arg("x1"),
@@ -587,7 +1184,19 @@ void declare(py::module &m, const std::string &typestr)
                    throw std::runtime_error("Colors needs to have " + std::to_string(im.spectrum()) + " elements.");
                return im.draw_text(x0, y0, text, foreground_color.data(), background_color.data(), opacity, font_height);
            },
-           "Draw a text string.",
+           R"doc(
+              Draw a text string.
+
+              Args:
+                  x0 (int): X-coordinate of the text in the image instance.
+                  y0 (int): Y-coordinate of the text in the image instance.
+                  text (str): The text.
+                  foreground_color (list): List of color value with spectrum() entries.
+                  background_color (list): List of color value with spectrum() entries.
+                  opacity (float): Drawing opacity.
+                  font_height (int): Height of the text font
+                      (exact match for 13,23,53,103, interpolated otherwise).
+           )doc",
            py::arg("x0"),
            py::arg("y0"),
            py::arg("text"),
@@ -615,16 +1224,83 @@ void declare(py::module &m, const std::string &typestr)
     cl.def("acos", (Class& (Class::*)())&Class::acos, "Compute the arccosine of each pixel value.");
     cl.def("asin", (Class& (Class::*)())&Class::asin, "Compute the arcsine of each pixel value.");
     cl.def("atan", (Class& (Class::*)())&Class::atan, "Compute the arctangent of each pixel value.");
-    cl.def("atan2", (Class& (Class::*)(const Class&))&Class::atan2, "Compute the arctangent2 of each pixel value.");
-    cl.def("mul", (Class& (Class::*)(const Class&))&Class::mul, "In-place pointwise multiplication.");
-    cl.def("div", (Class& (Class::*)(const Class&))&Class::div, "In-place pointwise division.");
-    cl.def("pow", (Class& (Class::*)(const double))&Class::pow, "Raise each pixel value to a specified power.");
-    cl.def("kth_smallest", (T (Class::*)(const ulongT) const)&Class::kth_smallest, "Return the kth smallest pixel value.");
+
+    cl.def("atan2", 
+           (Class& (Class::*)(const Class&))&Class::atan2, 
+           R"doc(
+              Compute the arctangent2 of each pixel value.
+
+              Args:
+                  img (CImg): Image whose pixel values specify the second
+                              argument of the atan2() function.
+           )doc"
+    );
+
+    cl.def("mul", 
+           (Class& (Class::*)(const Class&))&Class::mul, 
+           R"doc(
+              In-place pointwise multiplication.
+
+              Compute the pointwise multiplication between
+              the image instance and the specified input image img.
+
+              Args:
+                  img (CImg): Input image, second operand of the multiplication.
+           )doc"
+    );
+
+    cl.def("div", 
+           (Class& (Class::*)(const Class&))&Class::div, 
+           R"doc(
+              In-place pointwise division.
+
+              Compute the pointwise division between
+              the image instance and the specified input image img.
+
+              Args:
+                  img (CImg): Input image, second operand of the division.
+           )doc"
+    );
+
+    cl.def("pow", 
+           (Class& (Class::*)(const double))&Class::pow, 
+           R"doc(
+              Raise each pixel value to the specified power.
+
+              Args:
+                  p (int): Exponent value.
+           )doc"
+    );
+
+    cl.def("kth_smallest", 
+           (T (Class::*)(const ulongT) const)&Class::kth_smallest, 
+           R"doc(
+              Returns the kth smallest pixel value.
+
+              Args:
+                  k (int): Rank of the search smallest element.
+
+              Returns: kth smallest pixel value.
+           )doc"
+    );
+
     cl.def("variance", 
            (double (Class::*)(const unsigned int) const)&Class::variance, 
-           "Return the variance of the pixel values.",
+           R"doc(
+              Returns the variance of the pixel values.
+
+              Args:
+                  variance_method (int): Method used to estimate the variance.
+                                         Can be: SECOND_MOMENT
+                                                 BEST_UNBIASED
+                                                 LEAST_MEDIAN_SQ
+                                                 LEAST_TRIMMED_SQ
+
+              Returns: Variance of pixel values.
+           )doc",
            py::arg("variance_method") = 1
     );
+
     cl.def("variance_mean", 
            [](Class& im, const unsigned int variance_method)
            {
@@ -632,12 +1308,79 @@ void declare(py::module &m, const std::string &typestr)
                   var_mean.first = im.variance_mean(variance_method, var_mean.second);
                   return var_mean;
            },
-           "Return the variance as well as the average of the pixel values.",
+           R"doc(
+              Returns variance and average of pixel values.
+
+              Args:
+                  variance_method (int): Method used to estimate the variance.
+
+              Returns: Tuple with variance and mean of pixel values.
+           )doc",
            py::arg("variance_method") = 1
     );
-    cl.def("mse", (double (Class::*)(const Class&) const)&Class::MSE, "Compute the MSE (Mean-Squared Error) between two images.");
-    cl.def("magnitude", (double (Class::*)(const int) const)&Class::magnitude, "Compute norm of the image, viewed as a matrix.");
-    cl.def("dot", (double (Class::*)(const Class&) const)&Class::dot, "Compute the dot product between instance and argument, viewed as matrices.");
+
+    cl.def("mse",
+           (double (Class::*)(const Class&) const)&Class::MSE,
+           R"doc(
+              Compute the MSE (Mean-Squared Error) between two images.
+
+              Args:
+                  img (CImg): Image used as the second argument of the MSE operator.
+
+              Returns: mean squared error between self and img.
+           )doc"
+    );
+
+    cl.def("magnitude", 
+           (double (Class::*)(const int) const)&Class::magnitude, 
+           R"doc(
+              Compute norm of the image, viewed as a matrix.
+
+              Args:
+                  magnitude_type (int): Norm type. Can be:
+                      LINF_NORM
+                      L0_NORM
+                      L1_NORM
+                      L2_NORM
+
+              Returns: Norm of image.
+           )doc"
+    );
+
+    cl.def("dot", 
+           (double (Class::*)(const Class&) const)&Class::dot, 
+           R"doc(
+              Compute the dot product between instance and argument, viewed as matrices
+
+              Args:
+                  img (CImg): Image used as a second argument of the dot product.
+
+              Returns: Dot product between self and img.
+           )doc"
+    );
+
+    cl.def("apply_geometric_transform",
+           [](Class& im, const float s, const Class& M, const Class& t)
+           {
+              Class tmp = im;
+              Class Q = M.get_invert();
+              cimg_pragma_openmp(parallel for cimg_openmp_collapse(3) cimg_openmp_if_size(tmp.size(),4096))
+              cimg_forXYZ(tmp,x,y,z) {
+                  Class p = CImg<>::vector((z-t(0))/s,(x-t(1))/s,(y-t(2))/s);
+                  p = Q * p;
+                  tmp(x,y,z) = im.linear_atXYZ(p(1),p(2),p(0));
+              }
+              im = tmp;
+           },
+           R"doc(
+              Apply a geometric transform
+
+              Args:
+                  s (float): scale
+                  M (CImg) : 3x3 matrix CImg(3,3)
+                  t (CImg) : 1x3 shift vector (CImg(3,1))
+           )doc"
+    );
 
 }
 
@@ -646,18 +1389,9 @@ PYBIND11_MODULE(cimg_bindings, m)
     py::options options;
     options.disable_function_signatures();
 
-    m.doc() = R"pbdoc(
-        Pybind11 example plugin
-        -----------------------
-
-        .. currentmodule:: python_example
-
-        .. autosummary::
-           :toctree: _generate
-
-           add
-           subtract
-    )pbdoc";
+    m.doc() = R"doc(
+       Pybind11 binings for CImg library.
+    )doc";
 
     declare<uint8_t>(m, "uint8");
     declare<uint16_t>(m, "uint16");
