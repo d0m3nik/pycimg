@@ -558,7 +558,7 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("fz"),
            py::arg("fc")
     ); 
-    
+
     // Value manipulation
     cl.def("fill",
            (Class& (Class::*)(const T&))(&Class::fill),
@@ -1390,7 +1390,7 @@ PYBIND11_MODULE(cimg_bindings, m)
     options.disable_function_signatures();
 
     m.doc() = R"doc(
-       Pybind11 binings for CImg library.
+       Pybind11 bindings for the CImg library.
     )doc";
 
     declare<uint8_t>(m, "uint8");

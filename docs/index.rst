@@ -11,7 +11,7 @@ Welcome to pycimg's documentation!
    :caption: Contents:
 
    readme
-   cimg
+   pycimg
 
 
 Indices and tables
