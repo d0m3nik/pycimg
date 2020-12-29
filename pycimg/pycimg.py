@@ -174,6 +174,7 @@ class CImg:
         return self._cimg.size()
 
     def isempty(self):
+        """ Return true if image is empty. """
         return self.width == 0 and  \
                self.height == 0 and \
                self.depth == 0 and  \
