@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-10.15]
+        os: [ubuntu-20.04, windows-2016, macos-10.15]
     steps:
       - uses: actions/checkout@v2
 
@@ -72,7 +72,7 @@ jobs:
           #CIBW_BEFORE_ALL_LINUX: pip install cmake && ln -s $(which cmake) /usr/local/bin/cmake
           CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz 
           CIBW_BEFORE_BUILD: pip install -r requirements.txt && python install_conan_packages.py
-          CIBW_SKIP: pp* *-win32 *-manylinux_i686 *aarch64 *ppc64* *s390*
+          CIBW_SKIP: pp* *-win32 *-musllinux_* *-manylinux_i686 *aarch64 *ppc64* *s390*
 
       - name: Start SSH via Ngrok
         if: ${{ failure() }}
