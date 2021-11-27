@@ -7,4 +7,3 @@ class PyCimgConan(ConanFile):
     def requirements(self):
         self.requires('libtiff/4.3.0')
         self.requires('libpng/1.6.37')
-        self.requires('libjpeg-turbo/2.1.2')
