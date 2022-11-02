@@ -26,11 +26,12 @@ def test_convolve():
                          [0, 0, 0, 0]]))
     kernel = CImg(np.array([[1, 1],
                             [1, 1]]))
-    img.convolve(kernel)
+    img.convolve(kernel, boundary_conditions=0)
     img_expected = CImg(np.array([[0, 0, 0, 0],
                                   [0, 1, 2, 1],
                                   [0, 2, 4, 2],
                                   [0, 1, 2, 1]]))
+    print(img)
     assert img == img_expected
 
 def test_cumulate():
