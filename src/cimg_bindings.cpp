@@ -779,21 +779,22 @@ void declare(py::module &m, const std::string &typestr)
                               const unsigned int, 
                               const bool, 
                               const unsigned int, 
-                              const unsigned int, 
-                              const unsigned int, 
-                              const unsigned int, 
-                              const unsigned int,
-                              const unsigned int,
-                              const unsigned,
-                              const unsigned int,
-                              const unsigned int,
-                              const unsigned int,
+                              const int, 
+                              const int, 
+                              const int, 
+                              const int,
+                              const int,
+                              const int,
+                              const int,
+                              const int,
+                              const int,
                               const float,
                               const float,
                               const float,
                               const float,
                               const float,
-                              const float
+                              const float,
+                              const bool
                               ))&Class::correlate,
            R"doc( 
               Correlate image by a kernel.
@@ -808,71 +809,73 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("boundary_conditions") = 1,
            py::arg("is_normalized") = false,
            py::arg("channel_mode") = 1,
-           py::arg("xcenter") = ~0U,
-           py::arg("ycenter") = ~0U,
-           py::arg("zcenter") = ~0U,
+           py::arg("xcenter") = (int)(~0U>>1),
+           py::arg("ycenter") = (int)(~0U>>1),
+           py::arg("zcenter") = (int)(~0U>>1),
            py::arg("xstart") = 0,
            py::arg("ystart") = 0,
            py::arg("zstart") = 0,
-           py::arg("xend") = ~0U,
-           py::arg("yend") = ~0U,
-           py::arg("zend") = ~0U,
+           py::arg("xend") = (int)(~0U>>1),
+           py::arg("yend") = (int)(~0U>>1),
+           py::arg("zend") = (int)(~0U>>1),
            py::arg("xstride") = 1,
            py::arg("ystride") = 1,
            py::arg("zstride") = 1,
            py::arg("xdilation") = 1,
            py::arg("ydilation") = 1,
-           py::arg("zdilation") = 1
+           py::arg("zdilation") = 1,
+           py::arg("interpolation_type") = false
     );
     cl.def("convolve",
            (Class& (Class::*)(const Class& kernel, 
                               const unsigned int, 
                               const bool, 
                               const unsigned int, 
-                              const unsigned int, 
-                              const unsigned int, 
-                              const unsigned int, 
-                              const unsigned int,
-                              const unsigned int,
-                              const unsigned,
-                              const unsigned int,
-                              const unsigned int,
-                              const unsigned int,
+                              const int, 
+                              const int, 
+                              const int, 
+                              const int,
+                              const int,
+                              const int,
+                              const int,
+                              const int,
+                              const int,
                               const float,
                               const float,
                               const float,
                               const float,
                               const float,
-                              const float
+                              const float,
+                              const bool
                               ))&Class::convolve,
            R"doc( 
               Convolve image by a kernel.
 
               Args:
                   kernel (CImg): the correlation kernel.
-                  boundary_conditions (bool): boundary conditions can be
-                                      (False=dirichlet, True=neumann)
+                  boundary_conditions (bool): boundary conditions.
                   is_normalized (bool): enable local normalization.
            )doc",
            py::arg("kernel"),
            py::arg("boundary_conditions") = 1,
            py::arg("is_normalized") = false,
            py::arg("channel_mode") = 1,
-           py::arg("xcenter") = ~0U,
-           py::arg("ycenter") = ~0U,
-           py::arg("zcenter") = ~0U,
+           py::arg("xcenter") = (int)(~0U>>1),
+           py::arg("ycenter") = (int)(~0U>>1),
+           py::arg("zcenter") = (int)(~0U>>1),
            py::arg("xstart") = 0,
            py::arg("ystart") = 0,
            py::arg("zstart") = 0,
-           py::arg("xend") = ~0U,
-           py::arg("yend") = ~0U,
-           py::arg("zend") = ~0U,
+           py::arg("xend") = (int)(~0U>>1),
+           py::arg("yend") = (int)(~0U>>1),
+           py::arg("zend") = (int)(~0U>>1),
            py::arg("xstride") = 1,
            py::arg("ystride") = 1,
            py::arg("zstride") = 1,
            py::arg("xdilation") = 1,
            py::arg("ydilation") = 1,
-           py::arg("zdilation") = 1
+           py::arg("zdilation") = 1,
+           py::arg("interpolation_type") = false
     );
 
     cl.def("cumulate",
@@ -887,34 +890,34 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("erode",
-           (Class& (Class::*)(const Class&, const bool, const bool))&Class::erode,
+           (Class& (Class::*)(const Class&, const unsigned int, const bool))&Class::erode,
            R"doc(
               Erode image by a structuring element.
 
               Args:
                   kernel (CImg):	Structuring element.
-                  boundary_conditions (bool): Boundary conditions.
+                  boundary_conditions (int): Boundary conditions.
                   is_real (bool): Do the erosion in real (a.k.a 'non-flat')
                                   mode (true) rather than binary mode (false).
            )doc",
            py::arg("kernel"),
-           py::arg("boundary_conditions") = true,
+           py::arg("boundary_conditions") = 1,
            py::arg("is_real") = false
     );
 
     cl.def("dilate",
-           (Class& (Class::*)(const Class&, const bool, const bool))&Class::dilate,
+           (Class& (Class::*)(const Class&, const unsigned int, const bool))&Class::dilate,
            R"doc(
               Dilate image by a structuring element.
 
               Args:
                   kernel (CImg):	Structuring element.
-                  boundary_conditions (bool): Boundary conditions.
+                  boundary_conditions (int): Boundary conditions.
                   is_real (bool): Do the erosion in real (a.k.a 'non-flat')
                                   mode (true) rather than binary mode (false).
            )doc",
            py::arg("kernel"),
-           py::arg("boundary_conditions") = true,
+           py::arg("boundary_conditions") = 1,
            py::arg("is_real") = false
     );
 
@@ -975,7 +978,7 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("blur",
-           (Class& (Class::*)(const float, const bool, const bool))&Class::blur,
+           (Class& (Class::*)(const float, const unsigned int, const bool))&Class::blur,
            R"doc(
               Blur image isotropically.
 
@@ -985,13 +988,12 @@ void declare(py::module &m, const std::string &typestr)
 
               Args:
                   sigma (float): Standard deviation of the blur.
-                  boundary_conditions (bool): Boundary conditions. Can be
-                                       { False=dirichlet | True=neumann }.
+                  boundary_conditions (int): Boundary conditions.
                   is_gaussian (bool): Tells if the blur uses a gaussian (True)
                                or quasi-gaussian (False) kernel.
            )doc",
            py::arg("sigma"),
-           py::arg("boundary_conditions") = true,
+           py::arg("boundary_conditions") = 1,
            py::arg("is_gaussian") = false
     );
 
@@ -1017,17 +1019,16 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("blur_box",
-           (Class& (Class::*)(const float, const bool))&Class::blur_box,
+           (Class& (Class::*)(const float, const unsigned int))&Class::blur_box,
            R"doc(
               Blur image with a box filter.
 
               Args:
                   boxsize (int): Size of the box window (can be subpixel).
-                  boundary_conditions (bool): Boundary conditions. Can be
-                                       { False=dirichlet | True=neumann }.
+                  boundary_conditions (int): Boundary conditions.
            )doc",
            py::arg("boxsize"),
-           py::arg("boundary_conditions") = true
+           py::arg("boundary_conditions") = 1
     );
 
     cl.def("blur_median",
