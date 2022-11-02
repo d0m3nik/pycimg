@@ -64,7 +64,7 @@ else:
 ext_modules = [
     Pybind11Extension("pycimg.cimg_bindings",
         ["src/cimg_bindings.cpp"],
-        include_dirs = include_dirs + ['./thirdparty/CImg-2.9.4'],
+        include_dirs = include_dirs + ['./thirdparty/CImg-v3.1.6'],
         library_dirs = library_dirs,
         libraries = libraries,
         extra_compile_args = extra_compile_args,
