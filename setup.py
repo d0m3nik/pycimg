@@ -43,7 +43,7 @@ elif 'darwin' in sys.platform:
 
 elif sys.platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
-    extra_compile_args = ["/MD", "/openmp"]
+    extra_compile_args = ["/MT", "/openmp"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     libraries = ["gdi32", "user32", "shell32"]
 
@@ -58,6 +58,12 @@ if os.path.exists('conanbuildinfo.json'):
             include_dirs.extend(d['include_paths'])
             library_dirs.extend(d['lib_paths'])
             libraries.extend(d['libs'])
+            for define in d['defines']:
+                if sys.platform == 'win32':
+                    extra_compile_args.append(f"/D{define}")
+                else:
+                    extra_compile_args.append(f"-D{define}")
+                
 else:
     print('Not using conan packages.')
 
