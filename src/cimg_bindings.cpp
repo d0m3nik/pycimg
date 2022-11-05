@@ -958,7 +958,7 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("vanvliet",
-           (Class& (Class::*)(const float, const unsigned int, const char, const bool))&Class::vanvliet,
+           (Class& (Class::*)(const float, const unsigned int, const char, const unsigned int))&Class::vanvliet,
            R"doc(
               Van Vliet recursive Gaussian filter.
 
@@ -968,13 +968,12 @@ void declare(py::module &m, const std::string &typestr)
                          SMOOTH_FILTER, FIRST_DERIV, SECOND_DERIV, or THIRD_DERIV.
                   axis (str): Axis along which the filter is computed. Can be:
                         { 'x' | 'y' | 'z' | 'c' }.
-                  boundary_conditions (bool): Boundary conditions. Can be:
-                        { False=dirichlet | True=neumann }.
+                  boundary_conditions (unsigned int): Boundary conditions
            )doc",
            py::arg("sigma"),
            py::arg("order") = 0,
            py::arg("axis") = 'x',
-           py::arg("boundary_conditions") = true
+           py::arg("boundary_conditions") = 1
     );
 
     cl.def("blur",

@@ -43,7 +43,7 @@ elif 'darwin' in sys.platform:
 
 elif sys.platform == 'win32':
 #    extra_compile_args = ["-Zi", "/Od"]
-    extra_compile_args = ["/MT", "/openmp"]
+    extra_compile_args = ["/MT", "/openmp", "/std:c++17"]
     extra_link_args = ["/NODEFAULTLIB:libcmt"]
     libraries = ["gdi32", "user32", "shell32"]
 
@@ -94,10 +94,12 @@ setup(
             "Topic :: Software Development :: Libraries",
             "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.5",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8"
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11"
             ],
     keywords="image processing library", 
     packages=find_packages(exclude=['tests', 'docs']),
