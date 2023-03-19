@@ -3,7 +3,7 @@ import pytest
 from context import * 
 
 def test_draw_rectangle():
-    """ Test draw rectangle."""
+    """ Test draw rectangle. """
     img = CImg((5, 5))
     img.draw_rectangle(1, 1, 4, 4, 255)
     arr = np.array([[0, 0, 0, 0, 0],
@@ -11,6 +11,19 @@ def test_draw_rectangle():
                     [0, 1, 1, 1, 1],
                     [0, 1, 1, 1, 1],
                     [0, 1, 1, 1, 1]])*255
+    img_expected = CImg(arr)
+    arr = img.asarray().squeeze()
+    assert img == img_expected
+
+def test_draw_line():
+    """ Test draw line. """
+    img = CImg((5, 5))
+    img.draw_line(1, 1, 4, 4, 255)
+    arr = np.array([[0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 0, 1, 0],
+                    [0, 0, 0, 0, 1]])*255
     img_expected = CImg(arr)
     arr = img.asarray().squeeze()
     assert img == img_expected

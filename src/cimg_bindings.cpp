@@ -1094,6 +1094,39 @@ void declare(py::module &m, const std::string &typestr)
            py::arg("opacity") = 1
     );
 
+    cl.def("draw_line",
+           [](Class& im, const int x0, const int y0, const int x1, const int y1, pyarray color, const float opacity, const unsigned int pattern, const bool init_hatch)
+           {
+                if(color.size() != im.spectrum())
+                    throw std::runtime_error("Color needs to have " + std::to_string(im.spectrum()) + " elements.");
+                return im.draw_line(x0, y0, x1, y1, color.data(), opacity, pattern, init_hatch);
+           }, 
+           R"doc(
+              Draw a 2d line.
+
+              Args:
+                  x0 (int): X-coordinate of the upper-left rectangle corner.
+                  y0 (int): Y-coordinate of the upper-left rectangle corner.
+                  x1 (int): X-coordinate of the lower-right rectangle corner.
+                  y1 (int): Y-coordinate of the lower-right rectangle corner.
+                  color (list): List of color value with spectrum() entries.
+                  opacity (float): Drawing opacity.
+                  pattern (int): An integer whose bits describe the line pattern.
+                  init_hatch (bool): Tells if a reinitialization of the hash state must be done.
+
+              Raises:
+                  RuntimeError: If list of color values does not have spectrum() entries.
+           )doc",
+           py::arg("x0"),
+           py::arg("y0"),
+           py::arg("x1"),
+           py::arg("y1"),
+           py::arg("color"),
+           py::arg("opacity") = 1,
+           py::arg("pattern") = ~0U,
+           py::arg("init_hatch") = true
+    );
+
     cl.def("draw_polygon",
            [](Class& im, pyarray points, pyarray color, const float opacity)
            {
