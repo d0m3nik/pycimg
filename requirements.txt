@@ -2,7 +2,7 @@ numpy>=1.11.0
 wheel>=0.30.0
 sphinx_rtd_theme>=0.2.4
 twine
-conan
+conan==1.59.0
 pytest
 pytest-cov
 pybind11
