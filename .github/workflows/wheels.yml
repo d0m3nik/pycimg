@@ -20,7 +20,7 @@ jobs:
     name: Run semantic release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -51,7 +51,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04, windows-2022, macos-12]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v4
         name: Install Python
@@ -84,7 +84,7 @@ jobs:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_TOKEN }}
           SSH_PASS: ${{ secrets.SSH_PASS }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
       
@@ -106,7 +106,7 @@ jobs:
       - name: Build sdist
         run: python setup.py sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
 
@@ -115,7 +115,7 @@ jobs:
     needs: semantic_release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v4
         name: Install Python
@@ -132,7 +132,7 @@ jobs:
         run:  pytest --cov-report term-missing --cov-report xml:coverage.xml --cov pycimg tests/
 
       - name: Upload codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
@@ -145,7 +145,7 @@ jobs:
     # alternatively, to publish when a GitHub Release is created, use the following rule:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
