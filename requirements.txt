@@ -6,3 +6,4 @@ conan==1.59.0
 pytest
 pytest-cov
 pybind11
+Cython>=0.29.36
