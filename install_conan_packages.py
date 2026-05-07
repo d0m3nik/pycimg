@@ -29,7 +29,7 @@ if sys.platform == 'win32':
     if compiler_version:
         args += ['-s', 'compiler.version=%s' % compiler_version]
     args += [
-        '-s', 'compiler.runtime=MT',
+        '-s', 'compiler.runtime=static',
         '-s', 'compiler.cppstd=17',
         '-s', 'arch=%s' % arch,
         '-g', 'VirtualBuildEnv',
@@ -41,15 +41,17 @@ elif sys.platform == "darwin":
 
     subprocess.check_call([
         'conan', 'install', '.',
+        '-pr', 'default',
         '--build=missing',
-        '-g', 'json',
+        '-g', 'VirtualBuildEnv',
         '-s', 'arch=%s' % arch,
         '-e', 'CFLAGS=-DHAVE_UNISTD_H'
     ])
 else:
     subprocess.check_call([
         'conan', 'install', '.',
+        '-pr', 'default',
         '--build=missing',
-        '-g', 'json',
+        '-g', 'VirtualBuildEnv',
         '-s', 'arch=%s' % arch
     ])
