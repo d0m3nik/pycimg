@@ -1,9 +1,15 @@
+import os
 import sys
 import platform
 import subprocess
 import struct
 
 is64bit = 8*struct.calcsize('P') == 64
+
+profile_path = os.path.expanduser('~/.conan2/profiles/default')
+if not os.path.exists(profile_path):
+    print('Creating Conan 2 default profile:', profile_path)
+    subprocess.check_call(['conan', 'profile', 'new', 'default', '--detect', '--force'])
 
 arch = 'x86_64' if is64bit else "x86"
 
@@ -29,24 +35,27 @@ if sys.platform == 'win32':
     elif '193' in compiler:
         compiler_version = '17'
 
-    subprocess.call([
+    subprocess.check_call([
         'conan', 'install', '.',
         '-s', 'compiler=msvc',
         '-s', 'compiler.version=%s' % compiler_version,
         '-s', 'compiler.runtime=MT',
         '-s', 'arch=%s' % arch,
+        '-g', 'json',
         '--build=missing'
     ])
 elif sys.platform == "darwin":
-    subprocess.call([
+    subprocess.check_call([
         'conan', 'install', '.',
         '--build=missing',
+        '-g', 'json',
         '-s', 'arch=%s' % arch,
         '-e', 'CFLAGS=-DHAVE_UNISTD_H'
     ])
 else:
-    subprocess.call([
+    subprocess.check_call([
         'conan', 'install', '.',
         '--build=missing',
+        '-g', 'json',
         '-s', 'arch=%s' % arch
     ])

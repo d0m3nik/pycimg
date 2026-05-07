@@ -77,13 +77,6 @@ jobs:
           CIBW_BUILD: cp310-* cp311-* cp312-* cp313-* cp314-* cp315-*
           CIBW_SKIP: pp* *-win32 *-musllinux_* *-manylinux_i686 *aarch64 *ppc64* *s390*
 
-      - name: Start SSH via Ngrok
-        if: ${{ failure() }}
-        uses: luchihoratiu/debug-via-ssh@main
-        with:
-          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_TOKEN }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-
       - uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
