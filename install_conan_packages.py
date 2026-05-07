@@ -9,7 +9,7 @@ is64bit = 8*struct.calcsize('P') == 64
 profile_path = os.path.expanduser('~/.conan2/profiles/default')
 if not os.path.exists(profile_path):
     print('Creating Conan 2 default profile:', profile_path)
-    subprocess.check_call(['conan', 'profile', 'new', 'default', '--detect', '--force'])
+    subprocess.check_call(['conan', 'profile', 'detect', '--force'])
 
 arch = 'x86_64' if is64bit else "x86"
 
