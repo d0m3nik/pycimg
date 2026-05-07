@@ -8,9 +8,6 @@ requires = [
 
 build-backend = "setuptools.build_meta"
 
-[project]
-license = {text = "GPL-3.0-only"}
-
 [tool.semantic_release]
 branch = "master"
 version_pattern = "pycimg/__init__.py:__version__,setup.py:__version__"

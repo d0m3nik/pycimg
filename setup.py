@@ -87,7 +87,7 @@ setup(
     long_description=long_description,
     author="Dominik Brugger",
     url="https://github.com/d0m3nik/pycimg",
-    license="GPL-3.0",
+    license="GPL-3.0-or-later",
     classifiers=[
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",
