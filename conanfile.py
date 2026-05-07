@@ -1,4 +1,4 @@
-from conans import ConanFile
+from conan import ConanFile
 
 class PyCimgConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"

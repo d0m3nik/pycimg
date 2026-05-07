@@ -29,8 +29,24 @@ if sys.platform == 'win32':
     elif '193' in compiler:
         compiler_version = '17'
 
-    subprocess.call(['conan', 'install', '.', '-s', 'compiler.version=%s' % compiler_version, '--build=missing', '-s', 'arch=%s' % arch])
+    subprocess.call([
+        'conan', 'install', '.',
+        '-s', 'compiler=msvc',
+        '-s', 'compiler.version=%s' % compiler_version,
+        '-s', 'compiler.runtime=MT',
+        '-s', 'arch=%s' % arch,
+        '--build=missing'
+    ])
 elif sys.platform == "darwin":
-    subprocess.call(['conan', 'install', '.', '--build=missing', '-s', 'arch=%s' % arch, '-e', 'CFLAGS=-DHAVE_UNISTD_H'])
+    subprocess.call([
+        'conan', 'install', '.',
+        '--build=missing',
+        '-s', 'arch=%s' % arch,
+        '-e', 'CFLAGS=-DHAVE_UNISTD_H'
+    ])
 else:
-    subprocess.call(['conan', 'install', '.', '--build=missing', '-s', 'arch=%s' % arch])
+    subprocess.call([
+        'conan', 'install', '.',
+        '--build=missing',
+        '-s', 'arch=%s' % arch
+    ])
