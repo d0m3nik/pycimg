@@ -2,7 +2,7 @@ from conan import ConanFile
 
 class PyCimgConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "json"
+    generators = "VirtualBuildEnv", "CMakeDeps"
 
     def requirements(self):
         self.requires('libtiff/4.4.0')
