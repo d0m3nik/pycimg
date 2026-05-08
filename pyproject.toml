@@ -38,7 +38,6 @@ dev = [
     "twine",
     "conan>=2.0.0,<3",
     "pytest-cov",
-    "Cython>=0.29.36",
 ]
 
 [tool.scikit-build]

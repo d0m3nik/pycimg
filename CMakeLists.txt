@@ -13,6 +13,7 @@ find_package(pybind11 CONFIG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 find_package(TIFF REQUIRED)
+find_package(ZLIB REQUIRED)
 
 pybind11_add_module(cimg_bindings MODULE src/cimg_bindings.cpp)
 
@@ -24,6 +25,7 @@ target_link_libraries(cimg_bindings PRIVATE
     JPEG::JPEG
     PNG::PNG
     TIFF::TIFF
+    ZLIB::ZLIB
 )
 
 target_compile_definitions(cimg_bindings PRIVATE
