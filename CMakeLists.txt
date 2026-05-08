@@ -45,7 +45,7 @@ if(APPLE)
 endif()
 
 if(WIN32)
-    target_compile_options(cimg_bindings PRIVATE /MT /openmp /std:c++17)
+    target_compile_options(cimg_bindings PRIVATE /MD /openmp /std:c++17)
     target_link_libraries(cimg_bindings PRIVATE gdi32 user32 shell32)
 endif()
 
