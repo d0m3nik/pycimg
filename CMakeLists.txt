@@ -18,7 +18,7 @@ find_package(ZLIB REQUIRED)
 pybind11_add_module(cimg_bindings MODULE src/cimg_bindings.cpp)
 
 target_include_directories(cimg_bindings PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/CImg-3.1.6
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/CImg
 )
 
 target_link_libraries(cimg_bindings PRIVATE
