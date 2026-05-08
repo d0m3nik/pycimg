@@ -114,3 +114,6 @@ else:
         '-g', 'VirtualBuildEnv',
         '-s', 'arch=%s' % arch
     ])
+
+# Create conanbuildinfo.json for setup.py after all platform installs
+create_conanbuildinfo_json()
