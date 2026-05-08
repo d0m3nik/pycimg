@@ -16,6 +16,17 @@ src/pycimg.cpp
 src/pycimg_*.pyx
 conanbuildinfo*
 conaninfo*
+# Conan-generated CMake files (when omitting -of)
+conan_toolchain.cmake
+conandeps_legacy.cmake
+cmakedeps_macros.cmake
+CMakePresets.json
+Find*.cmake
+*-config.cmake
+*-config-version.cmake
+*Targets.cmake
+*Target-release.cmake
+*-release-*-data.cmake
 test-results/
 cover/
 dist/

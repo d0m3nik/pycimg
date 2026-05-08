@@ -70,7 +70,7 @@ jobs:
           CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz
           CIBW_BEFORE_BUILD: pip install conan>=2.0.0 && pip install -r requirements.txt && conan profile detect --force && conan install . --build=missing
           CIBW_BUILD: cp314-*
-          CIBW_SKIP: pp* *-win32 *-musllinux_* *-manylinux_i686 *aarch64 *ppc64* *s390*
+          CIBW_SKIP: *-win32 *-musllinux_* *-manylinux_i686 *aarch64 *ppc64* *s390*
           CIBW_CONFIG_SETTINGS: skbuild.cmake.args="-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
 
       - uses: actions/upload-artifact@v4
