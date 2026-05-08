@@ -8,3 +8,4 @@ class PyCimgConan(ConanFile):
         self.requires('libtiff/4.4.0')
         self.requires('libpng/1.6.58')
         self.requires('libjpeg/9e')
+        self.requires('zlib/1.3.1')
