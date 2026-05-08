@@ -18,33 +18,40 @@ arch = 'x86_64' if is64bit else "x86"
 def create_conanbuildinfo_json():
     """Create conanbuildinfo.json compatible with setup.py expectations"""
     try:
-        # Get dependency information from Conan cache
-        result = subprocess.run(['conan', 'cache', 'path', '--folder', 'libtiff/4.4.0'], 
-                              capture_output=True, text=True, check=True)
-        libtiff_path = result.stdout.strip()
+        # Try to get paths for the expected packages, with fallbacks
+        lib_paths = []
+        include_paths = []
         
-        result = subprocess.run(['conan', 'cache', 'path', '--folder', 'libpng/1.6.38'], 
-                              capture_output=True, text=True, check=True)
-        libpng_path = result.stdout.strip()
+        # Try different possible package references
+        packages_to_try = [
+            ('libtiff', ['libtiff/4.4.0', 'libtiff/4.6.0']),
+            ('libpng', ['libpng/1.6.38', 'libpng/1.6.40']),
+            ('libjpeg', ['libjpeg/9e', 'libjpeg/9f'])
+        ]
         
-        result = subprocess.run(['conan', 'cache', 'path', '--folder', 'libjpeg/9e'], 
-                              capture_output=True, text=True, check=True)
-        libjpeg_path = result.stdout.strip()
+        for lib_name, package_refs in packages_to_try:
+            path_found = False
+            for ref in package_refs:
+                try:
+                    result = subprocess.run(['conan', 'cache', 'path', '--folder', ref], 
+                                          capture_output=True, text=True, check=True)
+                    package_path = result.stdout.strip()
+                    include_paths.append(os.path.join(package_path, "include"))
+                    lib_paths.append(os.path.join(package_path, "lib"))
+                    path_found = True
+                    break
+                except subprocess.CalledProcessError:
+                    continue
+            
+            if not path_found:
+                print(f'Warning: Could not find path for {lib_name}')
         
         # Create the JSON structure that setup.py expects
         conanbuildinfo = {
             "dependencies": [
                 {
-                    "include_paths": [
-                        os.path.join(libtiff_path, "include"),
-                        os.path.join(libpng_path, "include"), 
-                        os.path.join(libjpeg_path, "include")
-                    ],
-                    "lib_paths": [
-                        os.path.join(libtiff_path, "lib"),
-                        os.path.join(libpng_path, "lib"),
-                        os.path.join(libjpeg_path, "lib")
-                    ],
+                    "include_paths": include_paths,
+                    "lib_paths": lib_paths,
                     "libs": ["tiff", "png", "jpeg"],
                     "defines": []
                 }
@@ -54,8 +61,9 @@ def create_conanbuildinfo_json():
         with open('conanbuildinfo.json', 'w') as f:
             json.dump(conanbuildinfo, f, indent=2)
         print('Created conanbuildinfo.json')
+        print('Contents:', json.dumps(conanbuildinfo, indent=2))
         
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         print(f'Warning: Could not create conanbuildinfo.json: {e}')
         # Create a minimal fallback
         conanbuildinfo = {
@@ -71,6 +79,7 @@ def create_conanbuildinfo_json():
         with open('conanbuildinfo.json', 'w') as f:
             json.dump(conanbuildinfo, f, indent=2)
         print('Created minimal conanbuildinfo.json')
+        print('Contents:', json.dumps(conanbuildinfo, indent=2))
 
 if sys.platform == 'win32':
     compiler = platform.python_compiler()
