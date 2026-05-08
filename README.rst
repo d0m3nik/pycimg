@@ -74,6 +74,29 @@ Run tests with:
 
    uv run pytest --cov=pycimg tests/
 
+Release workflow
+----------------
+
+This project uses `python-semantic-release`_ to automatically bump
+the version based on commit messages when changes are merged to
+``master``:
+
+- ``fix: ...`` commits increment the patch version (e.g. 2.0.2 → 2.0.3)
+- ``feat: ...`` commits increment the minor version (e.g. 2.0.2 → 2.1.0)
+- ``BREAKING CHANGE: ...`` commits increment the major version (e.g. 2.0.2 → 3.0.0)
+
+Steps to publish a new release:
+
+#. Merge the feature branch into ``master``.
+#. The CI ``semantic_release`` job bumps the version, commits, and
+   pushes a new ``v*`` tag.
+#. On GitHub, create a `Release`_ from the newly pushed tag.
+#. The CI ``upload_pypi`` job publishes the built wheels and source
+   distribution to PyPI.
+
+.. _python-semantic-release: https://python-semantic-release.readthedocs.io/
+.. _Release: https://github.com/d0m3nik/pycimg/releases
+
 Documentation
 -------------
 See readthedocs_.

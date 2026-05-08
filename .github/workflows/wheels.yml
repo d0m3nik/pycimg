@@ -78,6 +78,7 @@ jobs:
           CIBW_BUILD: "cp${{ matrix.python }}-*"
           CIBW_SKIP: "*-win32 *-musllinux_* *-manylinux_i686 *ppc64* *s390*"
           CIBW_CONFIG_SETTINGS: skbuild.cmake.args="-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
+          CIBW_ENVIRONMENT_MACOS: "MACOSX_DEPLOYMENT_TARGET=10.15"
 
       - uses: actions/upload-artifact@v4
         with:
