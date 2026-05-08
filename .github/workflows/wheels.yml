@@ -31,7 +31,8 @@ jobs:
 
       - name: Run python-semantic-release
         run: |
-          pip install python-semantic-release
+          pip install uv
+          uv pip install --system python-semantic-release
           git config --global user.email "d0m3nik@users.noreply.github.com"
           git config --global user.name "Dominik Brugger"
           semantic-release version 
@@ -66,9 +67,10 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_BEFORE_ALL_LINUX: yum install -y libX11-devel
-          CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz
-          CIBW_BEFORE_BUILD: pip install conan>=2.0.0 && pip install -r requirements.txt && conan profile detect --force && conan install . --build=missing
+          CIBW_BEFORE_ALL_LINUX: pip install uv && yum install -y libX11-devel
+          CIBW_BEFORE_ALL_MACOS: pip install uv && brew install --cask xquartz
+          CIBW_BEFORE_ALL_WINDOWS: pip install uv
+          CIBW_BEFORE_BUILD: uv pip install --system conan>=2.0.0 && uv pip install --system -r requirements.txt && conan profile detect --force && conan install . --build=missing
           CIBW_BUILD: "cp314-*"
           CIBW_SKIP: "*-win32 *-musllinux_* *-manylinux_i686 *aarch64 *ppc64* *s390*"
           CIBW_CONFIG_SETTINGS: skbuild.cmake.args="-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
@@ -90,7 +92,7 @@ jobs:
           python-version: '3.11'
 
       - name: Build sdist
-        run: pip install build && python -m build --sdist
+        run: pip install uv && uv pip install --system build && uv build --sdist
 
       - uses: actions/upload-artifact@v4
         with:
@@ -115,11 +117,12 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          pip install conan>=2.0.0
-          pip install -r requirements.txt
+          pip install uv
+          uv pip install --system conan>=2.0.0
+          uv pip install --system -r requirements.txt
           conan profile detect --force
           conan install . --build=missing
-          pip install -e . -C "skbuild.cmake.args=-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
+          uv pip install --system -e . -C "skbuild.cmake.args=-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
       
       - name: Run coverage test
         run:  pytest --cov-report term-missing --cov-report xml:coverage.xml --cov pycimg tests/
