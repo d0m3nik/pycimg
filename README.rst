@@ -55,6 +55,25 @@ Install pycimg by running:
 
    pip install pycimg
 
+Local development
+-----------------
+
+This project uses `uv <https://docs.astral.sh/uv/>`_ for dependency management.
+Install uv, then run:
+
+.. code-block:: bash
+
+   uv sync --dev
+   conan profile detect --force
+   conan install . --build=missing
+   uv run pip install -e . -C "skbuild.cmake.args=-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
+
+Run tests with:
+
+.. code-block:: bash
+
+   uv run pytest --cov=pycimg tests/
+
 Documentation
 -------------
 See readthedocs_.

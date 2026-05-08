@@ -7,3 +7,7 @@ pytest
 pytest-cov
 pybind11
 Cython>=0.29.36
+
+# NOTE: This file is superseded by pyproject.toml + uv.lock.
+# Development dependencies are now managed via `uv sync --dev`.
+# See README.rst for the new workflow.
