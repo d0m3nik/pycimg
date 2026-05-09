@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v2.0.6 (2026-05-09)
+
+### Bug Fixes
+
+- Version in __init__.py.
+  ([`31140d4`](https://github.com/d0m3nik/pycimg/commit/31140d48c5e6130fba6c83085f988c11380e3986))
+
+
 ## v2.0.5 (2026-05-09)
 
 
