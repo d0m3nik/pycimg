@@ -47,7 +47,6 @@ jobs:
           
   build_wheels:
     name: Build cp${{ matrix.python }} on ${{ matrix.os }}
-    needs: semantic_release
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -87,7 +86,6 @@ jobs:
       
   build_sdist:
     name: Build source distribution
-    needs: semantic_release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -108,7 +106,6 @@ jobs:
 
   coverage:
     name: Run coverage analysis
-    needs: semantic_release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
