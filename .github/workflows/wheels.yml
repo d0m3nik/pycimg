@@ -47,6 +47,8 @@ jobs:
           
   build_wheels:
     name: Build cp${{ matrix.python }} on ${{ matrix.os }}
+    needs: [semantic_release]
+    if: always() && needs.semantic_release.result != 'failure' && !cancelled()
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -86,6 +88,8 @@ jobs:
       
   build_sdist:
     name: Build source distribution
+    needs: [semantic_release]
+    if: always() && needs.semantic_release.result != 'failure' && !cancelled()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -47,5 +47,4 @@ metadata.version.input = "pycimg/__init__.py"
 
 [tool.semantic_release]
 branch = "master"
-version_pattern = "pycimg/__init__.py:__version__"
-version_variable = "pycimg/__init__.py:__version__"
+version_variables = ["pycimg/__init__.py:__version__"]
