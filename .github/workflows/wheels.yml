@@ -37,7 +37,7 @@ jobs:
           uv pip install --system python-semantic-release
           git config --global user.email "d0m3nik@users.noreply.github.com"
           git config --global user.name "Dominik Brugger"
-          semantic-release version --no-release 
+          semantic-release version --no-vcs-release 
 
       - name: Push version
         if: github.event_name != 'release' || github.event.action != 'published'
