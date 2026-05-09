@@ -48,7 +48,7 @@ jobs:
   build_wheels:
     name: Build cp${{ matrix.python }} on ${{ matrix.os }}
     needs: [semantic_release]
-    if: always() && needs.semantic_release.result != 'failure' && !cancelled()
+    if: always()
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -89,7 +89,7 @@ jobs:
   build_sdist:
     name: Build source distribution
     needs: [semantic_release]
-    if: always() && needs.semantic_release.result != 'failure' && !cancelled()
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -146,11 +146,8 @@ jobs:
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
+    if: always() && github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
-    # upload to PyPI on every tag starting with 'v'
-    #if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
-    # alternatively, to publish when a GitHub Release is created, use the following rule:
-    if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - uses: actions/download-artifact@v4
         with:
