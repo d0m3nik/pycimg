@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v2.0.4 (2026-05-09)
+
+### Bug Fixes
+
+- Correct semantic release --no-vcs-release.
+  ([`e2bf104`](https://github.com/d0m3nik/pycimg/commit/e2bf1044e0395e55debeb03e59712f94a429ce0e))
+
+- Run semantic release with --no-release flag.
+  ([`e38ba42`](https://github.com/d0m3nik/pycimg/commit/e38ba42dabf82bbad43af2b8e63a173353ed9482))
+
+
 ## v2.0.3 (2026-05-09)
 
 ### Bug Fixes
