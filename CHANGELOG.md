@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v2.0.7 (2026-05-09)
+
+### Bug Fixes
+
+- Build upload conditions in workflow.
+  ([`36610dc`](https://github.com/d0m3nik/pycimg/commit/36610dc8e0451bdc62d653ea08da6ccb89260111))
+
+
 ## v2.0.6 (2026-05-09)
 
 ### Bug Fixes
