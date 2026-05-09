@@ -577,16 +577,16 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("rand", 
-           &Class::rand,
+           (Class& (Class::*)(const T&, const T&))(&Class::rand),
            R"doc(
-              Fill image with random values in specified range.
+               Fill image with random values in specified range.
 
-              Args:
-                  val_min (float): Minimal authorized random value.
-                  val_max (float): Maximal authorized random value.
-            )doc",
-            py::arg("val_min"),
-            py::arg("val_max")
+               Args:
+                   val_min (float): Minimal authorized random value.
+                   val_max (float): Maximal authorized random value.
+             )doc",
+             py::arg("val_min"),
+             py::arg("val_max")
     );
 
     cl.def("round", 
@@ -775,107 +775,78 @@ void declare(py::module &m, const std::string &typestr)
 
     // Filtering transforms
     cl.def("correlate",
-           (Class& (Class::*)(const Class& kernel, 
-                              const unsigned int, 
-                              const bool, 
-                              const unsigned int, 
-                              const int, 
-                              const int, 
-                              const int, 
-                              const int,
-                              const int,
-                              const int,
-                              const int,
-                              const int,
-                              const int,
-                              const float,
-                              const float,
-                              const float,
-                              const float,
-                              const float,
-                              const float,
-                              const bool
-                              ))&Class::correlate,
+           (Class& (Class::*)(
+               const Class&, const unsigned int, const bool, const unsigned int,
+               const int, const int, const int,
+               const unsigned int, const unsigned int, const unsigned int,
+               const int, const int, const int,
+               const int, const int, const int,
+               const unsigned int, const unsigned int, const unsigned int
+           ))&Class::correlate,
            R"doc( 
-              Correlate image by a kernel.
+               Correlate image by a kernel.
 
-              Args:
-                  kernel (CImg): the correlation kernel.
-                  boundary_conditions (bool): boundary conditions can be
-                                              (False=dirichlet, True=neumann)
-                  is_normalized (bool): enable local normalization.
-           )doc",
-           py::arg("kernel"),
-           py::arg("boundary_conditions") = 1,
-           py::arg("is_normalized") = false,
-           py::arg("channel_mode") = 1,
-           py::arg("xcenter") = (int)(~0U>>1),
-           py::arg("ycenter") = (int)(~0U>>1),
-           py::arg("zcenter") = (int)(~0U>>1),
-           py::arg("xstart") = 0,
-           py::arg("ystart") = 0,
-           py::arg("zstart") = 0,
-           py::arg("xend") = (int)(~0U>>1),
-           py::arg("yend") = (int)(~0U>>1),
-           py::arg("zend") = (int)(~0U>>1),
-           py::arg("xstride") = 1,
-           py::arg("ystride") = 1,
-           py::arg("zstride") = 1,
-           py::arg("xdilation") = 1,
-           py::arg("ydilation") = 1,
-           py::arg("zdilation") = 1,
-           py::arg("interpolation_type") = false
+               Args:
+                   kernel (CImg): the correlation kernel.
+                   boundary_conditions: boundary conditions (False=dirichlet, True=neumann)
+                   is_normalized (bool): enable local normalization.
+            )doc",
+            py::arg("kernel"),
+            py::arg("boundary_conditions") = 1u,
+            py::arg("is_normalized") = false,
+            py::arg("channel_mode") = 1u,
+            py::arg("xcenter") = (int)(~0U>>1),
+            py::arg("ycenter") = (int)(~0U>>1),
+            py::arg("zcenter") = (int)(~0U>>1),
+            py::arg("xstride") = 1u,
+            py::arg("ystride") = 1u,
+            py::arg("zstride") = 1u,
+            py::arg("xdilation") = 1,
+            py::arg("ydilation") = 1,
+            py::arg("zdilation") = 1,
+            py::arg("xoffset") = 0,
+            py::arg("yoffset") = 0,
+            py::arg("zoffset") = 0,
+            py::arg("xsize") = ~0u,
+            py::arg("ysize") = ~0u,
+            py::arg("zsize") = ~0u
     );
     cl.def("convolve",
-           (Class& (Class::*)(const Class& kernel, 
-                              const unsigned int, 
-                              const bool, 
-                              const unsigned int, 
-                              const int, 
-                              const int, 
-                              const int, 
-                              const int,
-                              const int,
-                              const int,
-                              const int,
-                              const int,
-                              const int,
-                              const float,
-                              const float,
-                              const float,
-                              const float,
-                              const float,
-                              const float,
-                              const bool
-                              ))&Class::convolve,
+           (Class& (Class::*)(
+               const Class&, const unsigned int, const bool, const unsigned int,
+               const int, const int, const int,
+               const unsigned int, const unsigned int, const unsigned int,
+               const int, const int, const int,
+               const int, const int, const int,
+               const unsigned int, const unsigned int, const unsigned int
+           ))&Class::convolve,
            R"doc( 
-              Convolve image by a kernel.
+               Convolve image by a kernel.
 
-              Args:
-                  kernel (CImg): the correlation kernel.
-                  boundary_conditions (bool): boundary conditions.
-                  is_normalized (bool): enable local normalization.
-           )doc",
-           py::arg("kernel"),
-           py::arg("boundary_conditions") = 1,
-           py::arg("is_normalized") = false,
-           py::arg("channel_mode") = 1,
-           py::arg("xcenter") = (int)(~0U>>1),
-           py::arg("ycenter") = (int)(~0U>>1),
-           py::arg("zcenter") = (int)(~0U>>1),
-           py::arg("xstart") = 0,
-           py::arg("ystart") = 0,
-           py::arg("zstart") = 0,
-           py::arg("xend") = (int)(~0U>>1),
-           py::arg("yend") = (int)(~0U>>1),
-           py::arg("zend") = (int)(~0U>>1),
-           py::arg("xstride") = 1,
-           py::arg("ystride") = 1,
-           py::arg("zstride") = 1,
-           py::arg("xdilation") = 1,
-           py::arg("ydilation") = 1,
-           py::arg("zdilation") = 1,
-           py::arg("interpolation_type") = false
+               Args:
+                   kernel (CImg): the correlation kernel.
+                   boundary_conditions: boundary conditions.
+                   is_normalized (bool): enable local normalization.
+            )doc",
+            py::arg("kernel"),
+            py::arg("boundary_conditions") = 1u,
+            py::arg("is_normalized") = false,
+            py::arg("channel_mode") = 1u,
+            py::arg("xcenter") = (int)(~0U>>1),
+            py::arg("ycenter") = (int)(~0U>>1),
+            py::arg("zcenter") = (int)(~0U>>1),
+            py::arg("xstride") = 1u,
+            py::arg("ystride") = 1u,
+            py::arg("zstride") = 1u,
+            py::arg("xdilation") = 1,
+            py::arg("ydilation") = 1,
+            py::arg("zdilation") = 1,
+            py::arg("xoffset") = 0,
+            py::arg("yoffset") = 0,
+            py::arg("zoffset") = 0,
+            py::arg("xsize") = ~0u,
+            py::arg("ysize") = ~0u,
+            py::arg("zsize") = ~0u
     );
 
     cl.def("cumulate",
@@ -1365,19 +1336,19 @@ void declare(py::module &m, const std::string &typestr)
     );
 
     cl.def("magnitude", 
-           (double (Class::*)(const int) const)&Class::magnitude, 
+           (double (Class::*)(const float) const)&Class::magnitude, 
            R"doc(
-              Compute norm of the image, viewed as a matrix.
+               Compute norm of the image, viewed as a matrix.
 
-              Args:
-                  magnitude_type (int): Norm type. Can be:
-                      LINF_NORM
-                      L0_NORM
-                      L1_NORM
-                      L2_NORM
+               Args:
+                   magnitude_type (float): Norm type. Can be:
+                       LINF_NORM
+                       L0_NORM
+                       L1_NORM
+                       L2_NORM
 
-              Returns: Norm of image.
-           )doc"
+               Returns: Norm of image.
+            )doc"
     );
 
     cl.def("dot", 

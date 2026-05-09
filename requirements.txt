@@ -2,7 +2,11 @@ numpy>=1.11.0
 wheel>=0.30.0
 sphinx_rtd_theme>=0.2.4
 twine
-conan==1.59.0
+conan>=2.0.0,<3
 pytest
 pytest-cov
 pybind11
+
+# NOTE: This file is superseded by pyproject.toml + uv.lock.
+# Development dependencies are now managed via `uv sync --dev`.
+# See README.rst for the new workflow.

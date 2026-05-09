@@ -16,6 +16,25 @@ src/pycimg.cpp
 src/pycimg_*.pyx
 conanbuildinfo*
 conaninfo*
+# Conan-generated CMake files (when omitting -of)
+conan_toolchain.cmake
+conandeps_legacy.cmake
+cmakedeps_macros.cmake
+CMakePresets.json
+Find*.cmake
+*Config.cmake
+*ConfigVersion.cmake
+*-config.cmake
+*-config-version.cmake
+*Targets.cmake
+*Target-release.cmake
+*-release-*-data.cmake
+conanbuild.sh
+conanrun.sh
+conanbuildenv*.sh
+conanrunenv*.sh
+*deactivate_conanbuild.sh
+*deactivate_conanrun.sh
 test-results/
 cover/
 dist/
@@ -23,4 +42,6 @@ node_modules/
 package-lock.json
 coverage.xml
 .coverage
+conan_build/
+CMakeUserPresets.json
 

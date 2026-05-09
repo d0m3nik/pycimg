@@ -1,8 +1,51 @@
 [build-system]
 requires = [
-    "setuptools>=42",
-    "wheel",
-    "pybind11>=2.6.0",
+    "scikit-build-core>=0.10.0",
+    "pybind11>=2.12.0",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pycimg"
+dynamic = ["version"]
+description = "Python extension for the CImg library."
+readme = "README.rst"
+authors = [{name = "Dominik Brugger"}]
+license = {text = "GPL-3.0-or-later"}
+urls = {homepage = "https://github.com/d0m3nik/pycimg"}
+requires-python = ">=3.9"
+dependencies = ["numpy"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
 ]
 
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+test = ["pytest"]
+
+[dependency-groups]
+dev = [
+    "wheel>=0.30.0",
+    "sphinx-rtd-theme>=0.2.4",
+    "twine",
+    "conan>=2.0.0,<3",
+    "pytest-cov",
+]
+
+[tool.scikit-build]
+wheel.packages = ["pycimg"]
+metadata.version.provider = "scikit_build_core.metadata.regex"
+metadata.version.input = "pycimg/__init__.py"
+
+[tool.semantic_release]
+branch = "master"
+version_pattern = "pycimg/__init__.py:__version__"
+version_variable = "pycimg/__init__.py:__version__"

@@ -18,23 +18,26 @@ jobs:
 
   semantic_release:
     name: Run semantic release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: true
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.11'
 
       - name: Run python-semantic-release
         run: |
-          pip install python-semantic-release
+          pip install uv
+          uv pip install --system python-semantic-release
           git config --global user.email "d0m3nik@users.noreply.github.com"
           git config --global user.name "Dominik Brugger"
-          semantic-release version -D branch=master -D version_variable=pycimg/__init__.py:__version__,setup.py:__version__ 
+          semantic-release version 
 
       - name: Push version
         if: github.event_name != 'release' || github.event.action != 'published'
@@ -43,95 +46,96 @@ jobs:
           git push --tags
           
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    needs: semantic_release
+    name: Build cp${{ matrix.python }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-10.15]
+        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm, macos-15-intel]
+        python: ["310", "311", "312", "313", "314"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.11'
 
       - name: Install cibuildwheel
         run: |
-          python -m pip install cibuildwheel==2.11.2
-
-      - name: Symlink g++-4.2 on MacOS
-        if: runner.os == 'macOS'
-        run: |
-          ln -s /usr/bin/g++ /usr/local/bin/g++-4.2
+          python -m pip install cibuildwheel==3.4.1
 
       - name: Build wheels
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
-          #CIBW_BEFORE_ALL_LINUX: pip install cmake && ln -s $(which cmake) /usr/local/bin/cmake
-          CIBW_BEFORE_ALL_MACOS: brew install --cask xquartz 
-          CIBW_BEFORE_BUILD: pip install -r requirements.txt && python install_conan_packages.py
-          CIBW_SKIP: pp* *-win32 *-musllinux_* *-manylinux_i686 *aarch64 *ppc64* *s390*
+          CIBW_BEFORE_ALL_LINUX: pip install uv && yum install -y libX11-devel
+          CIBW_BEFORE_ALL_MACOS: pip install uv && brew install --cask xquartz
+          CIBW_BEFORE_ALL_WINDOWS: pip install uv
+          CIBW_BEFORE_BUILD: uv pip install --system conan>=2.0.0 && uv pip install --system -r requirements.txt && conan profile detect --force && conan install . --build=missing
+          CIBW_BUILD: "cp${{ matrix.python }}-*"
+          CIBW_SKIP: "*-win32 *-musllinux_* *-manylinux_i686 *ppc64* *s390*"
+          CIBW_CONFIG_SETTINGS: skbuild.cmake.args="-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
+          CIBW_ENVIRONMENT_MACOS: "MACOSX_DEPLOYMENT_TARGET=10.15"
 
-      - name: Start SSH via Ngrok
-        if: ${{ failure() }}
-        uses: luchihoratiu/debug-via-ssh@main
-        with:
-          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_TOKEN }}
-          SSH_PASS: ${{ secrets.SSH_PASS }}
-
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
       
   build_sdist:
     name: Build source distribution
-    needs: semantic_release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.7'
-
-      - name: Install requirements
-        run: pip install -r requirements.txt
+          python-version: '3.11'
 
       - name: Build sdist
-        run: python setup.py sdist
+        run: pip install uv && uv pip install --system build && uv build --sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
 
   coverage:
     name: Run coverage analysis
-    needs: semantic_release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         name: Install Python
         with:
-          python-version: '3.7'
+          python-version: '3.11'
 
-      - name: Install requirements
+      - name: Install system dependencies
         run: |
-          pip install -r requirements.txt
-          python install_conan_packages.py
-          pip install -e .
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev
+
+      - name: Install dependencies and build
+        run: |
+          pip install uv
+          uv pip install --system conan>=2.0.0
+          uv pip install --system -r requirements.txt
+          conan profile detect --force
+          conan install . --build=missing
+          uv pip install --system -e . -C "skbuild.cmake.args=-DCMAKE_TOOLCHAIN_FILE:FILEPATH=conan_toolchain.cmake"
       
       - name: Run coverage test
         run:  pytest --cov-report term-missing --cov-report xml:coverage.xml --cov pycimg tests/
 
       - name: Upload codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
@@ -144,7 +148,7 @@ jobs:
     # alternatively, to publish when a GitHub Release is created, use the following rule:
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
