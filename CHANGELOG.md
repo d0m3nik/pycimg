@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v2.0.8 (2026-05-10)
+
+### Bug Fixes
+
+- Upload all artifacts.
+  ([`b3bb912`](https://github.com/d0m3nik/pycimg/commit/b3bb91240a1c78056338f0493e39287291a70196))
+
+
 ## v2.0.7 (2026-05-09)
 
 ### Bug Fixes
